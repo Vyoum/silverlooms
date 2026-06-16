@@ -1,0 +1,34 @@
+import { AnnouncementBar } from "@/components/layout/announcement-bar";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteHeader } from "@/components/layout/site-header";
+import { PageShell } from "@/components/layout/page-shell";
+import { BrandStorySection } from "./components/brand-story-section";
+import { EditorialSection } from "./components/editorial-section";
+import { FabricSection } from "./components/fabric-section";
+import { GoodReadsSection } from "./components/good-reads-section";
+import { HeroSection } from "./components/hero-section";
+import { MarqueeSection } from "./components/marquee-section";
+import { NewArrivalsSection } from "./components/new-arrivals-section";
+import { NewsletterSection } from "./components/newsletter-section";
+import { StyleSection } from "./components/style-section";
+
+export function HomePage() {
+  return (
+    <PageShell>
+      <AnnouncementBar />
+      <SiteHeader variant="home" />
+      <main>
+        <HeroSection />
+        <MarqueeSection />
+        <FabricSection />
+        <StyleSection />
+        <NewArrivalsSection />
+        <GoodReadsSection />
+        <EditorialSection />
+        <BrandStorySection />
+        <NewsletterSection />
+      </main>
+      <SiteFooter />
+    </PageShell>
+  );
+}
