@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/shared/star-rating";
+import { useCart } from "@/features/cart/cart-provider";
 import type { Product } from "@/lib/types/product";
 import { cn } from "@/lib/utils";
 
@@ -18,18 +21,24 @@ const badgeStyles: Record<string, string> = {
 };
 
 export function ProductCard({ product, className }: ProductCardProps) {
+  const { addToCart } = useCart();
   const href = `/product/${product.slug}`;
+  const defaultSize = product.sizes?.includes("M")
+    ? "M"
+    : product.sizes?.[0];
 
   return (
     <article className={cn("group flex flex-col", className)}>
-      <Link href={href} className="relative mb-4 block aspect-[286/430] overflow-hidden">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, 33vw"
-        />
+      <div className="relative mb-4 aspect-[286/430] overflow-hidden">
+        <Link href={href} className="block size-full">
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
+        </Link>
         {product.badge && (
           <Badge
             className={cn(
@@ -40,14 +49,30 @@ export function ProductCard({ product, className }: ProductCardProps) {
             {product.badge}
           </Badge>
         )}
-        <button
-          type="button"
-          aria-label="Add to wishlist"
-          className="absolute right-3 top-3 opacity-0 transition-opacity group-hover:opacity-100"
-        >
-          <Heart className="size-4 text-ink" />
-        </button>
-      </Link>
+        <div className="absolute right-3 top-3 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+          <button
+            type="button"
+            aria-label="Add to wishlist"
+            className="rounded-full bg-cream/90 p-2 backdrop-blur-sm"
+          >
+            <Heart className="size-4 text-ink" />
+          </button>
+          <button
+            type="button"
+            aria-label="Quick add to bag"
+            className="rounded-full bg-cream/90 p-2 backdrop-blur-sm"
+            onClick={() =>
+              addToCart({
+                slug: product.slug,
+                size: defaultSize,
+                colorHex: product.colors[0]?.hex,
+              })
+            }
+          >
+            <ShoppingBag className="size-4 text-ink" />
+          </button>
+        </div>
+      </div>
 
       <p className="mb-1 text-[9px] uppercase tracking-wider text-sage">
         {product.category}
@@ -60,9 +85,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
       {product.colors.length > 0 && (
         <div className="mt-2 flex gap-1">
-          {product.colors.map((color, i) => (
+          {product.colors.map((color) => (
             <span
-              key={i}
+              key={color.hex}
               className="size-[18px] rounded-full border border-border"
               style={{ backgroundColor: color.hex }}
             />

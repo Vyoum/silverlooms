@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { StarRating } from "@/components/shared/star-rating";
+import { AddToBagButton } from "@/components/shared/add-to-bag-button";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types/product";
 
@@ -12,8 +12,11 @@ interface ProductDetailsProps {
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
-  const [selectedSize, setSelectedSize] = useState("M");
   const sizes = product.sizes ?? ["XS", "S", "M", "L", "XL"];
+  const [selectedSize, setSelectedSize] = useState(sizes.includes("M") ? "M" : sizes[0]);
+  const [selectedColor, setSelectedColor] = useState(
+    product.colors[0]?.hex ?? undefined,
+  );
 
   return (
     <div className="w-full lg:w-[45%] lg:pl-12">
@@ -26,9 +29,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
       <div className="mt-4 flex items-center gap-3">
         <StarRating rating={product.rating} />
-        <span className="text-sm text-sage">
-          {product.reviewCount} reviews
-        </span>
+        <span className="text-sm text-sage">{product.reviewCount} reviews</span>
       </div>
 
       <div className="mt-6 flex items-center gap-4">
@@ -55,41 +56,45 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </p>
       )}
 
-      <div className="mt-8">
-        <p className="mb-3 text-sm font-medium text-ink">Select Size</p>
-        <div className="flex flex-wrap gap-2">
-          {sizes.map((size) => (
-            <button
-              key={size}
-              type="button"
-              onClick={() => setSelectedSize(size)}
-              className={cn(
-                "flex size-10 items-center justify-center rounded-full border text-[11px]",
-                selectedSize === size
-                  ? "border-ink bg-ink text-white"
-                  : "border-sage-light text-ink hover:border-ink",
-              )}
-            >
-              {size}
-            </button>
-          ))}
+      {sizes.length > 0 && (
+        <div className="mt-8">
+          <p className="mb-3 text-sm font-medium text-ink">Select Size</p>
+          <div className="flex flex-wrap gap-2">
+            {sizes.map((size) => (
+              <button
+                key={size}
+                type="button"
+                onClick={() => setSelectedSize(size)}
+                className={cn(
+                  "flex size-10 items-center justify-center rounded-full border text-[11px]",
+                  selectedSize === size
+                    ? "border-ink bg-ink text-white"
+                    : "border-sage-light text-ink hover:border-ink",
+                )}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {product.colors.length > 0 && (
         <div className="mt-6">
           <p className="mb-3 text-sm font-medium text-ink">Color</p>
           <div className="flex gap-2">
-            {product.colors.map((color, i) => (
+            {product.colors.map((color) => (
               <button
-                key={i}
+                key={color.hex}
                 type="button"
+                onClick={() => setSelectedColor(color.hex)}
                 className={cn(
                   "size-8 rounded-full border",
-                  i === 0 && "ring-2 ring-ink ring-offset-2",
+                  selectedColor === color.hex &&
+                    "ring-2 ring-ink ring-offset-2",
                 )}
                 style={{ backgroundColor: color.hex }}
-                aria-label={`Color option ${i + 1}`}
+                aria-label={color.name ?? `Color ${color.hex}`}
               />
             ))}
           </div>
@@ -97,12 +102,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       )}
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/cart"
-          className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-forest text-[13px] uppercase tracking-[1.3px] text-cream transition-colors hover:bg-forest/90"
-        >
-          Add to Bag
-        </Link>
+        <AddToBagButton
+          slug={product.slug}
+          size={selectedSize}
+          colorHex={selectedColor}
+        />
         <Button
           variant="outline"
           className="h-12 flex-1 rounded-full border-ink text-[13px] uppercase tracking-[1.3px]"

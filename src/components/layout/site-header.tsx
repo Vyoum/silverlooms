@@ -4,15 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Heart, Search, ShoppingBag, User } from "lucide-react";
 import { mainNavLinks, homeNavLinks } from "@/lib/constants/navigation";
+import { useCart } from "@/features/cart/cart-provider";
 import { cn } from "@/lib/utils";
 
 interface SiteHeaderProps {
   variant?: "home" | "default";
-  cartCount?: number;
 }
 
-export function SiteHeader({ variant = "default", cartCount = 2 }: SiteHeaderProps) {
+export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
   const pathname = usePathname();
+  const { itemCount } = useCart();
   const navLinks = variant === "home" ? homeNavLinks : mainNavLinks;
 
   return (
@@ -95,9 +96,9 @@ export function SiteHeader({ variant = "default", cartCount = 2 }: SiteHeaderPro
           </button>
           <Link href="/cart" aria-label="Cart" className="relative text-ink">
             <ShoppingBag className="size-5" />
-            {cartCount > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-forest text-[10px] text-cream">
-                {cartCount}
+            {itemCount > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex size-4 min-w-4 items-center justify-center rounded-full bg-forest px-1 text-[10px] text-cream">
+                {itemCount > 99 ? "99+" : itemCount}
               </span>
             )}
           </Link>

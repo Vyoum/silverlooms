@@ -1,14 +1,15 @@
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import type { CartSummary } from "@/lib/types/cart";
+import { useCart } from "@/features/cart/cart-provider";
 
-interface OrderSummaryProps {
-  summary: CartSummary;
-  itemCount: number;
-}
+export function OrderSummary() {
+  const { cart } = useCart();
+  const { summary, itemCount, promoCode } = cart;
 
-export function OrderSummary({ summary, itemCount }: OrderSummaryProps) {
   return (
     <aside className="rounded-lg border border-border bg-cream-warm p-8">
       <h2 className="mb-6 font-serif text-2xl text-ink">Order Summary</h2>
@@ -29,7 +30,7 @@ export function OrderSummary({ summary, itemCount }: OrderSummaryProps) {
         </div>
         {summary.discount > 0 && (
           <div className="flex justify-between text-forest">
-            <dt>Discount</dt>
+            <dt>Discount {promoCode ? `(${promoCode})` : ""}</dt>
             <dd>-₹{summary.discount.toLocaleString("en-IN")}</dd>
           </div>
         )}
@@ -39,7 +40,10 @@ export function OrderSummary({ summary, itemCount }: OrderSummaryProps) {
         <span>Total</span>
         <span>₹{summary.total.toLocaleString("en-IN")}</span>
       </div>
-      <Button className="h-12 w-full rounded-full bg-forest text-[13px] uppercase tracking-[1.3px] hover:bg-forest/90">
+      <Button
+        disabled={itemCount === 0}
+        className="h-12 w-full rounded-full bg-forest text-[13px] uppercase tracking-[1.3px] hover:bg-forest/90"
+      >
         Proceed to Checkout
       </Button>
       <p className="mt-4 text-center text-[11px] text-sage">
@@ -50,21 +54,47 @@ export function OrderSummary({ summary, itemCount }: OrderSummaryProps) {
 }
 
 export function PromoCodeSection() {
+  const { cart, applyPromo, clearPromo, isPending } = useCart();
+  const [code, setCode] = useState(cart.promoCode ?? "");
+
+  async function handleApply() {
+    if (!code.trim()) return;
+    const success = await applyPromo(code);
+    if (!success) return;
+  }
+
   return (
     <div className="mt-8 rounded-lg border border-border p-6">
       <h3 className="mb-4 text-sm font-medium text-ink">Promo Code</h3>
       <div className="flex gap-2">
         <Input
-          placeholder="Enter code"
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+          placeholder="Try SILVER10 or WELCOME500"
           className="rounded-full border-border bg-cream"
         />
         <Button
+          type="button"
           variant="outline"
           className="shrink-0 rounded-full uppercase tracking-wider"
+          disabled={isPending || !code.trim()}
+          onClick={handleApply}
         >
           Apply
         </Button>
       </div>
+      {cart.promoCode && (
+        <button
+          type="button"
+          className="mt-3 text-[11px] uppercase tracking-wider text-sage underline"
+          onClick={() => {
+            clearPromo();
+            setCode("");
+          }}
+        >
+          Remove promo code
+        </button>
+      )}
     </div>
   );
 }
