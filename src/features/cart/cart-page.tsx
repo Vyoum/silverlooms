@@ -16,7 +16,7 @@ export function CartPage() {
   return (
     <PageShell>
       <SiteHeader />
-      <main className="pt-20">
+      <main>
         <Container className="py-12">
           <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>

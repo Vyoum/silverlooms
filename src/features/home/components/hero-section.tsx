@@ -1,10 +1,16 @@
 import Image from "next/image";
 import { assets } from "@/lib/constants/assets";
 import { Container, PillButton } from "@/components/layout/page-shell";
+import { cn } from "@/lib/utils";
 
-export function HeroSection() {
+export function HeroSection({ className }: { className?: string }) {
   return (
-    <section className="relative flex min-h-[600px] max-h-[900px] items-center justify-center overflow-hidden">
+    <section
+      className={cn(
+        "relative flex min-h-[600px] max-h-[900px] items-center justify-center overflow-hidden",
+        className,
+      )}
+    >
       <Image
         src={assets.hero.home}
         alt="Woman in premium terracotta Anarkali suit"

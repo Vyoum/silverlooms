@@ -10,7 +10,7 @@ export function JewelleryPage() {
   return (
     <PageShell>
       <SiteHeader />
-      <main className="pt-20">
+      <main>
         <JewelleryHero />
         <SubcategoryStrip />
         <JewelleryProductGrid />

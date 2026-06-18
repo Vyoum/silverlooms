@@ -1,10 +1,16 @@
 import Image from "next/image";
 import { assets } from "@/lib/constants/assets";
 import { Container } from "@/components/layout/page-shell";
+import { cn } from "@/lib/utils";
 
-export function CategoryHero() {
+export function CategoryHero({ className }: { className?: string }) {
   return (
-    <section className="relative h-[280px] overflow-hidden bg-[#f0eee9]">
+    <section
+      className={cn(
+        "relative h-[280px] overflow-hidden bg-[#f0eee9]",
+        className,
+      )}
+    >
       <Image
         src={assets.hero.kurtis}
         alt="Kurtis and Sets collection"

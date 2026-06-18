@@ -9,15 +9,21 @@ import { cn } from "@/lib/utils";
 
 interface SiteHeaderProps {
   variant?: "home" | "default";
+  className?: string;
 }
 
-export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
+export function SiteHeader({ variant = "default", className }: SiteHeaderProps) {
   const pathname = usePathname();
   const { itemCount } = useCart();
   const navLinks = variant === "home" ? homeNavLinks : mainNavLinks;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-cream/95 backdrop-blur-sm">
+    <header
+      className={cn(
+        "glass-nav sticky top-0 z-50",
+        className,
+      )}
+    >
       <div className="mx-auto flex h-20 max-w-[1280px] items-center justify-between px-4 md:px-16">
         {variant === "home" ? (
           <>

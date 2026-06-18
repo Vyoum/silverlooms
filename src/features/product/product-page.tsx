@@ -23,7 +23,7 @@ export function ProductPage({ slug }: ProductPageProps) {
   return (
     <PageShell>
       <SiteHeader />
-      <main className="pt-20">
+      <main>
         <Container className="py-8">
           <Breadcrumbs
             items={[

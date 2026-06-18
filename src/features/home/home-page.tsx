@@ -18,7 +18,7 @@ export function HomePage() {
       <AnnouncementBar />
       <SiteHeader variant="home" />
       <main>
-        <HeroSection />
+        <HeroSection className="-mt-20 pt-20" />
         <MarqueeSection />
         <FabricSection />
         <StyleSection />

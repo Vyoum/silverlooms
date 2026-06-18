@@ -11,8 +11,8 @@ export function KurtisPage() {
   return (
     <PageShell>
       <SiteHeader />
-      <main className="pt-20">
-        <CategoryHero />
+      <main>
+        <CategoryHero className="-mt-20 pt-20" />
         <ActiveFilters />
         <Container className="flex flex-col gap-8 py-12 md:flex-row">
           <FilterSidebar />
