@@ -23,6 +23,7 @@ function buildChartPath(values: number[], width: number, height: number) {
 export function RevenueChart({ chartData, revenueSummary }: RevenueChartProps) {
   const width = 560;
   const height = 180;
+  const hasRevenue = chartData.some((value) => value > 0);
   const { line, area } = buildChartPath(chartData, width, height);
 
   return (
@@ -49,33 +50,41 @@ export function RevenueChart({ chartData, revenueSummary }: RevenueChartProps) {
       </div>
 
       <div className="mt-8 overflow-hidden">
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          className="h-44 w-full"
-          preserveAspectRatio="none"
-          aria-hidden
-        >
-          <defs>
-            <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#C4704A" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="#C4704A" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <polygon points={area} fill="url(#revenueFill)" />
-          <polyline
-            points={line}
-            fill="none"
-            stroke="#C4704A"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        <div className="mt-2 flex justify-between text-[10px] uppercase tracking-wider text-admin-muted">
-          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-            <span key={day}>{day}</span>
-          ))}
-        </div>
+        {hasRevenue ? (
+          <>
+            <svg
+              viewBox={`0 0 ${width} ${height}`}
+              className="h-44 w-full"
+              preserveAspectRatio="none"
+              aria-hidden
+            >
+              <defs>
+                <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#C4704A" stopOpacity="0.25" />
+                  <stop offset="100%" stopColor="#C4704A" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <polygon points={area} fill="url(#revenueFill)" />
+              <polyline
+                points={line}
+                fill="none"
+                stroke="#C4704A"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div className="mt-2 flex justify-between text-[10px] uppercase tracking-wider text-admin-muted">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                <span key={day}>{day}</span>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="flex h-44 items-center justify-center text-sm text-admin-muted">
+            No paid orders in the last 7 days.
+          </p>
+        )}
       </div>
     </article>
   );

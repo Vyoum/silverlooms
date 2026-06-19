@@ -1,7 +1,8 @@
 import { AdminStorePage } from "@/features/admin/admin-store-page";
+import { BRAND_NAME } from "@/lib/constants/brand";
 
 export const metadata = {
-  title: "Jewellery | Admin | Silver Looms",
+  title: `Jewellery | ${BRAND_NAME}`,
 };
 
 export default function Page() {

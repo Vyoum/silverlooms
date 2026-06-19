@@ -27,7 +27,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
 
       {orders.length === 0 ? (
         <p className="py-8 text-center text-sm text-admin-muted">
-          No orders yet. Orders will appear here once checkout is live.
+          No orders yet. Orders appear here when customers complete checkout.
         </p>
       ) : (
         <div className="overflow-x-auto">

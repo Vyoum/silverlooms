@@ -38,7 +38,86 @@ function startOfMonth(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }
 
+function emptyDashboard(): DashboardData {
+  const zeroCurrency = formatCurrency(0);
+
+  return {
+    kpis: [
+      {
+        label: "Revenue Today",
+        value: zeroCurrency,
+        change: "0%",
+        changeLabel: "vs yesterday",
+        trend: "neutral",
+        accent: "#C4704A",
+        icon: "indian-rupee",
+      },
+      {
+        label: "Orders Today",
+        value: "0",
+        change: "0",
+        trend: "neutral",
+        accent: "#5B7A5E",
+        icon: "package",
+      },
+      {
+        label: "Pending Orders",
+        value: "0",
+        change: "All Clear",
+        trend: "up",
+        accent: "#B8860B",
+        icon: "sparkles",
+      },
+      {
+        label: "Apparel Products",
+        value: "0",
+        change: "On /kurtis",
+        trend: "neutral",
+        accent: "#5B7A5E",
+        icon: "box",
+      },
+      {
+        label: "Jewellery Products",
+        value: "0",
+        change: "On /jewellery",
+        trend: "neutral",
+        accent: "#6B5B95",
+        icon: "gem",
+      },
+      {
+        label: "Revenue This Month",
+        value: zeroCurrency,
+        progress: 0,
+        progressLabel: "0% of ₹5L goal",
+        accent: "#4A7C8C",
+        icon: "eye",
+      },
+    ],
+    revenueSummary: [
+      { label: "Total Revenue", value: zeroCurrency },
+      { label: "Avg. Order Value", value: zeroCurrency },
+      { label: "Paid Orders", value: "0" },
+    ],
+    chartData: [0, 0, 0, 0, 0, 0, 0],
+    recentOrders: [],
+    pendingOrders: [],
+    lowStockItems: [],
+    productCount: 0,
+    apparelCount: 0,
+    jewelleryCount: 0,
+  };
+}
+
 export async function getDashboardData(): Promise<DashboardData> {
+  try {
+    return await fetchDashboardData();
+  } catch (error) {
+    console.error("[admin] Failed to load dashboard data:", error);
+    return emptyDashboard();
+  }
+}
+
+async function fetchDashboardData(): Promise<DashboardData> {
   const now = new Date();
   const todayStart = startOfDay(now);
   const yesterdayStart = new Date(todayStart);
@@ -259,23 +338,28 @@ export async function getDashboardData(): Promise<DashboardData> {
 }
 
 export async function listAdminProducts() {
-  const products = await prisma.product.findMany({
-    include: {
-      inventory: { select: { quantity: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  try {
+    const products = await prisma.product.findMany({
+      include: {
+        inventory: { select: { quantity: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
 
-  return products.map((p) => ({
-    id: p.id,
-    slug: p.slug,
-    name: p.name,
-    categoryLabel: p.categoryLabel,
-    productType: (isJewelleryCategory(p.categoryLabel)
-      ? "jewellery"
-      : "apparel") as "apparel" | "jewellery",
-    price: p.price,
-    stock: p.inventory.reduce((sum, i) => sum + i.quantity, 0),
-    createdAt: p.createdAt.toLocaleDateString("en-IN"),
-  }));
+    return products.map((p) => ({
+      id: p.id,
+      slug: p.slug,
+      name: p.name,
+      categoryLabel: p.categoryLabel,
+      productType: (isJewelleryCategory(p.categoryLabel)
+        ? "jewellery"
+        : "apparel") as "apparel" | "jewellery",
+      price: p.price,
+      stock: p.inventory.reduce((sum, i) => sum + i.quantity, 0),
+      createdAt: p.createdAt.toLocaleDateString("en-IN"),
+    }));
+  } catch (error) {
+    console.error("[admin] Failed to load products:", error);
+    return [];
+  }
 }

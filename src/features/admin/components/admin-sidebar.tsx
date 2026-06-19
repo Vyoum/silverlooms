@@ -11,7 +11,8 @@ import {
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { adminNavItems } from "../lib/mock-data";
+import { BRAND_NAME } from "@/lib/constants/brand";
+import { adminNavItems } from "../lib/admin-nav";
 
 const iconMap = {
   "layout-dashboard": LayoutDashboard,
@@ -29,7 +30,7 @@ export function AdminSidebar() {
     <aside className="flex h-full w-[260px] shrink-0 flex-col border-r border-admin-border bg-admin-surface">
       <div className="px-8 pb-4 pt-8">
         <h1 className="font-serif text-[22px] font-medium leading-tight text-admin-ink">
-          Silver Looms
+          {BRAND_NAME}
         </h1>
         <p className="mt-1 text-[11px] font-medium uppercase tracking-[1.65px] text-admin-muted">
           Admin Console

@@ -105,109 +105,13 @@ async function main() {
 
   console.log(`Seeded ${allProducts.length} products`);
 
-  const dbProducts = await prisma.product.findMany({ take: 4 });
-  if (dbProducts.length === 0) return;
-
-  const sampleOrders = [
-    {
-      orderNumber: "ORD-9021",
-      customerName: "Meera Reddy",
-      customerEmail: "meera@example.com",
-      status: "SHIPPED" as const,
-      paymentStatus: "PAID" as const,
-      subtotal: 4000,
-      shippingCost: 0,
-      discount: 0,
-      total: 4200,
-      items: [{ product: dbProducts[0], qty: 1, price: dbProducts[0].price }],
-      daysAgo: 0,
-    },
-    {
-      orderNumber: "ORD-9020",
-      customerName: "Anjali Gupta",
-      customerEmail: "anjali@example.com",
-      status: "PROCESSING" as const,
-      paymentStatus: "PAID" as const,
-      subtotal: 12300,
-      shippingCost: 0,
-      discount: 0,
-      total: 12500,
-      items: [{ product: dbProducts[1], qty: 2, price: dbProducts[1].price }],
-      daysAgo: 0,
-    },
-    {
-      orderNumber: "ORD-9019",
-      customerName: "Priya Sharma",
-      customerEmail: "priya@example.com",
-      status: "PENDING" as const,
-      paymentStatus: "PAID" as const,
-      subtotal: 3600,
-      shippingCost: 199,
-      discount: 0,
-      total: 3800,
-      items: [{ product: dbProducts[2], qty: 1, price: dbProducts[2].price }],
-      daysAgo: 1,
-    },
-    {
-      orderNumber: "ORD-9018",
-      customerName: "Kavita Iyer",
-      customerEmail: "kavita@example.com",
-      status: "SHIPPED" as const,
-      paymentStatus: "PAID" as const,
-      subtotal: 5950,
-      shippingCost: 0,
-      discount: 0,
-      total: 6150,
-      items: [{ product: dbProducts[3], qty: 1, price: dbProducts[3].price }],
-      daysAgo: 1,
-    },
-  ];
-
-  for (const order of sampleOrders) {
-    const createdAt = new Date();
-    createdAt.setDate(createdAt.getDate() - order.daysAgo);
-
-    await prisma.order.upsert({
-      where: { orderNumber: order.orderNumber },
-      create: {
-        orderNumber: order.orderNumber,
-        customerName: order.customerName,
-        customerEmail: order.customerEmail,
-        status: order.status,
-        paymentStatus: order.paymentStatus,
-        subtotal: order.subtotal,
-        shippingCost: order.shippingCost,
-        discount: order.discount,
-        total: order.total,
-        createdAt,
-        items: {
-          create: order.items.map((item) => ({
-            productId: item.product.id,
-            productName: item.product.name,
-            productSlug: item.product.slug,
-            quantity: item.qty,
-            unitPrice: item.price,
-          })),
-        },
-      },
-      update: {
-        status: order.status,
-        paymentStatus: order.paymentStatus,
-        total: order.total,
-      },
-    });
+  // Remove legacy demo orders from older seeds — admin only shows real checkout orders
+  const removed = await prisma.order.deleteMany({
+    where: { customerEmail: { endsWith: "@example.com" } },
+  });
+  if (removed.count > 0) {
+    console.log(`Removed ${removed.count} demo orders`);
   }
-
-  // Set one product low on stock for admin alerts demo
-  const lowStock = await prisma.inventory.findFirst();
-  if (lowStock) {
-    await prisma.inventory.update({
-      where: { id: lowStock.id },
-      data: { quantity: 2 },
-    });
-  }
-
-  console.log(`Seeded ${sampleOrders.length} sample orders`);
 }
 
 main()

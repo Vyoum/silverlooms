@@ -1,4 +1,5 @@
 import { CalendarDays } from "lucide-react";
+import { BRAND_NAME } from "@/lib/constants/brand";
 
 interface WelcomeStripProps {
   productCount?: number;
@@ -24,7 +25,7 @@ export function WelcomeStrip({
           Good morning, Admin.
         </h2>
         <p className="mt-1 text-sm text-admin-muted">
-          Here&apos;s how Silver Looms is doing today
+          Here&apos;s how {BRAND_NAME} is doing today
           {productCount !== undefined ? ` · ${productCount} products live` : ""}
           {apparelCount !== undefined && jewelleryCount !== undefined
             ? ` (${apparelCount} apparel · ${jewelleryCount} jewellery)`
