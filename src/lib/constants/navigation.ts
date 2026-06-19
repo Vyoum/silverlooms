@@ -7,6 +7,7 @@ export const mainNavLinks = [
 
 export const homeNavLinks = [
   { label: "All Products", href: "/kurtis" },
+  { label: "Jewellery", href: "/jewellery" },
   { label: "New In", href: "/kurtis?sort=new" },
   { label: "Collections", href: "/#shop-by-style" },
   { label: "About Us", href: "/#editorial" },

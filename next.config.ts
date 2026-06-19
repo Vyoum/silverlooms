@@ -10,6 +10,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/shop-jewellery",
+        destination: "/jewellery",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

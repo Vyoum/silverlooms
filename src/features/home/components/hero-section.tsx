@@ -35,11 +35,15 @@ export function HeroSection({ className }: { className?: string }) {
           Discover a curated selection of artisanal apparel and exquisite silver
           jewellery, crafted for the modern aesthete.
         </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-4">
+        <div className="relative z-20 mt-8 flex flex-wrap justify-center gap-4">
           <PillButton href="/kurtis" variant="primary">
             Shop Apparel
           </PillButton>
-          <PillButton href="/jewellery" variant="outline">
+          <PillButton
+            href="/jewellery"
+            variant="outline"
+            className="border-white/60 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
+          >
             Shop Jewellery
           </PillButton>
         </div>
