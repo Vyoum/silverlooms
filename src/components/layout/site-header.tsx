@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Heart, Search, ShoppingBag, User } from "lucide-react";
+import { Heart, Search, ShoppingBag } from "lucide-react";
+import { SignOutButton } from "@/features/auth/components/sign-out-button";
 import { mainNavLinks, homeNavLinks } from "@/lib/constants/navigation";
 import { useCart } from "@/features/cart/cart-provider";
 import { cn } from "@/lib/utils";
@@ -111,13 +112,7 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
           >
             <Search className="size-5" />
           </button>
-          <button
-            type="button"
-            aria-label="Account"
-            className={cn("hidden sm:block", isDark ? "text-cream-dark" : "text-ink")}
-          >
-            <User className="size-5" />
-          </button>
+          <SignOutButton isDark={isDark} />
           <button
             type="button"
             aria-label="Wishlist"

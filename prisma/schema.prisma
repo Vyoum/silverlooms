@@ -96,19 +96,21 @@ model CartItem {
 enum UserRole {
   CUSTOMER
   ADMIN
+  SUPER_ADMIN
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
-  name      String?
-  password  String?
-  role      UserRole   @default(CUSTOMER)
-  wishlists Wishlist[]
-  reviews   Review[]
-  orders    Order[]
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
+  id         String     @id @default(cuid())
+  supabaseId String?    @unique @map("supabase_id")
+  email      String     @unique
+  name       String?
+  password   String?
+  role       UserRole   @default(CUSTOMER)
+  wishlists  Wishlist[]
+  reviews    Review[]
+  orders     Order[]
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
 
   @@map("users")
 }

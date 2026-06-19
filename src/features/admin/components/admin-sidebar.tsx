@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   ShoppingBag,
   Store,
+  UserCog,
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -18,13 +19,32 @@ const iconMap = {
   "layout-dashboard": LayoutDashboard,
   "shopping-bag": ShoppingBag,
   users: Users,
+  "user-cog": UserCog,
   "file-text": FileText,
   store: Store,
   gem: Gem,
 };
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  userName: string;
+  userRoleLabel: string;
+  showUsersNav?: boolean;
+}
+
+export function AdminSidebar({
+  userName,
+  userRoleLabel,
+  showUsersNav = false,
+}: AdminSidebarProps) {
   const pathname = usePathname();
+  const initials = userName
+    .split("@")[0]
+    .slice(0, 2)
+    .toUpperCase();
+
+  const navItems = adminNavItems.filter(
+    (item) => !("superAdminOnly" in item && item.superAdminOnly) || showUsersNav,
+  );
 
   return (
     <aside className="flex h-full w-[260px] shrink-0 flex-col border-r border-admin-border bg-admin-surface">
@@ -38,7 +58,7 @@ export function AdminSidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 px-4">
-        {adminNavItems.map((item) => {
+        {navItems.map((item) => {
           const Icon = iconMap[item.icon];
           const isActive =
             item.href === "/admin"
@@ -66,11 +86,11 @@ export function AdminSidebar() {
       <div className="border-t border-admin-border p-6">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-full bg-admin-primary/15 font-serif text-sm text-admin-primary">
-            SL
+            {initials}
           </div>
-          <div>
-            <p className="text-[13px] font-medium text-admin-ink">Admin</p>
-            <p className="text-[11px] text-admin-muted">Brand Owner</p>
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-medium text-admin-ink">{userName}</p>
+            <p className="text-[11px] text-admin-muted">{userRoleLabel}</p>
           </div>
         </div>
       </div>

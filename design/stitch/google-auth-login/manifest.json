@@ -1,0 +1,24 @@
+{
+  "project": {
+    "title": "Google Auth Login Page",
+    "id": "12998673496651816360"
+  },
+  "screens": [
+    {
+      "title": "Login - SilverLooms (Luxury Ethnic Heritage)",
+      "id": "8408cb79cf20424e815f3596c8640ac5",
+      "deviceType": "DESKTOP",
+      "width": 2560,
+      "height": 2048,
+      "files": {
+        "screenshot": "login-silverlooms.png",
+        "html": "login-silverlooms.html"
+      },
+      "sourceUrls": {
+        "screenshot": "https://lh3.googleusercontent.com/aida/AP1WRLuSAIHpRvcBkBeFXNkuAyT0QZO0GkBPBQu3ViXUy4BxOG7BO_TdIZn4r5Lyjvb6d-Qnkjd53tzQH9c6ioyvAcAYVkqVS044TxTpAZmTepCYxm-xNLbwdfEPLCvEhItZWMUPSL1XLQwqNV83gUX10PwjIp8-GMaXJQH_Kdn5GxzCh5JpxZBuRRSUzm0sLTETh4VqdAha7Bskn8st0_NMbERWis41n7zX4wdViJU1TUjDGAHYgCmajSurEl71",
+        "html": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1NDliZmFiZWU2N2YwMjA3YWE5MmRkM2JkZDY2EgsSBxD4npSojQUYAZIBJAoKcHJvamVjdF9pZBIWQhQxMjk5ODY3MzQ5NjY1MTgxNjM2MA&filename=&opi=89354086"
+      }
+    }
+  ],
+  "fetchedAt": "2026-06-19"
+}

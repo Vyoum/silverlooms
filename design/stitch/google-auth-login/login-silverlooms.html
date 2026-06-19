@@ -1,0 +1,228 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SilverLooms | Login</title>
+<!-- Tailwind CSS with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: EB Garamond (Serif) & DM Sans (Sans) -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;family=EB+Garamond:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Shared Style Guidance & Theme Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#fbf9f5",
+                    "parchment-warm": "#F1EAD8",
+                    "primary-fixed-dim": "#c8c6c5",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#eae8e4",
+                    "evergreen-muted": "#536647",
+                    "on-surface": "#1b1c1a",
+                    "inverse-primary": "#c8c6c5",
+                    "on-tertiary-fixed": "#0f1f07",
+                    "inverse-on-surface": "#f2f0ed",
+                    "secondary-container": "#fdd897",
+                    "on-primary-container": "#858383",
+                    "tertiary-container": "#0f1f07",
+                    "onyx-deep": "#1A1A1A",
+                    "inverse-surface": "#30312e",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#dbdad6",
+                    "secondary-fixed-dim": "#e6c182",
+                    "tertiary-fixed": "#d3e9c2",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#755a25",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#b8cda7",
+                    "surface-variant": "#e4e2de",
+                    "tertiary": "#000000",
+                    "secondary-fixed": "#ffdea7",
+                    "on-primary-fixed-variant": "#474746",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#444748",
+                    "primary-container": "#1c1b1b",
+                    "surface-container": "#efeeea",
+                    "on-secondary-fixed": "#271900",
+                    "surface-bright": "#fbf9f5",
+                    "on-secondary-container": "#785c28",
+                    "surface-container-low": "#f5f3ef",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#5b430f",
+                    "surface-tint": "#5f5e5e",
+                    "background": "#fbf9f5",
+                    "primary": "#000000",
+                    "heritage-gold": "#C5A367",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed-variant": "#3a4c2f",
+                    "on-primary-fixed": "#1c1b1b",
+                    "outline": "#747878",
+                    "surface-container-highest": "#e4e2de",
+                    "outline-variant": "#c4c7c7",
+                    "on-background": "#1b1c1a",
+                    "primary-fixed": "#e5e2e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "section-gap": "120px",
+                    "unit": "4px",
+                    "container-max": "1280px",
+                    "margin-mobile": "20px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "link-md": ["DM Sans"],
+                    "headline-md": ["EB Garamond"],
+                    "label-caps": ["DM Sans"],
+                    "headline-lg": ["EB Garamond"],
+                    "display-lg-mobile": ["EB Garamond"],
+                    "display-lg": ["EB Garamond"],
+                    "body-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"]
+            },
+            "fontSize": {
+                    "link-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "500"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #fbf9f5;
+            -webkit-font-smoothing: antialiased;
+        }
+        input:focus {
+            outline: none;
+            border-bottom-color: #C5A367 !important;
+        }
+        
+        /* Floating label styles */
+        .peer:focus ~ label,
+        .peer:not(:placeholder-shown) ~ label {
+            transform: translateY(-1.5rem);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .peer:focus ~ label {
+            color: #C5A367;
+        }
+    </style>
+</head>
+<body class="text-on-surface selection:bg-heritage-gold/20 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="absolute w-full top-0 bg-transparent z-50 pointer-events-none">
+<div class="flex justify-between items-center w-full px-margin-desktop py-6 max-w-container-max mx-auto pointer-events-auto">
+
+
+<div class="flex items-center space-x-6 bg-surface/80 px-4 py-2 backdrop-blur-sm rounded-sm">
+<button class="cursor-pointer transition-opacity duration-200 active:opacity-70">
+
+</button>
+
+</div>
+</div>
+</header>
+<!-- Main Split Layout -->
+<main class="flex-grow flex flex-col md:flex-row h-full">
+<!-- Left: Atmospheric Image -->
+<div class="hidden md:block md:w-[55%] lg:w-[60%] relative h-full overflow-hidden">
+<img alt="High-end luxury editorial photography for a brand called SilverLooms." class="absolute inset-0 w-full h-full object-cover transition-transform duration-[3000ms] hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVZsnESh6TxilmjdX_OPa5mgXUhlSrGIwlYIWydzqpLMI5EGnBEsBYXRDtB1HAfCYNWADrf1ZLR1XJyod6irICDDTxvp5xdGxB9q-8rqjyqQsMQySaojWYVW2JNHkjpOdNwJKas6dyzgl_RZJz_SsWOLEysjgVPVWExDAVNWFq46ubMOLIsHvNsPyBBfuxF2p3B9R8hoQ9J6EAqLg6r-J4vsptd8BKfM4xhgqQdpGazaYj5LEkdGQ21QY6_kTGrhuqjxMOcftKA9u8">
+<div class="absolute inset-0 bg-black/10"></div>
+</div>
+<!-- Right: Login Form -->
+<div class="w-full md:w-[45%] lg:w-[40%] flex flex-col items-center justify-center p-margin-mobile md:p-16 h-full overflow-y-auto bg-onyx-deep"><div class="w-full max-w-[420px] transition-all duration-700 ease-out mt-auto" style="opacity: 1; transform: translateY(0px); transition: opacity 0.8s ease-out, transform 0.8s ease-out;">
+<!-- Branding/Heading -->
+<div class="mb-12">
+<h1 class="font-headline-lg text-[40px] md:text-[48px] leading-tight text-on-tertiary mb-4">The Heritage Awaits</h1>
+<p class="font-body-md text-body-md text-on-tertiary/80">Sign in to your SilverLooms account</p>
+</div>
+<!-- Social Login -->
+<button class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-transparent border border-on-tertiary/20 hover:border-heritage-gold transition-all duration-300 group">
+<svg class="opacity-80 group-hover:opacity-100 transition-opacity" fill="none" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.64 9.20455C17.64 8.56636 17.5827 7.95273 17.4764 7.36364H9V10.845H13.8436C13.635 11.97 13.0009 12.9232 12.0477 13.5614V15.8195H14.9564C16.6582 14.2527 17.64 11.9455 17.64 9.20455Z" fill="#ffffff"></path>
+<path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5614C11.2418 14.1014 10.2109 14.4205 9 14.4205C6.65591 14.4205 4.67182 12.8373 3.96409 10.71H0.957275V13.0418C2.43818 15.9832 5.48182 18 9 18Z" fill="#ffffff"></path>
+<path d="M3.96409 10.71C3.78409 10.17 3.68182 9.59318 3.68182 9C3.68182 8.40682 3.78409 7.83 3.96409 7.29V4.95818H0.957275C0.347727 6.17318 0 7.54773 0 9C0 10.4523 0.347727 11.8268 0.957275 13.0418L3.96409 10.71Z" fill="#ffffff"></path>
+<path d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.92545L15.0218 2.34409C13.4632 0.891818 11.4259 0 9 0C5.48182 0 2.43818 2.01682 0.957275 4.95818L3.96409 7.29C4.67182 5.16273 6.65591 3.57955 9 3.57955Z" fill="#ffffff"></path>
+</svg>
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-on-tertiary">Continue with Google</span>
+</button>
+<!-- Divider -->
+<div class="relative flex items-center py-10">
+<div class="flex-grow border-t border-on-tertiary/10"></div>
+<span class="flex-shrink mx-4 font-label-caps text-label-caps text-on-tertiary/40">OR</span>
+<div class="flex-grow border-t border-on-tertiary/10"></div>
+</div>
+<!-- Form -->
+<form class="space-y-10">
+<!-- Email -->
+<div class="relative pt-2">
+<input class="peer w-full bg-transparent border-t-0 border-x-0 border-b border-on-tertiary/20 px-0 py-2 font-body-md text-body-md text-on-tertiary transition-all focus:border-heritage-gold focus:ring-0 placeholder-transparent" id="email" name="email" placeholder="Email Address" type="email">
+<label class="absolute left-0 top-4 font-body-md text-body-md text-on-tertiary/60 transition-all duration-300 pointer-events-none" for="email">Email Address</label>
+</div>
+<!-- Password -->
+<div class="relative pt-2">
+<input class="peer w-full bg-transparent border-t-0 border-x-0 border-b border-on-tertiary/20 px-0 py-2 font-body-md text-body-md text-on-tertiary transition-all focus:border-heritage-gold focus:ring-0 placeholder-transparent" id="password" name="password" placeholder="Password" type="password">
+<label class="absolute left-0 top-4 font-body-md text-body-md text-on-tertiary/60 transition-all duration-300 pointer-events-none" for="password">Password</label>
+<div class="absolute right-0 top-4">
+<a class="font-label-caps text-[10px] text-heritage-gold hover:text-on-tertiary transition-colors tracking-wider uppercase" href="#">Forgot?</a>
+</div>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-surface text-onyx-deep font-label-caps text-[13px] uppercase tracking-[0.15em] hover:bg-heritage-gold transition-colors duration-500 active:scale-[0.98] transform py-6 mt-4" type="submit">
+                    Sign In
+                </button>
+</form>
+<!-- Secondary CTA -->
+<div class="mt-12 text-center pt-8 border-t border-on-tertiary/5">
+<p class="font-body-md text-body-md text-on-tertiary/80">
+                    New to SilverLooms?
+                    <a class="text-on-tertiary font-bold border-b border-on-tertiary/20 hover:border-heritage-gold transition-all ml-1" href="#">Create an account</a>
+</p>
+</div>
+</div>
+<!-- Mini Footer -->
+<div class="mt-auto pt-16 pb-4 w-full flex justify-center gap-6">
+<a class="font-label-caps text-[10px] text-on-tertiary/40 hover:text-on-tertiary uppercase tracking-widest transition-colors" href="#">Privacy</a>
+<a class="font-label-caps text-[10px] text-on-tertiary/40 hover:text-on-tertiary uppercase tracking-widest transition-colors" href="#">Terms</a>
+</div></div>
+</main>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Simple entrance reveal
+        const formContent = document.querySelector('main > div:last-child > div:first-child');
+        if (formContent) {
+            formContent.style.opacity = '0';
+            formContent.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                formContent.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                formContent.style.opacity = '1';
+                formContent.style.transform = 'translateY(0)';
+            }, 100);
+        }
+    });
+</script>
+
+
+</body></html>
