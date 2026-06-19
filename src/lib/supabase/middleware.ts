@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-import { isProtectedRoute } from "@/lib/auth/routes";
+import { isProtectedRoute, getPostLoginRedirect } from "@/lib/auth/routes";
 import { getSupabaseEnv } from "./env";
 
 export async function updateSession(request: NextRequest) {
@@ -43,7 +43,9 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && pathname === "/login") {
-    const redirectTo = request.nextUrl.searchParams.get("redirect") || "/";
+    const redirectTo = getPostLoginRedirect(
+      request.nextUrl.searchParams.get("redirect"),
+    );
     return NextResponse.redirect(new URL(redirectTo, request.url));
   }
 

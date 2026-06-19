@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { buildAuthCallbackUrl, getSiteUrl } from "@/lib/auth/site-url";
+import { getPostLoginRedirect } from "@/lib/auth/routes";
 import { syncUserFromSupabase } from "@/features/auth/services/user-sync";
 import { createClient } from "@/lib/supabase/server";
 
@@ -33,7 +34,7 @@ export async function signInWithEmailAction(
     await syncUserFromSupabase(data.user);
   }
 
-  redirect(redirectTo.startsWith("/") ? redirectTo : "/");
+  redirect(getPostLoginRedirect(redirectTo));
 }
 
 export async function signUpWithEmailAction(

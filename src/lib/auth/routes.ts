@@ -14,3 +14,14 @@ export function isAuthRoute(pathname: string) {
     (route) => pathname === route || pathname.startsWith(`${route}/`),
   );
 }
+
+/** Prevent redirect loops after sign-in (e.g. /login → /login) */
+export function getPostLoginRedirect(path: string | null | undefined) {
+  if (!path || !path.startsWith("/") || path.startsWith("//")) {
+    return "/";
+  }
+  if (isAuthRoute(path) || path === "/login") {
+    return "/";
+  }
+  return path;
+}

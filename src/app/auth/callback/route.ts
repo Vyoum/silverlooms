@@ -1,3 +1,4 @@
+import { getPostLoginRedirect } from "@/lib/auth/routes";
 import { getConfiguredSiteUrl } from "@/lib/auth/site-url";
 import { syncUserFromSupabase } from "@/features/auth/services/user-sync";
 import { createClient } from "@/lib/supabase/server";
@@ -7,8 +8,9 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const siteUrl = getConfiguredSiteUrl() ?? requestUrl.origin;
   const code = requestUrl.searchParams.get("code");
-  const redirectTo = requestUrl.searchParams.get("redirect") ?? "/";
-  const safeRedirect = redirectTo.startsWith("/") ? redirectTo : "/";
+  const safeRedirect = getPostLoginRedirect(
+    requestUrl.searchParams.get("redirect"),
+  );
   const authError = requestUrl.searchParams.get("error_description");
 
   if (authError) {
