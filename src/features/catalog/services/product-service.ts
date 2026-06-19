@@ -1,9 +1,10 @@
 import type { ProductBadge } from "@/lib/types/product";
 import type { Product } from "@/lib/types/product";
-import { getProductBySlug } from "@/lib/constants/products";
+import { getProductBySlug, jewelleryProducts, kurtisProducts } from "@/lib/constants/products";
 import { prisma } from "@/lib/db";
+import { isJewelleryCategory, slugify } from "../lib/category-utils";
 
-function mapDbProduct(product: {
+type DbProduct = {
   id: string;
   slug: string;
   name: string;
@@ -19,7 +20,9 @@ function mapDbProduct(product: {
   badge: ProductBadge | null;
   sizes: string[];
   colors: { hex: string; name: string | null }[];
-}): Product {
+};
+
+function mapDbProduct(product: DbProduct): Product {
   return {
     id: product.id,
     slug: product.slug,
@@ -42,11 +45,49 @@ function mapDbProduct(product: {
   };
 }
 
+const productInclude = { colors: true } as const;
+
+async function fetchAllProducts(): Promise<Product[]> {
+  try {
+    const dbProducts = await prisma.product.findMany({
+      include: productInclude,
+      orderBy: { createdAt: "desc" },
+    });
+    if (dbProducts.length > 0) {
+      return dbProducts.map(mapDbProduct);
+    }
+  } catch {
+    // fall through to static catalog
+  }
+  return [...kurtisProducts, ...jewelleryProducts];
+}
+
+export async function listProducts(): Promise<Product[]> {
+  return fetchAllProducts();
+}
+
+export async function listApparelProducts(): Promise<Product[]> {
+  const products = await fetchAllProducts();
+  return products.filter((p) => !isJewelleryCategory(p.category));
+}
+
+export async function listJewelleryProducts(): Promise<Product[]> {
+  const products = await fetchAllProducts();
+  return products.filter((p) => isJewelleryCategory(p.category));
+}
+
+export async function listNewArrivals(limit = 4): Promise<Product[]> {
+  const products = await fetchAllProducts();
+  return products
+    .filter((p) => p.badge === "NEW" || p.badge === "BESTSELLER")
+    .slice(0, limit);
+}
+
 export async function resolveProductBySlug(slug: string): Promise<Product | null> {
   try {
     const dbProduct = await prisma.product.findUnique({
       where: { slug },
-      include: { colors: true },
+      include: productInclude,
     });
 
     if (dbProduct) {
@@ -72,3 +113,67 @@ export async function resolveProductIdBySlug(slug: string): Promise<string | nul
 
   return getProductBySlug(slug)?.id ?? null;
 }
+
+export async function listRelatedProducts(
+  currentSlug: string,
+  limit = 4,
+): Promise<Product[]> {
+  const products = await fetchAllProducts();
+  return products.filter((p) => p.slug !== currentSlug).slice(0, limit);
+}
+
+export interface CreateProductData {
+  name: string;
+  slug: string;
+  categoryLabel: string;
+  collection?: string;
+  description?: string;
+  price: number;
+  originalPrice?: number;
+  discountPercent?: number;
+  imageUrl: string;
+  badge?: ProductBadge;
+  sizes: string[];
+  colors: { hex: string; name?: string }[];
+  stockQuantity: number;
+}
+
+export async function createProduct(data: CreateProductData) {
+  const inventorySizes = data.sizes.length > 0 ? data.sizes : ["ONE_SIZE"];
+
+  const product = await prisma.product.create({
+    data: {
+      slug: data.slug,
+      name: data.name,
+      categoryLabel: data.categoryLabel,
+      collection: data.collection,
+      description: data.description,
+      price: data.price,
+      originalPrice: data.originalPrice,
+      discountPercent: data.discountPercent,
+      imageUrl: data.imageUrl,
+      badge: data.badge,
+      sizes: data.sizes,
+      colors: {
+        create: data.colors.map((c) => ({ hex: c.hex, name: c.name })),
+      },
+    },
+    include: productInclude,
+  });
+
+  for (const size of inventorySizes) {
+    await prisma.inventory.create({
+      data: {
+        productId: product.id,
+        size,
+        sku: size === "ONE_SIZE" ? data.slug : `${data.slug}-${size.toLowerCase()}`,
+        quantity: data.stockQuantity,
+        lowStockThreshold: 5,
+      },
+    });
+  }
+
+  return mapDbProduct(product);
+}
+
+export { slugify };

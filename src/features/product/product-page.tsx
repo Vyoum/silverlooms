@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
-import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { Container, PageShell } from "@/components/layout/page-shell";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
-import { getProductBySlug } from "@/lib/constants/products";
+import { resolveProductBySlug } from "@/features/catalog/services/product-service";
+import { isJewelleryCategory } from "@/features/catalog/lib/category-utils";
 import { ProductDetails } from "./components/product-details";
 import { ProductGallery } from "./components/product-gallery";
 import { RelatedProducts } from "./components/related-products";
@@ -13,23 +13,31 @@ interface ProductPageProps {
   slug: string;
 }
 
-export function ProductPage({ slug }: ProductPageProps) {
-  const product = getProductBySlug(slug);
+export async function ProductPage({ slug }: ProductPageProps) {
+  const product = await resolveProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
+  const isJewellery = isJewelleryCategory(product.category);
+
   return (
     <PageShell>
-      <SiteHeader />
+      <SiteHeader variant={isJewellery ? "jewellery" : "default"} />
       <main>
         <Container className="py-8">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
-              { label: "Kurtis & Sets", href: "/kurtis" },
-              { label: product.category.split("·")[0]?.trim() ?? "Collection", href: "/kurtis" },
+              {
+                label: isJewellery ? "Jewellery" : "Kurtis & Sets",
+                href: isJewellery ? "/jewellery" : "/kurtis",
+              },
+              {
+                label: product.category.split("·")[0]?.trim() ?? "Collection",
+                href: isJewellery ? "/jewellery" : "/kurtis",
+              },
               { label: product.name },
             ]}
             className="mb-8"
@@ -38,7 +46,7 @@ export function ProductPage({ slug }: ProductPageProps) {
             <ProductGallery product={product} />
             <ProductDetails product={product} />
           </div>
-          <RelatedProducts currentProduct={product} />
+          <RelatedProducts currentSlug={product.slug} />
         </Container>
       </main>
       <SiteFooter />

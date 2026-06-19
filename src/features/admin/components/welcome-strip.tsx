@@ -1,6 +1,10 @@
 import { CalendarDays } from "lucide-react";
 
-export function WelcomeStrip() {
+interface WelcomeStripProps {
+  productCount?: number;
+}
+
+export function WelcomeStrip({ productCount }: WelcomeStripProps) {
   const today = new Intl.DateTimeFormat("en-IN", {
     day: "numeric",
     month: "short",
@@ -14,7 +18,8 @@ export function WelcomeStrip() {
           Good morning, Admin.
         </h2>
         <p className="mt-1 text-sm text-admin-muted">
-          Here&apos;s how Silver Looms is doing today.
+          Here&apos;s how Silver Looms is doing today
+          {productCount !== undefined ? ` · ${productCount} products live` : ""}.
         </p>
       </div>
       <div className="inline-flex items-center gap-2 rounded-full border border-admin-border bg-admin-canvas px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-admin-muted">

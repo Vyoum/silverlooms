@@ -1,9 +1,11 @@
 import { Container } from "@/components/layout/page-shell";
 import { ProductCard } from "@/components/shared/product-card";
 import { SectionHeading } from "@/components/shared/section-heading";
-import { homeNewArrivals } from "@/lib/constants/products";
+import { listNewArrivals } from "@/features/catalog/services/product-service";
 
-export function NewArrivalsSection() {
+export async function NewArrivalsSection() {
+  const products = await listNewArrivals(4);
+
   return (
     <section className="border-b border-border py-20">
       <Container>
@@ -13,7 +15,7 @@ export function NewArrivalsSection() {
           className="mb-12"
         />
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {homeNewArrivals.map((product) => (
+          {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

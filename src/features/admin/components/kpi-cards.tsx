@@ -1,27 +1,32 @@
 import {
   AlertCircle,
+  Box,
   Eye,
   IndianRupee,
   Package,
-  Palette,
   Sparkles,
   TrendingUp,
 } from "lucide-react";
-import { kpiMetrics } from "../lib/mock-data";
+import type { KpiMetric } from "../types";
 
 const iconMap = {
   "indian-rupee": IndianRupee,
   package: Package,
   sparkles: Sparkles,
-  palette: Palette,
+  palette: Sparkles,
+  box: Box,
   eye: Eye,
 };
 
-export function KpiCards() {
+interface KpiCardsProps {
+  metrics: KpiMetric[];
+}
+
+export function KpiCards({ metrics }: KpiCardsProps) {
   return (
     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-      {kpiMetrics.map((metric) => {
-        const Icon = iconMap[metric.icon as keyof typeof iconMap];
+      {metrics.map((metric) => {
+        const Icon = iconMap[metric.icon];
 
         return (
           <article
@@ -41,7 +46,7 @@ export function KpiCards() {
             <p className="mt-4 font-serif text-4xl font-medium text-admin-ink">
               {metric.value}
             </p>
-            {"progress" in metric && metric.progress !== undefined ? (
+            {metric.progress !== undefined ? (
               <div className="mt-4">
                 <div className="h-1.5 overflow-hidden rounded-full bg-admin-canvas">
                   <div
@@ -57,19 +62,23 @@ export function KpiCards() {
               <div className="mt-3 flex items-center gap-1.5 text-[11px]">
                 {metric.trend === "up" ? (
                   <TrendingUp className="size-3.5 text-admin-success" />
-                ) : (
+                ) : metric.trend === "alert" ? (
                   <AlertCircle className="size-3.5 text-admin-warning" />
+                ) : null}
+                {metric.change && (
+                  <span
+                    className={
+                      metric.trend === "up"
+                        ? "font-medium text-admin-success"
+                        : metric.trend === "alert"
+                          ? "font-medium text-admin-warning"
+                          : "text-admin-muted"
+                    }
+                  >
+                    {metric.change}
+                  </span>
                 )}
-                <span
-                  className={
-                    metric.trend === "up"
-                      ? "font-medium text-admin-success"
-                      : "font-medium text-admin-warning"
-                  }
-                >
-                  {metric.change}
-                </span>
-                {"changeLabel" in metric && metric.changeLabel && (
+                {metric.changeLabel && (
                   <span className="text-admin-muted">{metric.changeLabel}</span>
                 )}
               </div>

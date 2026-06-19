@@ -46,6 +46,10 @@ model Product {
   category        Category?     @relation(fields: [categoryId], references: [id])
   colors          ProductColor[]
   cartItems       CartItem[]
+  inventory       Inventory[]
+  wishlists       Wishlist[]
+  reviews         Review[]
+  orderItems      OrderItem[]
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
 
@@ -87,4 +91,130 @@ model CartItem {
 
   @@unique([cartId, productId, size, colorHex])
   @@map("cart_items")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String?
+  password  String?
+  role      UserRole   @default(CUSTOMER)
+  wishlists Wishlist[]
+  reviews   Review[]
+  orders    Order[]
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Inventory {
+  id                String   @id @default(cuid())
+  productId         String   @map("product_id")
+  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku               String?
+  size              String   @default("ONE_SIZE")
+  quantity          Int      @default(0)
+  reservedQuantity  Int      @default(0) @map("reserved_quantity")
+  lowStockThreshold Int      @default(5) @map("low_stock_threshold")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@unique([productId, size])
+  @@map("inventory")
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String   @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      String?
+  colorHex  String?  @map("color_hex")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, productId, size, colorHex])
+  @@map("wishlists")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique @map("order_number")
+  userId          String?       @map("user_id")
+  user            User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  customerEmail   String        @map("customer_email")
+  customerName    String        @map("customer_name")
+  customerPhone   String?       @map("customer_phone")
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING) @map("payment_status")
+  subtotal        Int
+  shippingCost    Int           @default(0) @map("shipping_cost")
+  discount        Int           @default(0)
+  total           Int
+  promoCode       String?       @map("promo_code")
+  shippingLine1   String?       @map("shipping_line1")
+  shippingLine2   String?       @map("shipping_line2")
+  shippingCity    String?       @map("shipping_city")
+  shippingState   String?       @map("shipping_state")
+  shippingPincode String?       @map("shipping_pincode")
+  items           OrderItem[]
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String   @map("order_id")
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String   @map("product_id")
+  product     Product  @relation(fields: [productId], references: [id])
+  productName String   @map("product_name")
+  productSlug String   @map("product_slug")
+  quantity    Int      @default(1)
+  unitPrice   Int      @map("unit_price")
+  size        String?
+  colorHex    String?  @map("color_hex")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("order_items")
+}
+
+model Review {
+  id               String   @id @default(cuid())
+  productId        String   @map("product_id")
+  product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId           String   @map("user_id")
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating           Int
+  title            String?
+  comment          String?
+  verifiedPurchase Boolean  @default(false) @map("verified_purchase")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, productId])
+  @@map("reviews")
 }

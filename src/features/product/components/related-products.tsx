@@ -1,16 +1,15 @@
 import { ProductCard } from "@/components/shared/product-card";
 import { SectionHeading } from "@/components/shared/section-heading";
-import { kurtisProducts } from "@/lib/constants/products";
-import type { Product } from "@/lib/types/product";
+import { listRelatedProducts } from "@/features/catalog/services/product-service";
 
 interface RelatedProductsProps {
-  currentProduct: Product;
+  currentSlug: string;
 }
 
-export function RelatedProducts({ currentProduct }: RelatedProductsProps) {
-  const related = kurtisProducts
-    .filter((p) => p.id !== currentProduct.id)
-    .slice(0, 4);
+export async function RelatedProducts({ currentSlug }: RelatedProductsProps) {
+  const related = await listRelatedProducts(currentSlug, 4);
+
+  if (related.length === 0) return null;
 
   return (
     <section className="border-t border-border py-16">

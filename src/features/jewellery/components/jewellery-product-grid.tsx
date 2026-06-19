@@ -1,9 +1,13 @@
 import { SlidersHorizontal } from "lucide-react";
-import { jewelleryProducts } from "@/lib/constants/products";
+import type { Product } from "@/lib/types/product";
 import { Container } from "@/components/layout/page-shell";
 import { JewelleryProductCard } from "./jewellery-product-card";
 
-export function JewelleryProductGrid() {
+interface JewelleryProductGridProps {
+  products: Product[];
+}
+
+export function JewelleryProductGrid({ products }: JewelleryProductGridProps) {
   return (
     <section className="bg-[#1a1816] py-20">
       <Container>
@@ -13,7 +17,7 @@ export function JewelleryProductGrid() {
           </h2>
           <div className="flex items-center gap-4">
             <span className="text-sm text-[rgba(228,226,221,0.7)]">
-              Showing 24 items
+              Showing {products.length} items
             </span>
             <button
               type="button"
@@ -25,11 +29,15 @@ export function JewelleryProductGrid() {
           </div>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {jewelleryProducts.map((product) => (
-            <JewelleryProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {products.length === 0 ? (
+          <p className="py-16 text-center text-cream-dark/70">No jewellery products yet.</p>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((product) => (
+              <JewelleryProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
 
         <div className="mt-12 flex justify-center pt-4">
           <button

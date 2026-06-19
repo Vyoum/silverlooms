@@ -1,14 +1,17 @@
-import { chartData, revenueSummary } from "../lib/mock-data";
+import type { RevenueSummaryItem } from "../types";
+
+interface RevenueChartProps {
+  chartData: number[];
+  revenueSummary: RevenueSummaryItem[];
+}
 
 function buildChartPath(values: number[], width: number, height: number) {
-  const max = Math.max(...values);
-  const min = Math.min(...values);
-  const range = max - min || 1;
+  const max = Math.max(...values, 1);
   const step = width / (values.length - 1);
 
   const points = values.map((value, index) => {
     const x = index * step;
-    const y = height - ((value - min) / range) * (height - 8) - 4;
+    const y = height - (value / max) * (height - 8) - 4;
     return `${x},${y}`;
   });
 
@@ -17,7 +20,7 @@ function buildChartPath(values: number[], width: number, height: number) {
   return { line, area };
 }
 
-export function RevenueChart() {
+export function RevenueChart({ chartData, revenueSummary }: RevenueChartProps) {
   const width = 560;
   const height = 180;
   const { line, area } = buildChartPath(chartData, width, height);
@@ -29,7 +32,7 @@ export function RevenueChart() {
           <h3 className="font-serif text-xl font-medium text-admin-ink">
             Revenue Overview
           </h3>
-          <p className="mt-1 text-sm text-admin-muted">Last 7 days</p>
+          <p className="mt-1 text-sm text-admin-muted">Last 7 days (paid orders)</p>
         </div>
         <div className="flex flex-wrap gap-6">
           {revenueSummary.map((item) => (
