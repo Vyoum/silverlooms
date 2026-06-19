@@ -35,6 +35,7 @@ export const jewelleryCategoryTabs = [
 export const jewelleryMaterialFilters = [
   "German Silver",
   "Anti-Tarnish",
+  "Kin Fog",
   "Oxidised Silver",
   "Temple Jewellery",
 ] as const;

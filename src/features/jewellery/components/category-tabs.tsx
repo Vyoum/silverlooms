@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 export function CategoryTabs() {
   return (
-    <section className="border-b border-white/10 bg-ink/95 backdrop-blur-sm">
+    <section className="border-b border-white/10 bg-ink/95 backdrop-blur-[4px]">
       <Container>
         <div className="flex gap-8 overflow-x-auto py-4">
           {jewelleryCategoryTabs.map((cat, i) => (
@@ -14,10 +14,10 @@ export function CategoryTabs() {
               key={cat}
               type="button"
               className={cn(
-                "shrink-0 pb-2 text-[11px] uppercase tracking-[1.1px] transition-colors",
+                "shrink-0 px-1 pb-[18px] pt-1.5 text-[11px] font-medium uppercase tracking-[1.1px] transition-colors",
                 i === 0
                   ? "border-b border-cream text-cream"
-                  : "text-muted-light hover:text-cream",
+                  : "text-[#c1c7cf] hover:text-cream",
               )}
             >
               {cat}

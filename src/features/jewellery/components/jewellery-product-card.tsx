@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, ShoppingBag } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/features/cart/cart-provider";
 import type { Product } from "@/lib/types/product";
 import { cn } from "@/lib/utils";
@@ -12,10 +11,16 @@ interface JewelleryProductCardProps {
   product: Product;
 }
 
+const badgeLabels: Record<string, string> = {
+  NEW: "New Arrival",
+  BESTSELLER: "Bestseller",
+  SALE: "Sale",
+};
+
 const badgeStyles: Record<string, string> = {
-  NEW: "bg-cream text-ink hover:bg-cream",
-  BESTSELLER: "bg-gold text-ink hover:bg-gold",
-  SALE: "bg-gold text-ink hover:bg-gold",
+  NEW: "bg-cream text-ink",
+  BESTSELLER: "bg-gold text-ink",
+  SALE: "bg-gold text-ink",
 };
 
 export function JewelleryProductCard({ product }: JewelleryProductCardProps) {
@@ -30,30 +35,30 @@ export function JewelleryProductCard({ product }: JewelleryProductCardProps) {
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-105"
+            className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-[1.03]"
             sizes="(max-width: 768px) 100vw, 25vw"
           />
         </Link>
         {product.badge && (
-          <Badge
+          <span
             className={cn(
-              "absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-normal uppercase tracking-wider",
+              "absolute left-3 top-3 rounded-full px-3 py-0.5 text-[10px] uppercase tracking-[0.5px]",
               badgeStyles[product.badge],
             )}
           >
-            {product.badge}
-          </Badge>
+            {badgeLabels[product.badge] ?? product.badge}
+          </span>
         )}
         <button
           type="button"
           aria-label="Add to wishlist"
-          className="absolute right-3 top-3 rounded-full border border-white/20 bg-ink/50 p-2 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
+          className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full border border-white/20 bg-ink/50 backdrop-blur-sm"
         >
-          <Heart className="size-4 text-cream" />
+          <Heart className="size-3.5 text-cream" />
         </button>
         <button
           type="button"
-          className="absolute inset-x-4 bottom-3 flex items-center justify-center gap-2 rounded-full bg-gold py-3 text-[13px] font-medium uppercase tracking-wider text-ink opacity-0 transition-opacity group-hover:opacity-100"
+          className="absolute inset-x-4 bottom-3 flex items-center justify-center gap-2 rounded-full bg-gold py-3 text-[13px] font-medium uppercase tracking-[0.65px] text-ink opacity-0 transition-opacity group-hover:opacity-100"
           onClick={() =>
             addToCart({
               slug: product.slug,
@@ -67,11 +72,11 @@ export function JewelleryProductCard({ product }: JewelleryProductCardProps) {
       </div>
       <div className="p-4">
         <Link href={href}>
-          <h3 className="font-serif text-xl text-cream transition-colors hover:text-gold">
+          <h3 className="font-serif text-xl leading-7 text-cream transition-colors hover:text-gold">
             {product.name}
           </h3>
         </Link>
-        <p className="mt-1 text-sm text-muted-light">
+        <p className="mt-1 text-sm text-[#c1c7cf]">
           ₹ {product.price.toLocaleString("en-IN")}
         </p>
       </div>

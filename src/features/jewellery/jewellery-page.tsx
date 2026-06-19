@@ -1,5 +1,4 @@
 import { SiteHeader } from "@/components/layout/site-header";
-import { CategoryTabs } from "./components/category-tabs";
 import { JewelleryFooter } from "./components/jewellery-footer";
 import { JewelleryHero } from "./components/jewellery-hero";
 import { JewelleryProductGrid } from "./components/jewellery-product-grid";
@@ -8,11 +7,10 @@ import { TrustSection } from "./components/trust-section";
 
 export function JewelleryPage() {
   return (
-    <div className="min-h-screen bg-ink">
+    <div className="min-h-screen bg-ink text-cream">
       <SiteHeader variant="jewellery" />
       <main>
         <JewelleryHero />
-        <CategoryTabs />
         <MaterialFilterStrip />
         <JewelleryProductGrid />
         <TrustSection />

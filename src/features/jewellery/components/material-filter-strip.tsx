@@ -10,7 +10,7 @@ export function MaterialFilterStrip() {
             <button
               key={filter}
               type="button"
-              className="shrink-0 rounded border border-white/10 px-4 py-4 text-[11px] font-medium uppercase tracking-[1.65px] text-cream transition-colors hover:border-white/30"
+              className="w-48 shrink-0 rounded border border-white/10 px-[17px] py-[17px] text-left text-[11px] font-medium uppercase tracking-[1.65px] text-cream transition-colors hover:border-white/30"
             >
               {filter}
             </button>

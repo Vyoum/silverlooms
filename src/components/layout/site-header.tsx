@@ -23,7 +23,7 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
       className={cn(
         "sticky top-0 z-50",
         isDark
-          ? "border-b border-white/10 bg-ink/90 backdrop-blur-md"
+          ? "border-b border-white/10 bg-ink/90 backdrop-blur-[6px]"
           : "glass-nav",
         className,
       )}
@@ -91,11 +91,13 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
             <Link
               href="/"
               className={cn(
-                "absolute left-1/2 -translate-x-1/2 font-serif text-2xl font-light tracking-[2px] md:text-[28px]",
-                isDark ? "text-cream" : "text-ink",
+                "absolute left-1/2 -translate-x-1/2 font-serif font-light tracking-[1.26px]",
+                isDark
+                  ? "text-[28px] text-cream md:text-[42px] md:leading-[50.4px]"
+                  : "text-2xl tracking-[2px] text-ink md:text-[28px]",
               )}
             >
-              SILVER LOOMS
+              {isDark ? "Silver Looms" : "SILVER LOOMS"}
             </Link>
             <div className="hidden w-[387px] md:block" />
           </>

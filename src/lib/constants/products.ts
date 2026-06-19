@@ -107,7 +107,7 @@ export const jewelleryProducts: Product[] = [
   {
     id: "j2",
     slug: "midnight-kari-earrings",
-    name: "Midnight Kari Drop Earrings",
+    name: "Devi Drop Earrings",
     category: "EARRINGS · ANTI-TARNISH",
     price: 1450,
     rating: 4.5,
