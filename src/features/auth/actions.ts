@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { buildAuthCallbackUrl, getSiteUrl } from "@/lib/auth/site-url";
-import { getPostLoginRedirect } from "@/lib/auth/routes";
+import { ACCOUNT_ROUTE, getPostLoginRedirect } from "@/lib/auth/routes";
 import { syncUserFromSupabase } from "@/features/auth/services/user-sync";
 import { createClient } from "@/lib/supabase/server";
 
@@ -17,7 +17,7 @@ export async function signInWithEmailAction(
 ): Promise<AuthActionResult> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const redirectTo = String(formData.get("redirect") ?? "/");
+  const redirectTo = String(formData.get("redirect") ?? ACCOUNT_ROUTE);
 
   if (!email || !password) {
     return { success: false, error: "Email and password are required." };
@@ -31,7 +31,11 @@ export async function signInWithEmailAction(
   }
 
   if (data.user) {
-    await syncUserFromSupabase(data.user);
+    try {
+      await syncUserFromSupabase(data.user);
+    } catch (syncError) {
+      console.error("[auth] Email sign-in user sync failed:", syncError);
+    }
   }
 
   redirect(getPostLoginRedirect(redirectTo));
@@ -43,7 +47,7 @@ export async function signUpWithEmailAction(
 ): Promise<AuthActionResult> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const redirectTo = String(formData.get("redirect") ?? "/");
+  const redirectTo = String(formData.get("redirect") ?? ACCOUNT_ROUTE);
 
   if (!email || !password) {
     return { success: false, error: "Email and password are required." };
@@ -74,7 +78,7 @@ export async function signUpWithEmailAction(
 }
 
 export async function signInWithGoogleAction(formData: FormData) {
-  const redirectTo = String(formData.get("redirect") ?? "/");
+  const redirectTo = String(formData.get("redirect") ?? ACCOUNT_ROUTE);
   const supabase = await createClient();
   const siteUrl = await getSiteUrl();
   const safeRedirect = redirectTo.startsWith("/") ? redirectTo : "/";
@@ -101,4 +105,33 @@ export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/login");
+}
+
+export async function ensureUserSyncedAction(): Promise<{
+  ok: boolean;
+  error?: string;
+}> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error || !user) {
+      return { ok: false, error: error?.message ?? "Not authenticated" };
+    }
+
+    const synced = await syncUserFromSupabase(user);
+    if (!synced) {
+      return { ok: false, error: "Could not resolve user email for sync." };
+    }
+
+    return { ok: true };
+  } catch (syncError) {
+    const message =
+      syncError instanceof Error ? syncError.message : "User sync failed";
+    console.error("[auth] ensureUserSyncedAction failed:", syncError);
+    return { ok: false, error: message };
+  }
 }

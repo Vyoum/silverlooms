@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { User } from "lucide-react";
-import { signOutAction } from "@/features/auth/actions";
 import { createClient } from "@/lib/supabase/client";
+import { ACCOUNT_ROUTE } from "@/lib/auth/routes";
 import { isAuthConfigured } from "@/lib/supabase/env";
 import { cn } from "@/lib/utils";
 
@@ -53,24 +53,30 @@ export function AccountNavButton({ isDark }: AccountNavButtonProps) {
   }
 
   if (loggedIn) {
+    const isAccountPage = pathname === ACCOUNT_ROUTE;
+
     return (
-      <form action={signOutAction}>
-        <button
-          type="submit"
-          aria-label="Sign out"
-          title="Sign out"
-          className={iconClass}
-        >
-          <User className="size-5" />
-        </button>
-      </form>
+      <Link
+        href={ACCOUNT_ROUTE}
+        aria-label="My account"
+        title="My account"
+        className={cn(
+          iconClass,
+          isAccountPage &&
+            "border-b border-heritage-gold pb-0.5 text-heritage-gold",
+        )}
+      >
+        <User className="size-5" />
+      </Link>
     );
   }
 
   const loginHref =
     pathname === "/login"
       ? "/login"
-      : `/login?redirect=${encodeURIComponent(pathname)}`;
+      : pathname === ACCOUNT_ROUTE
+        ? "/login"
+        : `/login?redirect=${encodeURIComponent(pathname)}`;
 
   return (
     <Link

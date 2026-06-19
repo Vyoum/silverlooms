@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, EB_Garamond } from "next/font/google";
+import { AuthSessionSync } from "@/features/auth/components/auth-session-sync";
 import { AppProviders } from "@/components/providers/app-providers";
 import "./globals.css";
 
@@ -33,6 +34,7 @@ export default function RootLayout({
       className={`${dmSans.variable} ${ebGaramond.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        <AuthSessionSync />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

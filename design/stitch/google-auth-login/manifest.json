@@ -5,6 +5,21 @@
   },
   "screens": [
     {
+      "title": "Profile Dashboard - SilverLooms",
+      "id": "1aaa9716dc8b403b8a501e81dad247e7",
+      "deviceType": "DESKTOP",
+      "width": 2560,
+      "height": 4690,
+      "files": {
+        "screenshot": "profile-dashboard-silverlooms.png",
+        "html": "profile-dashboard-silverlooms.html"
+      },
+      "sourceUrls": {
+        "screenshot": "https://lh3.googleusercontent.com/aida/AP1WRLuci9Pd5H0eg4iTI9hH1Tas7rGj8-bHYwlNNAkHQ6RYOdHiZaVkQh58JUHXmE1-oCiFwsnqRZpQBHHu0mhVwAV9Tg-Td7dXiUlqHfQXUf3WXr9Oi_dActdftzt3WHF46oh6omVyCJOvp26R4Giq4yHntH7GsYyQz-12F2GzAYM6rfsr8lVySE2aqD_hXHG1uMPmj_dnTO1r04aVy45LkJ1kcq0dkanj8PTvR8TsrG4GpRw_W_0VRdyhqZpq",
+        "html": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2E2NzNkNzVjZjgxOTQyMzhiNzNkMmI5ZWFjODk2MDk3EgsSBxD4npSojQUYAZIBJAoKcHJvamVjdF9pZBIWQhQxMjk5ODY3MzQ5NjY1MTgxNjM2MA&filename=&opi=89354086"
+      }
+    },
+    {
       "title": "Login - SilverLooms (Luxury Ethnic Heritage)",
       "id": "8408cb79cf20424e815f3596c8640ac5",
       "deviceType": "DESKTOP",

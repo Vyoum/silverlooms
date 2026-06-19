@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SilverLooms - The Curated Heritage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;family=EB+Garamond:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#0f1f07",
+                        "secondary-container": "#fdd897",
+                        "on-tertiary-fixed": "#0f1f07",
+                        "primary-fixed": "#e5e2e1",
+                        "on-surface-variant": "#444748",
+                        "inverse-on-surface": "#f2f0ed",
+                        "on-secondary-fixed": "#271900",
+                        "inverse-surface": "#30312e",
+                        "primary-container": "#1c1b1b",
+                        "heritage-gold": "#C5A367",
+                        "surface-bright": "#fbf9f5",
+                        "inverse-primary": "#c8c6c5",
+                        "surface-container-highest": "#e4e2de",
+                        "parchment-warm": "#F1EAD8",
+                        "on-primary-fixed-variant": "#474746",
+                        "onyx-deep": "#1A1A1A",
+                        "evergreen-muted": "#536647",
+                        "on-tertiary-fixed-variant": "#3a4c2f",
+                        "on-surface": "#1b1c1a",
+                        "surface-variant": "#e4e2de",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1b1c1a",
+                        "surface": "#fbf9f5",
+                        "outline-variant": "#c4c7c7",
+                        "surface-container-high": "#eae8e4",
+                        "on-primary-fixed": "#1c1b1b",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#000000",
+                        "primary": "#000000",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-secondary-container": "#785c28",
+                        "surface-dim": "#dbdad6",
+                        "on-tertiary-container": "#768a68",
+                        "on-secondary": "#ffffff",
+                        "background": "#fbf9f5",
+                        "secondary-fixed": "#ffdea7",
+                        "on-secondary-fixed-variant": "#5b430f",
+                        "secondary": "#755a25",
+                        "surface-container": "#efeeea",
+                        "surface-tint": "#5f5e5e",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#d3e9c2",
+                        "surface-container-low": "#f5f3ef",
+                        "secondary-fixed-dim": "#e6c182",
+                        "outline": "#747878",
+                        "on-primary-container": "#858383",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#b8cda7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "container-max": "1280px",
+                        "unit": "4px",
+                        "margin-mobile": "20px",
+                        "section-gap": "120px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["EB Garamond"],
+                        "link-md": ["DM Sans"],
+                        "headline-md": ["EB Garamond"],
+                        "label-caps": ["DM Sans"],
+                        "headline-lg": ["EB Garamond"],
+                        "body-lg": ["DM Sans"],
+                        "display-lg-mobile": ["EB Garamond"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "link-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="antialiased font-body-md text-body-md">
+<!-- TopNavBar -->
+<header class="bg-background dark:bg-onyx-deep text-primary dark:text-primary-fixed docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-8 max-w-container-max mx-auto">
+<!-- Mobile Menu Icon -->
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+<!-- Navigation Links (Web) -->
+<nav class="hidden md:flex gap-8">
+<a class="font-link-md text-link-md uppercase tracking-widest text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-primary transition-colors cursor-pointer duration-300 ease-in-out hover:opacity-70" href="#">Collections</a>
+<a class="font-link-md text-link-md uppercase tracking-widest text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-primary transition-colors cursor-pointer duration-300 ease-in-out hover:opacity-70" href="#">Bespoke</a>
+<a class="font-link-md text-link-md uppercase tracking-widest text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-primary transition-colors cursor-pointer duration-300 ease-in-out hover:opacity-70" href="#">Heritage</a>
+<a class="font-link-md text-link-md uppercase tracking-widest text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-primary transition-colors cursor-pointer duration-300 ease-in-out hover:opacity-70" href="#">Journal</a>
+</nav>
+<!-- Brand Logo -->
+<div class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg tracking-tighter text-primary dark:text-heritage-gold flex-shrink-0 text-center">
+                SILVERLOOMS
+            </div>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-6">
+<!-- Highlight 'person' icon as active since this is a profile page -->
+<button class="cursor-pointer transition-all duration-300 ease-in-out hover:opacity-70 text-heritage-gold border-b border-heritage-gold pb-1">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</button>
+<button class="cursor-pointer transition-all duration-300 ease-in-out hover:opacity-70 text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">shopping_bag</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16">
+<!-- Hero Header -->
+<div class="mb-section-gap text-center md:text-left">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg mb-4">The Curated Heritage</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">A sanctuary for your personal collection and bespoke journeys.</p>
+</div>
+<div class="flex flex-col md:flex-row gap-gutter md:gap-16">
+<!-- Side Navigation -->
+<aside class="w-full md:w-64 flex-shrink-0 mb-12 md:mb-0">
+<nav class="flex flex-col space-y-6">
+<a class="font-label-caps text-label-caps uppercase text-heritage-gold flex items-center gap-4 group" href="#">
+<span class="w-8 h-[1px] bg-heritage-gold block"></span>
+                        Order History
+                    </a>
+<a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors flex items-center gap-4 group" href="#">
+<span class="w-4 h-[1px] bg-outline-variant group-hover:bg-primary transition-colors block"></span>
+                        Bespoke Requests
+                    </a>
+<a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors flex items-center gap-4 group" href="#">
+<span class="w-4 h-[1px] bg-outline-variant group-hover:bg-primary transition-colors block"></span>
+                        Saved Pieces
+                    </a>
+<a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors flex items-center gap-4 group" href="#">
+<span class="w-4 h-[1px] bg-outline-variant group-hover:bg-primary transition-colors block"></span>
+                        Personal Details
+                    </a>
+<a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors flex items-center gap-4 group" href="#">
+<span class="w-4 h-[1px] bg-outline-variant group-hover:bg-primary transition-colors block"></span>
+                        Addresses
+                    </a>
+</nav>
+</aside>
+<!-- Dashboard Content -->
+<div class="flex-grow">
+<div class="mb-16">
+<h2 class="font-headline-lg text-headline-lg mb-2">Welcome back, Eleanor</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your collection and track your recent acquisitions below.</p>
+</div>
+<!-- Recent Orders List -->
+<section class="mb-section-gap">
+<div class="flex justify-between items-end border-b border-onyx-deep/10 pb-4 mb-8">
+<h3 class="font-headline-md text-headline-md">Recent Orders</h3>
+<a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors" href="#">View All</a>
+</div>
+<div class="space-y-8">
+<!-- Order Item 1 -->
+<div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center group">
+<div class="w-full sm:w-48 aspect-[3/4] bg-surface-container overflow-hidden">
+<img alt="Silver Heirloom Necklace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out" data-alt="A close-up of a silver heirloom necklace on textured silk fabric, warm sunlight, minimal luxury aesthetic" src="https://lh3.googleusercontent.com/aida/AP1WRLuVE1jc18CeNRMpAygRKZMGPNS7C3ndNZJEkFbiZUGZIWGpAOreInp61uAzeqGAR9iKXoxgKqq_hc-KsOGSU1GhQViQEGd3Bg2YLySlDVeKtd1LCNiefLwtNb_1OB7lCechZuYUoC7TyOBzF5fB1IYfYslWtRFmEF5uyf-W6wBA7Ot7bh3QST59_75cy9wpWD5F1Qs4R_qDGlOEsJamnJnoGa5L7O-XAGL2lPtMIz_Ix4EyA6MxwwYBPQ"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-2">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Order #SL-8924</p>
+<h4 class="font-headline-md text-headline-md mb-2">The Crescent Heirloom Choker</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Sterling Silver, Hand-hammered detailing.</p>
+</div>
+<div class="text-right">
+<span class="inline-block px-3 py-1 border border-evergreen-muted text-evergreen-muted font-label-caps text-label-caps uppercase tracking-wider mb-2">Delivered</span>
+<p class="font-body-md text-body-md text-on-surface-variant">Oct 12, 2023</p>
+</div>
+</div>
+<div class="mt-6">
+<button class="font-label-caps text-label-caps uppercase text-primary border-b border-primary pb-1 hover:text-heritage-gold hover:border-heritage-gold transition-colors">Track Authenticity</button>
+</div>
+</div>
+</div>
+<div class="w-full h-[1px] bg-onyx-deep/5"></div>
+<!-- Order Item 2 (Processing) -->
+<div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center group opacity-80 hover:opacity-100 transition-opacity">
+<div class="w-full sm:w-48 aspect-[3/4] bg-parchment-warm overflow-hidden flex items-center justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-center px-4">Bespoke<br/>Commission</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-2">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Commission #BSPK-102</p>
+<h4 class="font-headline-md text-headline-md mb-2">Engraved Signet Ring</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">White Gold, Custom Crest Engraving.</p>
+</div>
+<div class="text-right">
+<span class="inline-block px-3 py-1 border border-heritage-gold text-heritage-gold font-label-caps text-label-caps uppercase tracking-wider mb-2">In Studio</span>
+<p class="font-body-md text-body-md text-on-surface-variant">Est. Nov 05</p>
+</div>
+</div>
+<div class="mt-6">
+<button class="font-label-caps text-label-caps uppercase text-primary border-b border-primary pb-1 hover:text-heritage-gold hover:border-heritage-gold transition-colors">View Artisan Updates</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Section -->
+<section class="bg-parchment-warm -mx-margin-mobile px-margin-mobile py-16 md:mx-0 md:p-16 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row gap-12 items-center">
+<div class="w-full lg:w-1/2">
+<img alt="Bespoke Inspiration" class="w-full h-auto aspect-[4/5] object-cover shadow-sm" data-alt="A model wearing an intricate silver jacket and heavy traditional silver necklaces, standing near tall arched windows in a sunlit concrete space, editorial fashion photography" src="https://lh3.googleusercontent.com/aida/AP1WRLuVa7n-bJNYMonhrm5zp_REuOxsJGFJiadO8aJ6Db0Fq45Cn9qBW0_yH6vzQPpH5MZO7rSg3bvr5vRpvWzulTl7A3E8EUZqy2dNxDwGJN6DUuYUCa44iI-bMc7BblO6aWmmfgJReeGLOIuyJ_1I8XPJo_XPuceW8fOQUb84SqA0SXKqgxSUj7ENm6yGwKDQdTpmn5GyBZogflOXu5tkr1mtkCLcqyjjTw5Ur4d861kUXRZx9jx1BgaXTW7a"/>
+</div>
+<div class="w-full lg:w-1/2 space-y-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Bespoke Inspiration</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Elevate your personal narrative with pieces crafted exclusively for you. Our artisans are ready to translate your heritage into silver.</p>
+<button class="bg-onyx-deep text-on-primary font-label-caps text-label-caps uppercase px-8 py-4 tracking-widest hover:bg-heritage-gold transition-colors duration-300">Start a Commission</button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container dark:bg-tertiary-container w-full border-t border-onyx-deep/10 dark:border-white/10 mt-section-gap">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-section-gap max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md text-primary dark:text-heritage-gold mb-8 md:mb-0 text-center md:text-left">
+                SILVERLOOMS
+            </div>
+<nav class="flex flex-wrap justify-center md:justify-end gap-6 md:gap-8 mb-8 md:mb-0">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-heritage-gold transition-colors duration-200" href="#">Sustainability</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-heritage-gold transition-colors duration-200" href="#">Shipping &amp; Returns</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-heritage-gold transition-colors duration-200" href="#">Contact Us</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-heritage-gold transition-colors duration-200" href="#">Privacy Policy</a>
+</nav>
+<div class="font-body-md text-body-md text-on-surface-variant text-center md:text-right mt-8 md:mt-0 w-full md:w-auto">
+                © 2024 SILVERLOOMS. ALL RIGHTS RESERVED.
+            </div>
+</div>
+</footer>
+</body></html>

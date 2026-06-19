@@ -1,6 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-import { isProtectedRoute, getPostLoginRedirect } from "@/lib/auth/routes";
+import {
+  isProtectedRoute,
+  getPostLoginRedirect,
+} from "@/lib/auth/routes";
 import { getSupabaseEnv } from "./env";
 
 export async function updateSession(request: NextRequest) {
