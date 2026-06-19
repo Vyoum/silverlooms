@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { isJewelleryCategory } from "@/features/catalog/lib/category-utils";
 import type { DashboardData, KpiMetric } from "../types";
 
 function formatCurrency(amount: number): string {
@@ -59,6 +60,7 @@ export async function getDashboardData(): Promise<DashboardData> {
     recentOrders,
     lowStockRows,
     productCount,
+    allProducts,
     dailyRevenue,
     paidOrderCount,
   ] = await Promise.all([
@@ -109,6 +111,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       orderBy: { quantity: "asc" },
     }),
     prisma.product.count(),
+    prisma.product.findMany({ select: { categoryLabel: true } }),
     prisma.order.findMany({
       where: {
         createdAt: { gte: sevenDaysAgo },
@@ -158,6 +161,11 @@ export async function getDashboardData(): Promise<DashboardData> {
   const maxChart = Math.max(...chartData, 1);
   const normalizedChart = chartData.map((v) => Math.round((v / maxChart) * 100));
 
+  const jewelleryCount = allProducts.filter((p) =>
+    isJewelleryCategory(p.categoryLabel),
+  ).length;
+  const apparelCount = productCount - jewelleryCount;
+
   const kpis: KpiMetric[] = [
     {
       label: "Revenue Today",
@@ -185,12 +193,20 @@ export async function getDashboardData(): Promise<DashboardData> {
       icon: "sparkles",
     },
     {
-      label: "Products in Store",
-      value: String(productCount),
-      change: "Live on site",
+      label: "Apparel Products",
+      value: String(apparelCount),
+      change: "On /kurtis",
+      trend: "up",
+      accent: "#5B7A5E",
+      icon: "box",
+    },
+    {
+      label: "Jewellery Products",
+      value: String(jewelleryCount),
+      change: "On /jewellery",
       trend: "up",
       accent: "#6B5B95",
-      icon: "box",
+      icon: "gem",
     },
     {
       label: "Revenue This Month",
@@ -237,6 +253,8 @@ export async function getDashboardData(): Promise<DashboardData> {
       urgent: row.quantity === 0,
     })),
     productCount,
+    apparelCount,
+    jewelleryCount,
   };
 }
 
@@ -253,6 +271,9 @@ export async function listAdminProducts() {
     slug: p.slug,
     name: p.name,
     categoryLabel: p.categoryLabel,
+    productType: (isJewelleryCategory(p.categoryLabel)
+      ? "jewellery"
+      : "apparel") as "apparel" | "jewellery",
     price: p.price,
     stock: p.inventory.reduce((sum, i) => sum + i.quantity, 0),
     createdAt: p.createdAt.toLocaleDateString("en-IN"),

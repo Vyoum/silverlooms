@@ -12,7 +12,11 @@ export async function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <WelcomeStrip productCount={data.productCount} />
+      <WelcomeStrip
+        productCount={data.productCount}
+        apparelCount={data.apparelCount}
+        jewelleryCount={data.jewelleryCount}
+      />
       <KpiCards metrics={data.kpis} />
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">

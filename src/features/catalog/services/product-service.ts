@@ -131,6 +131,8 @@ export interface CreateProductData {
   price: number;
   originalPrice?: number;
   discountPercent?: number;
+  rating?: number;
+  reviewCount?: number;
   imageUrl: string;
   badge?: ProductBadge;
   sizes: string[];
@@ -151,6 +153,8 @@ export async function createProduct(data: CreateProductData) {
       price: data.price,
       originalPrice: data.originalPrice,
       discountPercent: data.discountPercent,
+      rating: data.rating ?? 4.5,
+      reviewCount: data.reviewCount ?? 0,
       imageUrl: data.imageUrl,
       badge: data.badge,
       sizes: data.sizes,

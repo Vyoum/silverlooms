@@ -1,7 +1,14 @@
 import { config } from "dotenv";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 config({ path: ".env.local" });
+
+// DIRECT_URL is for local migrations (Supabase session pooler, port 5432).
+// On Vercel/CI only DATABASE_URL is required — fall back so `prisma generate` succeeds at build time.
+const datasourceUrl =
+  process.env.DIRECT_URL ??
+  process.env.DATABASE_URL ??
+  "postgresql://postgres:postgres@localhost:5432/postgres";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -9,7 +16,6 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    // Direct connection for migrations / CLI (Session pooler port 5432)
-    url: env("DIRECT_URL"),
+    url: datasourceUrl,
   },
 });

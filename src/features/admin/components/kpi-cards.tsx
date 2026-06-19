@@ -2,6 +2,7 @@ import {
   AlertCircle,
   Box,
   Eye,
+  Gem,
   IndianRupee,
   Package,
   Sparkles,
@@ -16,6 +17,7 @@ const iconMap = {
   palette: Sparkles,
   box: Box,
   eye: Eye,
+  gem: Gem,
 };
 
 interface KpiCardsProps {
@@ -24,7 +26,7 @@ interface KpiCardsProps {
 
 export function KpiCards({ metrics }: KpiCardsProps) {
   return (
-    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {metrics.map((metric) => {
         const Icon = iconMap[metric.icon];
 

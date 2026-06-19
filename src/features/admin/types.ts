@@ -9,7 +9,7 @@ export interface KpiMetric {
   progress?: number;
   progressLabel?: string;
   accent: string;
-  icon: "indian-rupee" | "package" | "sparkles" | "palette" | "eye" | "box";
+  icon: "indian-rupee" | "package" | "sparkles" | "palette" | "eye" | "box" | "gem";
 }
 
 export interface RevenueSummaryItem {
@@ -47,6 +47,8 @@ export interface DashboardData {
   pendingOrders: PendingOrderRow[];
   lowStockItems: LowStockItem[];
   productCount: number;
+  apparelCount: number;
+  jewelleryCount: number;
 }
 
 export interface CreateProductInput {
@@ -70,6 +72,7 @@ export interface AdminProductRow {
   slug: string;
   name: string;
   categoryLabel: string;
+  productType: "apparel" | "jewellery";
   price: number;
   stock: number;
   createdAt: string;

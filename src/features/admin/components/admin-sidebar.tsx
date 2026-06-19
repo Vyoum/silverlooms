@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   FileText,
+  Gem,
   LayoutDashboard,
   ShoppingBag,
   Store,
@@ -18,6 +19,7 @@ const iconMap = {
   users: Users,
   "file-text": FileText,
   store: Store,
+  gem: Gem,
 };
 
 export function AdminSidebar() {
