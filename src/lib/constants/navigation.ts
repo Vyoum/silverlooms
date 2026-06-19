@@ -23,13 +23,24 @@ export const categoryMarquee = [
   "GERMAN SILVER",
 ] as const;
 
-export const jewellerySubcategories = [
-  "Necklaces",
+export const jewelleryCategoryTabs = [
+  "All Jewellery",
+  "Necklace Sets",
   "Earrings",
+  "Bangles & Kadas",
   "Rings",
-  "Bracelets",
-  "Maang Tikka",
+  "Pendants",
 ] as const;
+
+export const jewelleryMaterialFilters = [
+  "German Silver",
+  "Anti-Tarnish",
+  "Oxidised Silver",
+  "Temple Jewellery",
+] as const;
+
+/** @deprecated Use jewelleryCategoryTabs */
+export const jewellerySubcategories = jewelleryCategoryTabs;
 
 export const footerLinks = {
   shop: [

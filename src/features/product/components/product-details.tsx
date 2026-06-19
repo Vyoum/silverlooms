@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { StarRating } from "@/components/shared/star-rating";
 import { AddToBagButton } from "@/components/shared/add-to-bag-button";
+import { SizeGuide, SizeGuideTrigger } from "@/components/shared/size-guide";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types/product";
 
@@ -17,6 +18,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedColor, setSelectedColor] = useState(
     product.colors[0]?.hex ?? undefined,
   );
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
 
   return (
     <div className="w-full lg:w-[45%] lg:pl-12">
@@ -58,7 +60,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
       {sizes.length > 0 && (
         <div className="mt-8">
-          <p className="mb-3 text-sm font-medium text-ink">Select Size</p>
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <p className="text-sm font-medium text-ink">Select Size</p>
+            <SizeGuideTrigger onClick={() => setSizeGuideOpen(true)} />
+          </div>
           <div className="flex flex-wrap gap-2">
             {sizes.map((size) => (
               <button
@@ -76,6 +81,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </button>
             ))}
           </div>
+          <SizeGuide
+            open={sizeGuideOpen}
+            onOpenChange={setSizeGuideOpen}
+            highlightSize={selectedSize}
+          />
         </div>
       )}
 

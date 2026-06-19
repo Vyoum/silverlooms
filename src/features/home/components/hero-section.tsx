@@ -19,7 +19,7 @@ export function HeroSection({ className }: { className?: string }) {
         className="object-cover"
         sizes="100vw"
       />
-      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
       <Container className="relative z-10 flex flex-col items-center py-24 text-center">
         <span className="mb-6 rounded-full border border-border bg-cream/80 px-4 py-2 text-[11px] font-medium uppercase tracking-[1.1px] backdrop-blur-sm">
           The Heritage Collection

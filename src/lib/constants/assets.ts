@@ -5,7 +5,7 @@ export const assets = {
     kurtis:
       "https://www.figma.com/api/mcp/asset/c6e91cf2-2e7e-4c48-9e1d-0353bd909776",
     jewellery:
-      "https://www.figma.com/api/mcp/asset/59df045b-70ef-463d-a894-3fe820feb660",
+      "https://www.figma.com/api/mcp/asset/51ed1229-165b-4278-a655-7e26fe9eca6b",
   },
   fabrics: {
     cotton:
@@ -47,6 +47,12 @@ export const assets = {
     leheriyaKurti:
       "https://www.figma.com/api/mcp/asset/a2789990-9793-44a1-808c-ed040ffac1b2",
     jodhaNecklace:
-      "https://www.figma.com/api/mcp/asset/59df045b-70ef-463d-a894-3fe820feb660",
+      "https://www.figma.com/api/mcp/asset/74cc96ea-1304-4f7f-a1f8-91da737ae892",
+    silverEarrings:
+      "https://www.figma.com/api/mcp/asset/3e761b5c-0387-44b8-8a53-89dff31dc4e8",
+    silverBangles:
+      "https://www.figma.com/api/mcp/asset/ab75c3df-5ceb-4431-aeda-9d95e80ab743",
+    silverPendant:
+      "https://www.figma.com/api/mcp/asset/49d9438d-6435-4c8e-81c7-adaec3e72320",
   },
 } as const;

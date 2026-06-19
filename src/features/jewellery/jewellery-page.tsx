@@ -1,22 +1,23 @@
-import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { PageShell } from "@/components/layout/page-shell";
+import { CategoryTabs } from "./components/category-tabs";
+import { JewelleryFooter } from "./components/jewellery-footer";
 import { JewelleryHero } from "./components/jewellery-hero";
 import { JewelleryProductGrid } from "./components/jewellery-product-grid";
-import { SubcategoryStrip } from "./components/subcategory-strip";
+import { MaterialFilterStrip } from "./components/material-filter-strip";
 import { TrustSection } from "./components/trust-section";
 
 export function JewelleryPage() {
   return (
-    <PageShell>
-      <SiteHeader />
+    <div className="min-h-screen bg-ink">
+      <SiteHeader variant="jewellery" />
       <main>
         <JewelleryHero />
-        <SubcategoryStrip />
+        <CategoryTabs />
+        <MaterialFilterStrip />
         <JewelleryProductGrid />
         <TrustSection />
       </main>
-      <SiteFooter />
-    </PageShell>
+      <JewelleryFooter />
+    </div>
   );
 }

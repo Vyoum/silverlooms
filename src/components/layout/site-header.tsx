@@ -8,7 +8,7 @@ import { useCart } from "@/features/cart/cart-provider";
 import { cn } from "@/lib/utils";
 
 interface SiteHeaderProps {
-  variant?: "home" | "default";
+  variant?: "home" | "default" | "jewellery";
   className?: string;
 }
 
@@ -16,11 +16,15 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
   const pathname = usePathname();
   const { itemCount } = useCart();
   const navLinks = variant === "home" ? homeNavLinks : mainNavLinks;
+  const isDark = variant === "jewellery";
 
   return (
     <header
       className={cn(
-        "glass-nav sticky top-0 z-50",
+        "sticky top-0 z-50",
+        isDark
+          ? "border-b border-white/10 bg-ink/90 backdrop-blur-md"
+          : "glass-nav",
         className,
       )}
     >
@@ -69,10 +73,14 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "text-[13px] uppercase tracking-[1.3px] transition-colors hover:text-forest",
-                      isActive
-                        ? "border-b border-ink pb-0.5 text-ink"
-                        : "text-ink",
+                      "text-[13px] uppercase tracking-[1.3px] transition-colors",
+                      isDark
+                        ? isActive
+                          ? "border-b border-forest-light pb-0.5 text-[#cbecbd]"
+                          : "text-cream-dark/90 hover:text-cream"
+                        : isActive
+                          ? "border-b border-ink pb-0.5 text-ink"
+                          : "text-ink hover:text-forest",
                     )}
                   >
                     {link.label}
@@ -82,7 +90,10 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
             </nav>
             <Link
               href="/"
-              className="absolute left-1/2 -translate-x-1/2 font-serif text-2xl font-light tracking-[2px] text-ink"
+              className={cn(
+                "absolute left-1/2 -translate-x-1/2 font-serif text-2xl font-light tracking-[2px] md:text-[28px]",
+                isDark ? "text-cream" : "text-ink",
+              )}
             >
               SILVER LOOMS
             </Link>
@@ -91,16 +102,32 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
         )}
 
         <div className="flex items-center gap-4 md:gap-5">
-          <button type="button" aria-label="Search" className="text-ink">
+          <button
+            type="button"
+            aria-label="Search"
+            className={isDark ? "text-cream-dark" : "text-ink"}
+          >
             <Search className="size-5" />
           </button>
-          <button type="button" aria-label="Account" className="hidden text-ink sm:block">
+          <button
+            type="button"
+            aria-label="Account"
+            className={cn("hidden sm:block", isDark ? "text-cream-dark" : "text-ink")}
+          >
             <User className="size-5" />
           </button>
-          <button type="button" aria-label="Wishlist" className="hidden text-ink sm:block">
+          <button
+            type="button"
+            aria-label="Wishlist"
+            className={cn("hidden sm:block", isDark ? "text-cream-dark" : "text-ink")}
+          >
             <Heart className="size-5" />
           </button>
-          <Link href="/cart" aria-label="Cart" className="relative text-ink">
+          <Link
+            href="/cart"
+            aria-label="Cart"
+            className={cn("relative", isDark ? "text-cream-dark" : "text-ink")}
+          >
             <ShoppingBag className="size-5" />
             {itemCount > 0 && (
               <span className="absolute -right-1.5 -top-1.5 flex size-4 min-w-4 items-center justify-center rounded-full bg-forest px-1 text-[10px] text-cream">
