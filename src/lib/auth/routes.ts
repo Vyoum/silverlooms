@@ -1,7 +1,16 @@
-export const PUBLIC_ROUTES = ["/login", "/auth/callback"] as const;
+/** Routes that require a signed-in user */
+export const PROTECTED_ROUTE_PREFIXES = ["/admin"] as const;
 
-export function isPublicRoute(pathname: string) {
-  return PUBLIC_ROUTES.some(
+export const AUTH_ROUTES = ["/login", "/auth/callback"] as const;
+
+export function isProtectedRoute(pathname: string) {
+  return PROTECTED_ROUTE_PREFIXES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
+
+export function isAuthRoute(pathname: string) {
+  return AUTH_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`),
   );
 }

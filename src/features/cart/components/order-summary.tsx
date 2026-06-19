@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/features/cart/cart-provider";
+import { cn } from "@/lib/utils";
 
 export function OrderSummary() {
   const { cart } = useCart();
@@ -40,12 +42,24 @@ export function OrderSummary() {
         <span>Total</span>
         <span>₹{summary.total.toLocaleString("en-IN")}</span>
       </div>
-      <Button
-        disabled={itemCount === 0}
-        className="h-12 w-full rounded-full bg-forest text-[13px] uppercase tracking-[1.3px] hover:bg-forest/90"
-      >
-        Proceed to Checkout
-      </Button>
+      {itemCount === 0 ? (
+        <Button
+          disabled
+          className="h-12 w-full rounded-full bg-forest text-[13px] uppercase tracking-[1.3px] hover:bg-forest/90"
+        >
+          Proceed to Checkout
+        </Button>
+      ) : (
+        <Link
+          href="/checkout"
+          className={cn(
+            buttonVariants(),
+            "flex h-12 w-full items-center justify-center rounded-full bg-forest text-[13px] uppercase tracking-[1.3px] hover:bg-forest/90",
+          )}
+        >
+          Proceed to Checkout
+        </Link>
+      )}
       <p className="mt-4 text-center text-[11px] text-sage">
         Free shipping on orders above ₹5,000
       </p>

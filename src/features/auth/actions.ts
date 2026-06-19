@@ -1,20 +1,13 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { buildAuthCallbackUrl, getSiteUrl } from "@/lib/auth/site-url";
 import { syncUserFromSupabase } from "@/features/auth/services/user-sync";
 import { createClient } from "@/lib/supabase/server";
 
 export interface AuthActionResult {
   success: boolean;
   error?: string;
-}
-
-async function getOrigin() {
-  const headersList = await headers();
-  const host = headersList.get("x-forwarded-host") ?? headersList.get("host");
-  const protocol = headersList.get("x-forwarded-proto") ?? "http";
-  return host ? `${protocol}://${host}` : "http://localhost:3000";
 }
 
 export async function signInWithEmailAction(
@@ -60,12 +53,12 @@ export async function signUpWithEmailAction(
   }
 
   const supabase = await createClient();
-  const origin = await getOrigin();
+  const siteUrl = await getSiteUrl();
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}`,
+      emailRedirectTo: buildAuthCallbackUrl(siteUrl, redirectTo),
     },
   });
 
@@ -82,13 +75,13 @@ export async function signUpWithEmailAction(
 export async function signInWithGoogleAction(formData: FormData) {
   const redirectTo = String(formData.get("redirect") ?? "/");
   const supabase = await createClient();
-  const origin = await getOrigin();
+  const siteUrl = await getSiteUrl();
   const safeRedirect = redirectTo.startsWith("/") ? redirectTo : "/";
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${origin}/auth/callback?redirect=${encodeURIComponent(safeRedirect)}`,
+      redirectTo: buildAuthCallbackUrl(siteUrl, safeRedirect),
     },
   });
 

@@ -175,6 +175,8 @@ model Order {
   discount        Int           @default(0)
   total           Int
   promoCode       String?       @map("promo_code")
+  razorpayOrderId String?       @map("razorpay_order_id")
+  razorpayPaymentId String?     @map("razorpay_payment_id")
   shippingLine1   String?       @map("shipping_line1")
   shippingLine2   String?       @map("shipping_line2")
   shippingCity    String?       @map("shipping_city")

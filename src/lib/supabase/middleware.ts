@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-import { isPublicRoute } from "@/lib/auth/routes";
+import { isProtectedRoute } from "@/lib/auth/routes";
 import { getSupabaseEnv } from "./env";
 
 export async function updateSession(request: NextRequest) {
@@ -34,9 +34,8 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isPublic = isPublicRoute(pathname);
 
-  if (!user && !isPublic) {
+  if (!user && isProtectedRoute(pathname)) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("redirect", pathname);

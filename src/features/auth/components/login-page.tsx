@@ -22,8 +22,9 @@ export function LoginPage({ redirectTo = "/", error }: LoginPageProps) {
             alt={`${BRAND_NAME} heritage editorial`}
             fill
             priority
-            className="object-cover transition-transform duration-[3000ms] hover:scale-105"
-            sizes="60vw"
+            quality={95}
+            className="object-cover object-center transition-transform duration-[3000ms] hover:scale-105"
+            sizes="(max-width: 768px) 0vw, 60vw"
           />
           <div className="absolute inset-0 bg-black/10" />
         </div>
