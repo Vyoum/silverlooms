@@ -39,7 +39,7 @@ export function CategoryHero({ className, sort }: CategoryHeroProps) {
   return (
     <section
       className={cn(
-        "relative h-[280px] overflow-hidden bg-[#f0eee9]",
+        "relative h-[320px] overflow-hidden bg-ink md:h-[380px]",
         className,
       )}
     >
@@ -47,12 +47,14 @@ export function CategoryHero({ className, sort }: CategoryHeroProps) {
         src={assets.hero.kurtis}
         alt={copy.alt}
         fill
-        className="object-cover mix-blend-multiply opacity-90"
+        priority
+        quality={92}
+        className="object-cover object-[center_20%]"
         sizes="100vw"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/25 to-ink/10" />
       <Container className="relative flex h-full flex-col justify-end pb-10">
-        <p className="mb-2 text-[11px] uppercase tracking-[1.65px] text-cream-dark/80">
+        <p className="mb-2 text-[11px] uppercase tracking-[1.65px] text-cream-dark/90">
           {sort === "all" ? "Collections" : PRODUCT_SORT_LABELS[sort]}
         </p>
         <h1 className="font-serif text-[42px] font-light leading-[50.4px] text-white">

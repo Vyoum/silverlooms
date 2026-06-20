@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Heart, Search, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import { AccountNavButton } from "@/features/auth/components/account-nav-button";
+import { SearchDialog } from "@/components/layout/search-dialog";
 import { mainNavLinks, homeNavLinks } from "@/lib/constants/navigation";
 import { useCart } from "@/features/cart/cart-provider";
 import { cn } from "@/lib/utils";
@@ -105,13 +106,7 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
         )}
 
         <div className="flex items-center gap-4 md:gap-5">
-          <button
-            type="button"
-            aria-label="Search"
-            className={isDark ? "text-cream-dark" : "text-ink"}
-          >
-            <Search className="size-5" />
-          </button>
+          <SearchDialog isDark={isDark} />
           <AccountNavButton isDark={isDark} />
           <button
             type="button"

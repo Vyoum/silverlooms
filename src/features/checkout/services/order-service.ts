@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { getRazorpayClient } from "@/lib/razorpay/server";
 import { getCart } from "@/features/cart/services/cart-service";
+import { markOrderPaid } from "@/features/checkout/services/order-fulfillment";
 import type { ShippingDetails, CheckoutSession } from "../types";
 
 function generateOrderNumber() {
@@ -96,28 +97,9 @@ export async function completeOrderPayment(input: {
   razorpayPaymentId: string;
   razorpaySignature: string;
 }) {
-  const order = await prisma.order.findUnique({
-    where: { id: input.orderId },
-  });
-
-  if (!order) {
-    throw new Error("Order not found.");
-  }
-
-  if (order.paymentStatus === "PAID") {
-    return order;
-  }
-
-  if (order.razorpayOrderId !== input.razorpayOrderId) {
-    throw new Error("Payment order mismatch.");
-  }
-
-  return prisma.order.update({
-    where: { id: order.id },
-    data: {
-      paymentStatus: "PAID",
-      status: "PROCESSING",
-      razorpayPaymentId: input.razorpayPaymentId,
-    },
+  return markOrderPaid({
+    orderId: input.orderId,
+    razorpayOrderId: input.razorpayOrderId,
+    razorpayPaymentId: input.razorpayPaymentId,
   });
 }

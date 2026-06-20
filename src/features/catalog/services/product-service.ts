@@ -134,6 +134,51 @@ export async function listRelatedProducts(
   return products.filter((p) => p.slug !== currentSlug).slice(0, limit);
 }
 
+export async function searchProducts(
+  query: string,
+  limit = 48,
+): Promise<Product[]> {
+  const term = query.trim();
+  if (term.length < 2) return [];
+
+  const normalized = term.toLowerCase();
+
+  try {
+    const dbProducts = await prisma.product.findMany({
+      where: {
+        OR: [
+          { name: { contains: term, mode: "insensitive" } },
+          { categoryLabel: { contains: term, mode: "insensitive" } },
+          { collection: { contains: term, mode: "insensitive" } },
+          { description: { contains: term, mode: "insensitive" } },
+          { slug: { contains: normalized, mode: "insensitive" } },
+        ],
+      },
+      include: productInclude,
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+
+    if (dbProducts.length > 0) {
+      return dbProducts.map(mapDbProduct);
+    }
+  } catch {
+    // fall through to static catalog
+  }
+
+  const products = await fetchAllProducts();
+  return products
+    .filter(
+      (product) =>
+        product.name.toLowerCase().includes(normalized) ||
+        product.category.toLowerCase().includes(normalized) ||
+        product.collection?.toLowerCase().includes(normalized) ||
+        product.description?.toLowerCase().includes(normalized) ||
+        product.slug.toLowerCase().includes(normalized),
+    )
+    .slice(0, limit);
+}
+
 export interface CreateProductData {
   name: string;
   slug: string;

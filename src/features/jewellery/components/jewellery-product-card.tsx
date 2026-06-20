@@ -36,7 +36,7 @@ export function JewelleryProductCard({ product }: JewelleryProductCardProps) {
             alt={product.name}
             fill
             className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-[1.03]"
-            sizes="(max-width: 768px) 100vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         </Link>
         {product.badge && (
@@ -72,7 +72,7 @@ export function JewelleryProductCard({ product }: JewelleryProductCardProps) {
       </div>
       <div className="p-4">
         <Link href={href}>
-          <h3 className="font-serif text-xl leading-7 text-cream transition-colors hover:text-gold">
+          <h3 className="font-serif text-base leading-6 text-cream transition-colors hover:text-gold sm:text-xl sm:leading-7">
             {product.name}
           </h3>
         </Link>

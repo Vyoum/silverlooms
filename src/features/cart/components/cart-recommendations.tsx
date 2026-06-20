@@ -11,7 +11,7 @@ export function CartRecommendations() {
         <h2 className="mb-10 font-serif text-[42px] font-light text-ink">
           You Might Also Like
         </h2>
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
           {recommendations.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

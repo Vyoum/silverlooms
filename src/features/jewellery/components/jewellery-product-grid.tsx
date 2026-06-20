@@ -32,7 +32,7 @@ export function JewelleryProductGrid({ products }: JewelleryProductGridProps) {
         {products.length === 0 ? (
           <p className="py-16 text-center text-cream-dark/70">No jewellery products yet.</p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
             {products.map((product) => (
               <JewelleryProductCard key={product.id} product={product} />
             ))}

@@ -103,3 +103,45 @@ export async function deleteProductAction(productId: string) {
     return { success: false, error: "Could not delete product." };
   }
 }
+
+export async function getProductInventoryAction(productId: string) {
+  try {
+    const { requireAdminUser } = await import("@/features/auth/services/session");
+    await requireAdminUser();
+
+    const { getProductInventory } = await import(
+      "@/features/admin/services/inventory-service"
+    );
+
+    const inventory = await getProductInventory(productId);
+    return { success: true as const, inventory };
+  } catch {
+    return { success: false as const, error: "Could not load inventory." };
+  }
+}
+
+export async function updateProductInventoryAction(
+  productId: string,
+  updates: { inventoryId: string; quantity: number }[],
+) {
+  try {
+    const { requireAdminUser } = await import("@/features/auth/services/session");
+    await requireAdminUser();
+
+    const { updateProductInventoryQuantities } = await import(
+      "@/features/admin/services/inventory-service"
+    );
+
+    await updateProductInventoryQuantities(productId, updates);
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/store");
+    revalidatePath("/admin/jewellery");
+    revalidatePath("/kurtis");
+    revalidatePath("/jewellery");
+
+    return { success: true as const };
+  } catch {
+    return { success: false as const, error: "Could not update inventory." };
+  }
+}

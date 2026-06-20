@@ -14,7 +14,7 @@ export async function RelatedProducts({ currentSlug }: RelatedProductsProps) {
   return (
     <section className="border-t border-border py-16">
       <SectionHeading title="You May Also Like" className="mb-10" />
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
         {related.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

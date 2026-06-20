@@ -36,7 +36,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             alt={product.name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, 33vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         </Link>
         {product.badge && (
@@ -78,7 +78,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {product.category}
       </p>
       <Link href={href}>
-        <h3 className="font-serif text-[17px] leading-[25.5px] text-ink transition-colors hover:text-forest">
+        <h3 className="font-serif text-[15px] leading-snug text-ink transition-colors hover:text-forest sm:text-[17px] sm:leading-[25.5px]">
           {product.name}
         </h3>
       </Link>

@@ -2,8 +2,7 @@ export const assets = {
   hero: {
     home:
       "https://www.figma.com/api/mcp/asset/333663df-106f-4b53-97a4-28ae249df18b",
-    kurtis:
-      "https://www.figma.com/api/mcp/asset/c6e91cf2-2e7e-4c48-9e1d-0353bd909776",
+    kurtis: "/images/kurtis-hero.jpg",
     jewellery:
       "https://www.figma.com/api/mcp/asset/51ed1229-165b-4278-a655-7e26fe9eca6b",
   },

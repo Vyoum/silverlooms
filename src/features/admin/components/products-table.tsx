@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteProductAction } from "@/features/admin/actions";
+import { ProductInventoryEditor } from "@/features/admin/components/product-inventory-editor";
 import type { ProductType } from "@/features/admin/lib/product-presets";
 import type { AdminProductRow } from "@/features/admin/types";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,9 @@ export function ProductsTable({
 }: ProductsTableProps) {
   const [filter, setFilter] = useState<ProductType | "all">(defaultFilter);
   const [pending, startTransition] = useTransition();
+  const [editingProduct, setEditingProduct] = useState<AdminProductRow | null>(
+    null,
+  );
   const router = useRouter();
 
   const filtered = useMemo(
@@ -115,25 +119,42 @@ export function ProductsTable({
                   <td className="py-4 text-admin-muted">{product.stock}</td>
                   <td className="py-4 text-admin-muted">{product.createdAt}</td>
                   <td className="py-4 text-right">
-                    <button
-                      type="button"
-                      disabled={pending}
-                      onClick={() =>
-                        startTransition(async () => {
-                          await deleteProductAction(product.id);
-                          router.refresh();
-                        })
-                      }
-                      className="text-[11px] font-medium uppercase tracking-wider text-admin-error hover:underline"
-                    >
-                      Delete
-                    </button>
+                    <div className="flex items-center justify-end gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setEditingProduct(product)}
+                        className="text-[11px] font-medium uppercase tracking-wider text-admin-primary hover:underline"
+                      >
+                        Stock
+                      </button>
+                      <button
+                        type="button"
+                        disabled={pending}
+                        onClick={() =>
+                          startTransition(async () => {
+                            await deleteProductAction(product.id);
+                            router.refresh();
+                          })
+                        }
+                        className="text-[11px] font-medium uppercase tracking-wider text-admin-error hover:underline"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+      {editingProduct && (
+        <ProductInventoryEditor
+          productId={editingProduct.id}
+          productName={editingProduct.name}
+          onClose={() => setEditingProduct(null)}
+          onSaved={() => router.refresh()}
+        />
       )}
     </article>
   );
