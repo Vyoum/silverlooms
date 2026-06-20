@@ -39,7 +39,7 @@ export function CategoryHero({ className, sort }: CategoryHeroProps) {
   return (
     <section
       className={cn(
-        "relative h-[320px] overflow-hidden bg-ink md:h-[380px]",
+        "relative h-[min(38dvh,240px)] min-h-[200px] overflow-hidden bg-ink sm:h-[280px] md:h-[380px] md:max-h-none",
         className,
       )}
     >
@@ -53,14 +53,14 @@ export function CategoryHero({ className, sort }: CategoryHeroProps) {
         sizes="100vw"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/25 to-ink/10" />
-      <Container className="relative flex h-full flex-col justify-end pb-10">
-        <p className="mb-2 text-[11px] uppercase tracking-[1.65px] text-cream-dark/90">
+      <Container className="relative flex h-full flex-col justify-end pb-6 md:pb-10">
+        <p className="mb-1 text-[10px] uppercase tracking-[1.65px] text-cream-dark/90 sm:mb-2 sm:text-[11px]">
           {sort === "all" ? "Collections" : PRODUCT_SORT_LABELS[sort]}
         </p>
-        <h1 className="font-serif text-[42px] font-light leading-[50.4px] text-white">
+        <h1 className="font-serif text-[28px] font-light leading-tight text-white sm:text-[36px] md:text-[42px] md:leading-[50.4px]">
           {copy.title}
         </h1>
-        <p className="mt-2 text-base text-cream-dark/90">{copy.subtitle}</p>
+        <p className="mt-1 text-sm text-cream-dark/90 sm:mt-2 sm:text-base">{copy.subtitle}</p>
       </Container>
     </section>
   );

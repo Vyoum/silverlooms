@@ -59,7 +59,7 @@ export function PillButton({
   className,
 }: PillButtonProps) {
   const styles = cn(
-    "inline-flex items-center justify-center rounded-full px-8 py-4 text-[13px] font-medium uppercase tracking-[1.3px] transition-colors",
+    "inline-flex items-center justify-center rounded-full px-6 py-3 text-[11px] font-medium uppercase tracking-[1.1px] transition-colors sm:px-8 sm:py-4 sm:text-[13px] sm:tracking-[1.3px]",
     variant === "primary" && "bg-forest text-cream hover:bg-forest/90",
     variant === "outline" &&
       "border border-border bg-cream/90 text-ink backdrop-blur-sm hover:bg-cream",

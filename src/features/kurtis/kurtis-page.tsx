@@ -1,30 +1,40 @@
-import { AnnouncementBar } from "@/components/layout/announcement-bar";
-import { KurtisFooter } from "./components/kurtis-footer";
+import { Suspense } from "react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { Container, PageShell } from "@/components/layout/page-shell";
 import { listCatalogProducts } from "@/features/catalog/services/product-service";
-import type { ProductSort } from "@/features/catalog/lib/product-sort";
+import type { KurtisCatalogFilters } from "@/features/kurtis/lib/kurtis-filters";
+import {
+  applyKurtisCatalogFilters,
+} from "@/features/kurtis/lib/kurtis-filters";
 import { ActiveFilters } from "./components/active-filters";
 import { CategoryHero } from "./components/category-hero";
-import { FilterSidebar } from "./components/filter-sidebar";
-import { KurtisProductGrid } from "./components/product-grid";
+import { KurtisCatalogSection } from "./components/kurtis-catalog-section";
+import { KurtisFooter } from "./components/kurtis-footer";
 
 interface KurtisPageProps {
-  sort: ProductSort;
+  filters: KurtisCatalogFilters;
 }
 
-export async function KurtisPage({ sort }: KurtisPageProps) {
-  const products = await listCatalogProducts(sort);
+export async function KurtisPage({ filters }: KurtisPageProps) {
+  const baseProducts = await listCatalogProducts(filters.sort);
+  const products = applyKurtisCatalogFilters(baseProducts, filters);
 
   return (
     <PageShell>
       <SiteHeader />
       <main>
-        <CategoryHero sort={sort} className="-mt-20 pt-20" />
-        <ActiveFilters sort={sort} productCount={products.length} />
-        <Container className="flex flex-col gap-8 py-12 md:flex-row">
-          <FilterSidebar sort={sort} />
-          <KurtisProductGrid products={products} sort={sort} />
+        <CategoryHero sort={filters.sort} className="-mt-20 pt-20" />
+        <Suspense fallback={null}>
+          <ActiveFilters filters={filters} productCount={products.length} />
+        </Suspense>
+        <Container>
+          <Suspense fallback={<div className="py-12 text-center text-sage">Loading…</div>}>
+            <KurtisCatalogSection
+              products={products}
+              baseProducts={baseProducts}
+              filters={filters}
+            />
+          </Suspense>
         </Container>
       </main>
       <KurtisFooter />
