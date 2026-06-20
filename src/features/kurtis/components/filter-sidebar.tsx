@@ -1,6 +1,12 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  PRODUCT_SORT_LABELS,
+  PRODUCT_SORT_OPTIONS,
+  type ProductSort,
+} from "@/features/catalog/lib/product-sort";
 import { cn } from "@/lib/utils";
 
 const categories = [
@@ -19,19 +25,75 @@ const colors = [
   { hex: "#3b5998", selected: false },
 ];
 
-export function FilterSidebar() {
+interface FilterSidebarProps {
+  sort: ProductSort;
+}
+
+export function FilterSidebar({ sort }: FilterSidebarProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const setSort = (nextSort: ProductSort) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (nextSort === "all") {
+      params.delete("sort");
+    } else {
+      params.set("sort", nextSort);
+    }
+
+    const query = params.toString();
+    router.push(query ? `/kurtis?${query}` : "/kurtis");
+  };
+
   return (
     <aside className="w-full shrink-0 md:w-[220px]">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-[11px] font-medium uppercase tracking-[1.65px] text-ink">
           Filter
         </h2>
-        <button type="button" className="text-[11px] text-sage-light">
+        <button
+          type="button"
+          className="text-[11px] text-sage-light"
+          onClick={() => setSort("all")}
+        >
           Reset
         </button>
       </div>
 
-      <div className="space-y-6 border-b border-border pb-4">
+      <div className="space-y-3 border-b border-border pb-4">
+        <h3 className="text-base font-medium text-ink">Collection</h3>
+        <div className="space-y-2">
+          {PRODUCT_SORT_OPTIONS.map((option) => {
+            const selected = sort === option;
+
+            return (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setSort(option)}
+                className={cn(
+                  "flex w-full items-center gap-3 rounded-md px-1 py-1.5 text-left text-xs transition-colors",
+                  selected ? "font-medium text-ink" : "text-sage hover:text-ink",
+                )}
+              >
+                <span
+                  className={cn(
+                    "size-4 rounded-full border",
+                    selected
+                      ? "border-ink bg-ink ring-2 ring-ink ring-offset-2 ring-offset-cream"
+                      : "border-sage-light",
+                  )}
+                  aria-hidden
+                />
+                {PRODUCT_SORT_LABELS[option]}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="space-y-6 border-b border-border py-4">
         <h3 className="text-base font-medium text-ink">Category</h3>
         <div className="space-y-2">
           {categories.map((cat) => (

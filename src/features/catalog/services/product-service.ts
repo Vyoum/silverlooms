@@ -1,5 +1,9 @@
 import type { ProductBadge } from "@/lib/types/product";
 import type { Product } from "@/lib/types/product";
+import {
+  filterProductsBySort,
+  type ProductSort,
+} from "@/features/catalog/lib/product-sort";
 import { getProductBySlug, jewelleryProducts, kurtisProducts } from "@/lib/constants/products";
 import { prisma } from "@/lib/db";
 import { isJewelleryCategory, slugify } from "../lib/category-utils";
@@ -71,6 +75,16 @@ export async function listApparelProducts(): Promise<Product[]> {
   return products.filter((p) => !isJewelleryCategory(p.category));
 }
 
+export async function listCatalogProducts(sort: ProductSort): Promise<Product[]> {
+  const products = await fetchAllProducts();
+
+  if (sort === "bestseller" || sort === "new") {
+    return filterProductsBySort(products, sort);
+  }
+
+  return products.filter((p) => !isJewelleryCategory(p.category));
+}
+
 export async function listJewelleryProducts(): Promise<Product[]> {
   const products = await fetchAllProducts();
   return products.filter((p) => isJewelleryCategory(p.category));
@@ -78,9 +92,7 @@ export async function listJewelleryProducts(): Promise<Product[]> {
 
 export async function listNewArrivals(limit = 4): Promise<Product[]> {
   const products = await fetchAllProducts();
-  return products
-    .filter((p) => p.badge === "NEW" || p.badge === "BESTSELLER")
-    .slice(0, limit);
+  return filterProductsBySort(products, "new").slice(0, limit);
 }
 
 export async function resolveProductBySlug(slug: string): Promise<Product | null> {
