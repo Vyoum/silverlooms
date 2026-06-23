@@ -6,39 +6,66 @@ function isLocalHost(host: string) {
   return hostname === "localhost" || hostname === "127.0.0.1";
 }
 
+function normalizeSiteUrl(url: string) {
+  return url.trim().replace(/\/$/, "");
+}
+
 /**
- * Canonical app URL for OAuth redirects (Supabase + Google).
+ * Canonical app URL from env (never returns localhost on production).
  * Set NEXT_PUBLIC_SITE_URL on Vercel — e.g. https://silverlooms.in
  */
 export function getConfiguredSiteUrl() {
-  const url = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "");
-  if (url && !isLocalHost(new URL(url).hostname)) {
-    return url;
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!raw) {
+    if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
+      return PRODUCTION_SITE_URL;
+    }
+    return null;
+  }
+
+  try {
+    const url = normalizeSiteUrl(raw);
+    if (!isLocalHost(new URL(url).hostname)) {
+      return url;
+    }
+  } catch {
+    // ignore invalid URL
   }
 
   if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
     return PRODUCTION_SITE_URL;
   }
 
-  return url || null;
+  return null;
+}
+
+function siteUrlFromHost(host: string, protocol: string) {
+  const normalizedHost = host.split(",")[0].trim();
+  if (!normalizedHost) return null;
+
+  const safeProtocol = protocol.endsWith(":") ? protocol.slice(0, -1) : protocol;
+  return `${safeProtocol}://${normalizedHost}`;
 }
 
 export async function getSiteUrl() {
-  const configured = getConfiguredSiteUrl();
-  if (configured) return configured;
-
   const { headers } = await import("next/headers");
   const headersList = await headers();
-  const host = (
-    headersList.get("x-forwarded-host") ?? headersList.get("host") ?? ""
-  )
-    .split(",")[0]
-    .trim();
-  const protocol = headersList.get("x-forwarded-proto") ?? "https";
+  const host = headersList.get("x-forwarded-host") ?? headersList.get("host") ?? "";
+  const protocol =
+    headersList.get("x-forwarded-proto") ??
+    (isLocalHost(host) ? "http" : "https");
 
-  if (host && !isLocalHost(host)) {
-    return `${protocol}://${host}`;
+  const fromRequest = siteUrlFromHost(host, protocol);
+  if (fromRequest && !isLocalHost(host)) {
+    return fromRequest;
   }
+
+  if (fromRequest && isLocalHost(host)) {
+    return fromRequest;
+  }
+
+  const configured = getConfiguredSiteUrl();
+  if (configured) return configured;
 
   if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
     return PRODUCTION_SITE_URL;
@@ -49,9 +76,6 @@ export async function getSiteUrl() {
 
 /** Use in /auth/callback — never send production users to localhost */
 export function resolveSiteUrlFromRequest(requestUrl: URL) {
-  const configured = getConfiguredSiteUrl();
-  if (configured) return configured;
-
   if (!isLocalHost(requestUrl.hostname)) {
     return requestUrl.origin;
   }
@@ -60,7 +84,8 @@ export function resolveSiteUrlFromRequest(requestUrl: URL) {
     return PRODUCTION_SITE_URL;
   }
 
-  return requestUrl.origin;
+  const configured = getConfiguredSiteUrl();
+  return configured ?? requestUrl.origin;
 }
 
 export function buildAuthCallbackUrl(siteUrl: string, redirectPath = "/") {

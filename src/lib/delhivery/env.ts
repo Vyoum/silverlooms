@@ -31,3 +31,7 @@ export function isDelhiveryConfigured() {
       env.sellerGstTin,
   );
 }
+
+export function isDelhiveryTokenConfigured() {
+  return Boolean(getDelhiveryEnv().apiToken);
+}

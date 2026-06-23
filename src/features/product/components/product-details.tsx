@@ -7,6 +7,7 @@ import { AddToBagButton } from "@/components/shared/add-to-bag-button";
 import { WishlistHeartButton } from "@/features/wishlist/components/wishlist-heart-button";
 import { useWishlist } from "@/features/wishlist/wishlist-provider";
 import { SizeGuide, SizeGuideTrigger } from "@/components/shared/size-guide";
+import { DeliveryEstimateBox } from "@/features/product/components/delivery-estimate-box";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types/product";
 
@@ -55,6 +56,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </>
         )}
       </div>
+
+      <DeliveryEstimateBox />
 
       {product.description && (
         <p className="mt-6 text-base leading-relaxed text-sage">
