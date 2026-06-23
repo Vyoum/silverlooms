@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { StarRating } from "@/components/shared/star-rating";
 import { AddToBagButton } from "@/components/shared/add-to-bag-button";
+import { WishlistHeartButton } from "@/features/wishlist/components/wishlist-heart-button";
+import { useWishlist } from "@/features/wishlist/wishlist-provider";
 import { SizeGuide, SizeGuideTrigger } from "@/components/shared/size-guide";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types/product";
@@ -19,6 +21,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     product.colors[0]?.hex ?? undefined,
   );
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const { isWishlisted, toggleWishlist } = useWishlist();
+  const wishlisted = isWishlisted(product.slug);
 
   return (
     <div className="w-full lg:w-[45%] lg:pl-12">
@@ -118,10 +122,15 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           colorHex={selectedColor}
         />
         <Button
+          type="button"
           variant="outline"
-          className="h-12 flex-1 rounded-full border-ink text-[13px] uppercase tracking-[1.3px]"
+          className={cn(
+            "h-12 flex-1 rounded-full border-ink text-[13px] uppercase tracking-[1.3px]",
+            wishlisted && "bg-ink/5",
+          )}
+          onClick={() => toggleWishlist(product.slug, product.name)}
         >
-          Add to Wishlist
+          {wishlisted ? "Saved to Wishlist" : "Add to Wishlist"}
         </Button>
       </div>
     </div>

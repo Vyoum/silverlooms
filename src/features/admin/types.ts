@@ -77,3 +77,21 @@ export interface AdminProductRow {
   stock: number;
   createdAt: string;
 }
+
+export interface AdminProductEditData {
+  id: string;
+  slug: string;
+  name: string;
+  categoryLabel: string;
+  productType: "apparel" | "jewellery";
+  collection: string;
+  description: string;
+  price: number;
+  originalPrice: number;
+  imageUrl: string;
+  badge: string;
+  sizes: string;
+  colors: string;
+  rating: number;
+  reviewCount: number;
+}

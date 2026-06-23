@@ -32,7 +32,7 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
         </p>
       )}
 
-      <form action={formAction} className="space-y-10">
+      <form action={formAction} className="space-y-6 md:space-y-10">
         <input type="hidden" name="redirect" value={redirectTo} />
 
         <div className="relative pt-2">
@@ -83,14 +83,14 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
         <button
           type="submit"
           disabled={pending}
-          className="mt-4 w-full bg-cream py-6 text-[13px] uppercase tracking-[0.15em] text-onyx transition-colors duration-500 hover:bg-heritage-gold active:scale-[0.98] disabled:opacity-60"
+          className="mt-2 w-full bg-cream py-4 text-[12px] uppercase tracking-[0.15em] text-onyx transition-colors duration-500 hover:bg-heritage-gold active:scale-[0.98] disabled:opacity-60 md:mt-4 md:py-6 md:text-[13px]"
         >
           {pending ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}
         </button>
       </form>
 
-      <div className="mt-12 border-t border-white/5 pt-8 text-center">
-        <p className="text-base text-white/80">
+      <div className="mt-8 border-t border-white/5 pt-6 text-center md:mt-12 md:pt-8">
+        <p className="text-sm text-white/80 md:text-base">
           {mode === "signin" ? "New to Silver Looms?" : "Already have an account?"}{" "}
           <button
             type="button"

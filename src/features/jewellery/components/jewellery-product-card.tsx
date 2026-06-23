@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/features/cart/cart-provider";
+import { WishlistHeartButton } from "@/features/wishlist/components/wishlist-heart-button";
 import type { Product } from "@/lib/types/product";
 import { cn } from "@/lib/utils";
 
@@ -49,13 +50,13 @@ export function JewelleryProductCard({ product }: JewelleryProductCardProps) {
             {badgeLabels[product.badge] ?? product.badge}
           </span>
         )}
-        <button
-          type="button"
-          aria-label="Add to wishlist"
+        <WishlistHeartButton
+          slug={product.slug}
+          productName={product.name}
           className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full border border-white/20 bg-ink/50 backdrop-blur-sm"
-        >
-          <Heart className="size-3.5 text-cream" />
-        </button>
+          iconClassName="size-3.5 text-cream"
+          filledClassName="fill-gold text-gold"
+        />
         <button
           type="button"
           className="absolute inset-x-4 bottom-3 flex items-center justify-center gap-2 rounded-full bg-gold py-3 text-[13px] font-medium uppercase tracking-[0.65px] text-ink opacity-0 transition-opacity group-hover:opacity-100"

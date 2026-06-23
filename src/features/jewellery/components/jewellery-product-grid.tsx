@@ -21,10 +21,10 @@ export function JewelleryProductGrid({ products }: JewelleryProductGridProps) {
             </span>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-[17px] py-[9px] text-[13px] font-medium uppercase tracking-[0.65px] text-cream"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/20 px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.5px] text-cream sm:gap-2 sm:px-[17px] sm:py-[9px] sm:text-[13px] sm:tracking-[0.65px]"
             >
               Filter &amp; Sort
-              <SlidersHorizontal className="size-3.5" />
+              <SlidersHorizontal className="size-3 sm:size-3.5" />
             </button>
           </div>
         </div>

@@ -4,9 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Heart, ShoppingBag } from "lucide-react";
 import { AccountNavButton } from "@/features/auth/components/account-nav-button";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchDialog } from "@/components/layout/search-dialog";
 import { mainNavLinks, homeNavLinks } from "@/lib/constants/navigation";
 import { useCart } from "@/features/cart/cart-provider";
+import { useWishlist } from "@/features/wishlist/wishlist-provider";
 import { cn } from "@/lib/utils";
 
 interface SiteHeaderProps {
@@ -14,11 +16,51 @@ interface SiteHeaderProps {
   className?: string;
 }
 
+function NavLink({
+  href,
+  label,
+  isActive,
+  isDark,
+}: {
+  href: string;
+  label: string;
+  isActive: boolean;
+  isDark: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "text-[13px] uppercase tracking-[1.3px] transition-colors",
+        isDark
+          ? isActive
+            ? "border-b border-forest-light pb-0.5 text-[#cbecbd]"
+            : "text-cream-dark/90 hover:text-cream"
+          : isActive
+            ? "border-b border-ink pb-0.5 text-ink"
+            : "text-ink hover:text-forest",
+      )}
+    >
+      {label}
+    </Link>
+  );
+}
+
 export function SiteHeader({ variant = "default", className }: SiteHeaderProps) {
   const pathname = usePathname();
   const { itemCount } = useCart();
+  const { itemCount: wishlistCount } = useWishlist();
   const navLinks = variant === "home" ? homeNavLinks : mainNavLinks;
   const isDark = variant === "jewellery";
+  const isHome = variant === "home";
+
+  const isLinkActive = (href: string) => {
+    const baseHref = href.split("?")[0].split("#")[0];
+    return (
+      pathname === baseHref ||
+      (baseHref !== "/" && pathname.startsWith(baseHref))
+    );
+  };
 
   return (
     <header
@@ -30,27 +72,37 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
         className,
       )}
     >
-      <div className="mx-auto flex h-20 max-w-[1280px] items-center justify-between px-4 md:px-16">
-        {variant === "home" ? (
-          <>
-            <nav className="hidden items-center gap-8 md:flex">
-              {navLinks.slice(0, 2).map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-[13px] uppercase tracking-[1.3px] text-ink transition-colors hover:text-forest"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-            <Link
-              href="/"
-              className="font-serif text-2xl font-light tracking-[2px] text-ink md:text-[28px]"
-            >
-              SILVER LOOMS
-            </Link>
-            <nav className="hidden items-center gap-8 md:flex">
+      <div className="relative mx-auto flex h-20 max-w-[1280px] items-center px-4 md:px-16">
+        <div className="flex min-w-0 flex-1 items-center">
+          <MobileNav links={navLinks} isDark={isDark} />
+          <nav className="hidden items-center gap-8 md:flex">
+            {(isHome ? navLinks.slice(0, 2) : navLinks).map((link) => (
+              <NavLink
+                key={link.href}
+                href={link.href}
+                label={link.label}
+                isActive={isLinkActive(link.href)}
+                isDark={isDark}
+              />
+            ))}
+          </nav>
+        </div>
+
+        <Link
+          href="/"
+          className={cn(
+            "absolute left-1/2 -translate-x-1/2 shrink-0 font-serif font-light",
+            isDark
+              ? "text-xl tracking-[1.26px] text-cream md:text-[42px] md:leading-[50.4px]"
+              : "text-2xl tracking-[2px] text-ink md:text-[28px]",
+          )}
+        >
+          {isDark ? "Silver Looms" : "SILVER LOOMS"}
+        </Link>
+
+        <div className="ml-auto flex shrink-0 items-center justify-end gap-4 md:gap-5">
+          {isHome && (
+            <nav className="mr-2 hidden items-center gap-8 md:flex">
               {navLinks.slice(2).map((link) => (
                 <Link
                   key={link.href}
@@ -61,60 +113,24 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
                 </Link>
               ))}
             </nav>
-          </>
-        ) : (
-          <>
-            <nav className="hidden items-center gap-8 md:flex">
-              {navLinks.map((link) => {
-                const baseHref = link.href.split("?")[0].split("#")[0];
-                const isActive =
-                  pathname === baseHref ||
-                  (baseHref !== "/" && pathname.startsWith(baseHref));
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                      "text-[13px] uppercase tracking-[1.3px] transition-colors",
-                      isDark
-                        ? isActive
-                          ? "border-b border-forest-light pb-0.5 text-[#cbecbd]"
-                          : "text-cream-dark/90 hover:text-cream"
-                        : isActive
-                          ? "border-b border-ink pb-0.5 text-ink"
-                          : "text-ink hover:text-forest",
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
-            </nav>
-            <Link
-              href="/"
-              className={cn(
-                "absolute left-1/2 -translate-x-1/2 font-serif font-light tracking-[1.26px]",
-                isDark
-                  ? "text-[28px] text-cream md:text-[42px] md:leading-[50.4px]"
-                  : "text-2xl tracking-[2px] text-ink md:text-[28px]",
-              )}
-            >
-              {isDark ? "Silver Looms" : "SILVER LOOMS"}
-            </Link>
-            <div className="hidden w-[387px] md:block" />
-          </>
-        )}
+          )}
 
-        <div className="flex items-center gap-4 md:gap-5">
           <SearchDialog isDark={isDark} />
-          <AccountNavButton isDark={isDark} />
-          <button
-            type="button"
+          <div className="hidden md:inline-flex">
+            <AccountNavButton isDark={isDark} />
+          </div>
+          <Link
+            href="/wishlist"
             aria-label="Wishlist"
-            className={cn("hidden sm:block", isDark ? "text-cream-dark" : "text-ink")}
+            className={cn("relative", isDark ? "text-cream-dark" : "text-ink")}
           >
             <Heart className="size-5" />
-          </button>
+            {wishlistCount > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex size-4 min-w-4 items-center justify-center rounded-full bg-forest px-1 text-[10px] text-cream">
+                {wishlistCount > 99 ? "99+" : wishlistCount}
+              </span>
+            )}
+          </Link>
           <Link
             href="/cart"
             aria-label="Cart"

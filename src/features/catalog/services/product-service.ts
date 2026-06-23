@@ -237,4 +237,50 @@ export async function createProduct(data: CreateProductData) {
   return mapDbProduct(product);
 }
 
+export interface UpdateProductData {
+  name: string;
+  slug: string;
+  categoryLabel: string;
+  collection?: string;
+  description?: string;
+  price: number;
+  originalPrice?: number;
+  discountPercent?: number;
+  rating?: number;
+  reviewCount?: number;
+  imageUrl: string;
+  badge?: ProductBadge;
+  sizes: string[];
+  colors: { hex: string; name?: string }[];
+}
+
+export async function updateProduct(productId: string, data: UpdateProductData) {
+  await prisma.productColor.deleteMany({ where: { productId } });
+
+  const product = await prisma.product.update({
+    where: { id: productId },
+    data: {
+      slug: data.slug,
+      name: data.name,
+      categoryLabel: data.categoryLabel,
+      collection: data.collection,
+      description: data.description,
+      price: data.price,
+      originalPrice: data.originalPrice,
+      discountPercent: data.discountPercent,
+      rating: data.rating ?? 4.5,
+      reviewCount: data.reviewCount ?? 0,
+      imageUrl: data.imageUrl,
+      badge: data.badge,
+      sizes: data.sizes,
+      colors: {
+        create: data.colors.map((c) => ({ hex: c.hex, name: c.name })),
+      },
+    },
+    include: productInclude,
+  });
+
+  return mapDbProduct(product);
+}
+
 export { slugify };

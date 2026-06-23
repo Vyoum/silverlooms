@@ -1,6 +1,24 @@
 import type { NextConfig } from "next";
 
+function getSupabaseStorageHostname() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!url) return null;
+
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return null;
+  }
+}
+
+const supabaseHostname = getSupabaseStorageHostname();
+
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "6mb",
+    },
+  },
   images: {
     remotePatterns: [
       {
@@ -13,6 +31,15 @@ const nextConfig: NextConfig = {
         hostname: "lh3.googleusercontent.com",
         pathname: "/**",
       },
+      ...(supabaseHostname
+        ? [
+            {
+              protocol: "https" as const,
+              hostname: supabaseHostname,
+              pathname: "/storage/v1/object/public/**",
+            },
+          ]
+        : []),
     ],
   },
   async redirects() {

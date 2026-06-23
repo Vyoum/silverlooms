@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
+import { WishlistHeartButton } from "@/features/wishlist/components/wishlist-heart-button";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/shared/star-rating";
 import { useCart } from "@/features/cart/cart-provider";
@@ -49,14 +50,14 @@ export function ProductCard({ product, className }: ProductCardProps) {
             {product.badge}
           </Badge>
         )}
-        <div className="absolute right-3 top-3 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-          <button
-            type="button"
-            aria-label="Add to wishlist"
+        <div className="absolute right-3 top-3 flex gap-2 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100">
+          <WishlistHeartButton
+            slug={product.slug}
+            productName={product.name}
             className="rounded-full bg-cream/90 p-2 backdrop-blur-sm"
-          >
-            <Heart className="size-4 text-ink" />
-          </button>
+            iconClassName="size-4 text-ink"
+            filledClassName="fill-forest text-forest"
+          />
           <button
             type="button"
             aria-label="Quick add to bag"

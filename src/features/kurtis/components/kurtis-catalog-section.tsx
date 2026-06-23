@@ -118,26 +118,26 @@ export function KurtisCatalogSection({
             type="button"
             onClick={() => setOpenPanel("category")}
             className={cn(
-              "inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[11px] font-medium uppercase tracking-[1.1px] transition-colors",
+              "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[9px] font-medium uppercase tracking-[0.9px] transition-colors md:gap-2 md:px-4 md:py-2.5 md:text-[11px] md:tracking-[1.1px]",
               filters.category
                 ? "border-ink bg-ink text-cream"
                 : "border-border bg-cream text-ink hover:border-ink",
             )}
           >
-            <Tag className="size-3.5" />
+            <Tag className="size-3 md:size-3.5" />
             {activeCategoryLabel ?? "Category"}
           </button>
           <button
             type="button"
             onClick={() => setOpenPanel("filter")}
             className={cn(
-              "inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[11px] font-medium uppercase tracking-[1.1px] transition-colors",
+              "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[9px] font-medium uppercase tracking-[0.9px] transition-colors md:gap-2 md:px-4 md:py-2.5 md:text-[11px] md:tracking-[1.1px]",
               filters.sort !== "all" || filters.size || filters.color
                 ? "border-ink bg-ink text-cream"
                 : "border-border bg-cream text-ink hover:border-ink",
             )}
           >
-            <SlidersHorizontal className="size-3.5" />
+            <SlidersHorizontal className="size-3 md:size-3.5" />
             Filter
           </button>
         </div>

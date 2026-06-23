@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { isJewelleryCategory } from "@/features/catalog/lib/category-utils";
-import type { DashboardData, KpiMetric } from "../types";
+import type { AdminProductEditData, DashboardData, KpiMetric } from "../types";
 
 function formatCurrency(amount: number): string {
   return `₹${amount.toLocaleString("en-IN")}`;
@@ -361,5 +361,39 @@ export async function listAdminProducts() {
   } catch (error) {
     console.error("[admin] Failed to load products:", error);
     return [];
+  }
+}
+
+export async function getProductForEdit(
+  productId: string,
+): Promise<AdminProductEditData | null> {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      include: { colors: true },
+    });
+
+    if (!product) return null;
+
+    return {
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      categoryLabel: product.categoryLabel,
+      productType: isJewelleryCategory(product.categoryLabel) ? "jewellery" : "apparel",
+      collection: product.collection ?? "",
+      description: product.description ?? "",
+      price: product.price,
+      originalPrice: product.originalPrice ?? 0,
+      imageUrl: product.imageUrl,
+      badge: product.badge ?? "",
+      sizes: product.sizes.join(", "),
+      colors: product.colors.map((color) => color.hex).join(", "),
+      rating: product.rating,
+      reviewCount: product.reviewCount,
+    };
+  } catch (error) {
+    console.error("[admin] Failed to load product for edit:", error);
+    return null;
   }
 }

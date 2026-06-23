@@ -43,10 +43,10 @@ export function GoogleSignInButton({ redirectTo }: GoogleSignInButtonProps) {
       <input type="hidden" name="redirect" value={redirectTo} />
       <button
         type="submit"
-        className="group flex w-full items-center justify-center gap-3 border border-white/20 bg-transparent px-6 py-4 transition-all duration-300 hover:border-heritage-gold"
+        className="group flex w-full items-center justify-center gap-3 border border-white/20 bg-transparent px-5 py-3.5 transition-all duration-300 hover:border-heritage-gold md:px-6 md:py-4"
       >
         <GoogleIcon />
-        <span className="text-xs uppercase tracking-widest text-white">
+        <span className="text-[10px] uppercase tracking-widest text-white sm:text-xs">
           Continue with Google
         </span>
       </button>

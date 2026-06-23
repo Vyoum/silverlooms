@@ -6,8 +6,8 @@ export function JewelleryHero() {
   return (
     <div className="bg-ink">
       <section className="grid lg:min-h-[480px] lg:grid-cols-[55%_45%]">
-        <div className="flex flex-col justify-center border-white/10 bg-gradient-to-r from-ink via-ink/95 to-ink/80 px-5 py-8 sm:px-8 sm:py-12 md:border-r md:px-16 md:py-16">
-          <p className="mb-3 text-[10px] font-medium uppercase tracking-[2.2px] text-[#c1c7cf] sm:mb-4 sm:text-[11px]">
+        <div className="flex flex-col justify-center border-white/10 bg-gradient-to-r from-ink via-ink/95 to-ink/80 px-5 pt-4 pb-6 sm:px-8 sm:py-12 md:border-r md:px-16 md:py-16">
+          <p className="mb-3 hidden text-[10px] font-medium uppercase tracking-[2.2px] text-[#c1c7cf] sm:mb-4 sm:block sm:text-[11px]">
             Our Craft
           </p>
           <h1 className="font-serif text-[2rem] font-light leading-[1.1] tracking-[1px] text-cream sm:text-[42px] sm:tracking-[2px] md:text-[68px] md:leading-[74.8px] md:tracking-[3.4px]">

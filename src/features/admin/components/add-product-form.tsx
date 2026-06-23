@@ -1,6 +1,8 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { ImagePlus, X } from "lucide-react";
 import { createProductAction, type CreateProductResult } from "@/features/admin/actions";
 import { ProductCardPreview } from "@/features/admin/components/product-card-preview";
 import {
@@ -46,6 +48,9 @@ export function AddProductForm({
   const [price, setPrice] = useState(2490);
   const [originalPrice, setOriginalPrice] = useState(3200);
   const [imageUrl, setImageUrl] = useState<string>(defaults.imageUrl);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [badge, setBadge] = useState("");
   const [sizes, setSizes] = useState<string>(defaults.sizes);
   const [colors, setColors] = useState<string>(defaults.colors);
@@ -58,6 +63,7 @@ export function AddProductForm({
     setCategoryLabel(next.category);
     setCollection(next.collection);
     setImageUrl(next.imageUrl);
+    setImageFile(null);
     setSizes(next.sizes);
     setColors(next.colors);
     setRating(next.rating);
@@ -71,6 +77,36 @@ export function AddProductForm({
     }
   }
 
+  useEffect(() => {
+    if (!imageFile) {
+      setImagePreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(imageFile);
+    setImagePreviewUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [imageFile]);
+
+  function handleImageFileChange(file: File | null) {
+    setImageFile(file);
+    if (file) {
+      setImageUrl("");
+    }
+  }
+
+  function clearSelectedImage() {
+    setImageFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
+
+  const previewImageUrl = imagePreviewUrl ?? imageUrl;
+  const hasImage = Boolean(imageFile || imageUrl);
   const categoryPresets =
     productType === "apparel" ? apparelCategoryPresets : jewelleryCategoryPresets;
 
@@ -248,32 +284,104 @@ export function AddProductForm({
           </div>
 
           <div className="md:col-span-2">
-            <FieldLabel>Image *</FieldLabel>
-            <div className="mb-2 flex flex-wrap gap-2">
-              {imagePresets[productType].map((preset) => (
-                <button
-                  key={preset.url}
-                  type="button"
-                  onClick={() => setImageUrl(preset.url)}
+            <FieldLabel>Product Photo *</FieldLabel>
+            <div className="space-y-4">
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <label
+                  htmlFor="product-image-upload"
                   className={cn(
-                    "rounded-full border px-3 py-1 text-[11px] transition-colors",
-                    imageUrl === preset.url
-                      ? "border-admin-primary bg-admin-primary/10 text-admin-primary"
-                      : "border-admin-border text-admin-muted hover:border-admin-primary/50",
+                    "flex min-h-[180px] flex-1 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-6 py-8 text-center transition-colors",
+                    imageFile
+                      ? "border-admin-primary bg-admin-primary/5"
+                      : "border-admin-border bg-admin-canvas hover:border-admin-primary/50",
                   )}
                 >
-                  {preset.label}
-                </button>
-              ))}
+                  <ImagePlus className="mb-3 size-8 text-admin-muted" />
+                  <span className="text-sm font-medium text-admin-ink">
+                    {imageFile ? imageFile.name : "Click to upload a photo"}
+                  </span>
+                  <span className="mt-1 text-xs text-admin-muted">
+                    JPG, PNG, or WebP up to 5 MB
+                  </span>
+                  <input
+                    ref={fileInputRef}
+                    id="product-image-upload"
+                    name="image"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="sr-only"
+                    onChange={(event) =>
+                      handleImageFileChange(event.target.files?.[0] ?? null)
+                    }
+                  />
+                </label>
+
+                {previewImageUrl ? (
+                  <div className="relative h-[180px] w-full overflow-hidden rounded-xl border border-admin-border bg-admin-canvas sm:w-[180px]">
+                    <Image
+                      src={previewImageUrl}
+                      alt="Product preview"
+                      fill
+                      unoptimized={previewImageUrl.startsWith("blob:")}
+                      className="object-cover"
+                    />
+                    {imageFile ? (
+                      <button
+                        type="button"
+                        onClick={clearSelectedImage}
+                        className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white transition-colors hover:bg-black/80"
+                        aria-label="Remove uploaded photo"
+                      >
+                        <X className="size-3.5" />
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+
+              <div>
+                <p className="mb-2 text-xs text-admin-muted">
+                  Or choose a preset / paste an image URL
+                </p>
+                <div className="mb-2 flex flex-wrap gap-2">
+                  {imagePresets[productType].map((preset) => (
+                    <button
+                      key={preset.url}
+                      type="button"
+                      onClick={() => {
+                        clearSelectedImage();
+                        setImageUrl(preset.url);
+                      }}
+                      className={cn(
+                        "rounded-full border px-3 py-1 text-[11px] transition-colors",
+                        !imageFile && imageUrl === preset.url
+                          ? "border-admin-primary bg-admin-primary/10 text-admin-primary"
+                          : "border-admin-border text-admin-muted hover:border-admin-primary/50",
+                      )}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+                <Input
+                  name="imageUrl"
+                  value={imageUrl}
+                  onChange={(e) => {
+                    if (imageFile) {
+                      clearSelectedImage();
+                    }
+                    setImageUrl(e.target.value);
+                  }}
+                  placeholder="https://... or leave blank when uploading"
+                  className="bg-admin-canvas"
+                />
+              </div>
             </div>
-            <Input
-              name="imageUrl"
-              required
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://..."
-              className="bg-admin-canvas"
-            />
+            {!hasImage ? (
+              <p className="mt-2 text-xs text-admin-muted">
+                Upload a photo or provide an image URL before saving.
+              </p>
+            ) : null}
           </div>
 
           {productType === "apparel" && (
@@ -316,7 +424,7 @@ export function AddProductForm({
 
         <Button
           type="submit"
-          disabled={pending}
+          disabled={pending || !hasImage}
           className="mt-6 bg-admin-primary text-white hover:bg-admin-primary/90"
         >
           {pending ? "Adding..." : "Add Product to Store"}
@@ -330,7 +438,7 @@ export function AddProductForm({
         collection={collection}
         price={price}
         originalPrice={originalPrice}
-        imageUrl={imageUrl}
+        imageUrl={previewImageUrl}
         badge={badge}
         sizes={sizes}
         colors={colors}

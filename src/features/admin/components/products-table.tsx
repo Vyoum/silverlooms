@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteProductAction } from "@/features/admin/actions";
+import { EditProductDialog } from "@/features/admin/components/edit-product-dialog";
 import { ProductInventoryEditor } from "@/features/admin/components/product-inventory-editor";
 import type { ProductType } from "@/features/admin/lib/product-presets";
 import type { AdminProductRow } from "@/features/admin/types";
@@ -28,9 +29,8 @@ export function ProductsTable({
 }: ProductsTableProps) {
   const [filter, setFilter] = useState<ProductType | "all">(defaultFilter);
   const [pending, startTransition] = useTransition();
-  const [editingProduct, setEditingProduct] = useState<AdminProductRow | null>(
-    null,
-  );
+  const [stockProduct, setStockProduct] = useState<AdminProductRow | null>(null);
+  const [editProduct, setEditProduct] = useState<AdminProductRow | null>(null);
   const router = useRouter();
 
   const filtered = useMemo(
@@ -122,7 +122,14 @@ export function ProductsTable({
                     <div className="flex items-center justify-end gap-4">
                       <button
                         type="button"
-                        onClick={() => setEditingProduct(product)}
+                        onClick={() => setEditProduct(product)}
+                        className="text-[11px] font-medium uppercase tracking-wider text-admin-primary hover:underline"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setStockProduct(product)}
                         className="text-[11px] font-medium uppercase tracking-wider text-admin-primary hover:underline"
                       >
                         Stock
@@ -148,11 +155,19 @@ export function ProductsTable({
           </table>
         </div>
       )}
-      {editingProduct && (
+      {editProduct && (
+        <EditProductDialog
+          productId={editProduct.id}
+          productName={editProduct.name}
+          onClose={() => setEditProduct(null)}
+          onSaved={() => router.refresh()}
+        />
+      )}
+      {stockProduct && (
         <ProductInventoryEditor
-          productId={editingProduct.id}
-          productName={editingProduct.name}
-          onClose={() => setEditingProduct(null)}
+          productId={stockProduct.id}
+          productName={stockProduct.name}
+          onClose={() => setStockProduct(null)}
           onSaved={() => router.refresh()}
         />
       )}
