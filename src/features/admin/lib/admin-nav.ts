@@ -5,5 +5,5 @@ export const adminNavItems = [
   { label: "Users", href: "/admin/users", icon: "user-cog", superAdminOnly: true },
   { label: "Commerce", href: "/admin/commerce", icon: "shopping-bag" },
   { label: "Community", href: "/admin/community", icon: "users" },
-  { label: "Content", href: "/admin/content", icon: "file-text" },
+  { label: "Site Content", href: "/admin/content", icon: "file-text" },
 ] as const;
