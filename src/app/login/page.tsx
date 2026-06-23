@@ -16,6 +16,7 @@ interface PageProps {
 
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams;
+  let isLoggedIn = false;
 
   if (isAuthConfigured()) {
     const supabase = await createClient();
@@ -23,7 +24,9 @@ export default async function Page({ searchParams }: PageProps) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (user) {
+    isLoggedIn = Boolean(user);
+
+    if (user && !params.error) {
       redirect(getPostLoginRedirect(params.redirect));
     }
   }
@@ -36,6 +39,7 @@ export default async function Page({ searchParams }: PageProps) {
     <LoginPage
       redirectTo={redirectTo}
       error={params.error ? decodeURIComponent(params.error) : undefined}
+      isLoggedIn={isLoggedIn}
     />
   );
 }
