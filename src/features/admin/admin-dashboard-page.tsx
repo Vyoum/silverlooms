@@ -1,6 +1,7 @@
 import { getDashboardData } from "@/features/admin/services/analytics-service";
 import { KpiCards } from "@/features/admin/components/kpi-cards";
 import { LowStockAlerts } from "@/features/admin/components/low-stock-alerts";
+import { ManagementHub } from "@/features/admin/components/management-hub";
 import { PendingOrdersCard } from "@/features/admin/components/pending-orders-card";
 import { QuickActions } from "@/features/admin/components/quick-actions";
 import { RecentOrdersTable } from "@/features/admin/components/recent-orders-table";
@@ -17,23 +18,26 @@ export async function AdminDashboardPage() {
         apparelCount={data.apparelCount}
         jewelleryCount={data.jewelleryCount}
       />
-      <KpiCards metrics={data.kpis} />
+      <ManagementHub />
+      <div id="analytics" className="space-y-6 scroll-mt-8">
+        <KpiCards metrics={data.kpis} />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="space-y-6">
-          <RevenueChart
-            chartData={data.chartData}
-            revenueSummary={data.revenueSummary}
-          />
-          <RecentOrdersTable orders={data.recentOrders} />
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="space-y-6">
+            <RevenueChart
+              chartData={data.chartData}
+              revenueSummary={data.revenueSummary}
+            />
+            <RecentOrdersTable orders={data.recentOrders} />
+          </div>
+          <div className="space-y-6">
+            <PendingOrdersCard orders={data.pendingOrders} />
+            <LowStockAlerts items={data.lowStockItems} />
+          </div>
         </div>
-        <div className="space-y-6">
-          <PendingOrdersCard orders={data.pendingOrders} />
-          <LowStockAlerts items={data.lowStockItems} />
-        </div>
+
+        <QuickActions />
       </div>
-
-      <QuickActions />
     </div>
   );
 }

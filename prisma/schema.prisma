@@ -224,3 +224,12 @@ model Review {
   @@unique([userId, productId])
   @@map("reviews")
 }
+
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_content")
+}
