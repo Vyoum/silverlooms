@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { OrderStatus } from "@/generated/prisma/client";
 import type { RecentOrderRow } from "../types";
 
@@ -20,9 +21,12 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
         <h3 className="font-serif text-xl font-medium text-admin-ink">
           Recent Orders
         </h3>
-        <span className="text-[11px] font-medium uppercase tracking-wider text-admin-muted">
-          {orders.length} orders
-        </span>
+        <Link
+          href="/admin/commerce"
+          className="text-[11px] font-medium uppercase tracking-wider text-admin-primary hover:underline"
+        >
+          View all →
+        </Link>
       </div>
 
       {orders.length === 0 ? (
@@ -47,7 +51,14 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                   key={order.id}
                   className="border-b border-admin-border/60 last:border-0"
                 >
-                  <td className="py-4 font-medium text-admin-ink">{order.id}</td>
+                  <td className="py-4 font-medium text-admin-ink">
+                    <Link
+                      href={`/admin/commerce?order=${encodeURIComponent(order.id)}`}
+                      className="hover:text-admin-primary"
+                    >
+                      {order.id}
+                    </Link>
+                  </td>
                   <td className="py-4 text-admin-muted">{order.customer}</td>
                   <td className="py-4 text-admin-muted">{order.date}</td>
                   <td className="py-4">

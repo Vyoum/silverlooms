@@ -96,18 +96,61 @@ export async function requireAccountProfile(): Promise<AccountProfile> {
 }
 
 export async function requireAuthenticatedUser() {
-  const user = await getSessionUser();
-  if (!user) {
+  const authUser = await getSupabaseAuthUser();
+  if (!authUser) {
     redirect("/login");
   }
-  return user;
+
+  try {
+    const user = await syncUserFromSupabase(authUser);
+    if (!user) {
+      redirect(
+        "/login?error=" +
+          encodeURIComponent("Could not resolve your account email after sign-in."),
+      );
+    }
+    return user;
+  } catch (syncError) {
+    console.error("[auth] requireAuthenticatedUser sync failed:", syncError);
+    redirect(
+      "/login?error=" +
+        encodeURIComponent(
+          "Could not sync your account to the database. Check DATABASE_URL in .env.local and restart the dev server.",
+        ),
+    );
+  }
 }
 
 export async function requireAdminUser() {
-  const user = await requireAuthenticatedUser();
-  if (!canAccessAdmin(user.role)) {
-    redirect("/");
+  const authUser = await getSupabaseAuthUser();
+  if (!authUser) {
+    redirect("/login?redirect=/admin");
   }
+
+  let user: User;
+  try {
+    const synced = await syncUserFromSupabase(authUser);
+    if (!synced) {
+      redirect(
+        "/login?redirect=/admin&error=" +
+          encodeURIComponent("Could not resolve your account email after sign-in."),
+      );
+    }
+    user = synced;
+  } catch (syncError) {
+    console.error("[auth] requireAdminUser sync failed:", syncError);
+    redirect(
+      "/login?redirect=/admin&error=" +
+        encodeURIComponent(
+          "Could not sync your account to the database. Check DATABASE_URL in .env.local and restart the dev server.",
+        ),
+    );
+  }
+
+  if (!canAccessAdmin(user.role)) {
+    redirect("/admin-access");
+  }
+
   return user;
 }
 

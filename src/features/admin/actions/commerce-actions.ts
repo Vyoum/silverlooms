@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import type { OrderStatus } from "@/generated/prisma/client";
+import { createShipmentForPaidOrder } from "@/features/checkout/services/delhivery-shipment-service";
 import { requireAdminUser } from "@/features/auth/services/session";
 import {
+  getOrderDetailForAdmin,
   listOrdersForAdmin,
   updateOrderStatus,
 } from "@/features/admin/services/order-admin-service";
@@ -18,6 +20,11 @@ const allowedStatuses: OrderStatus[] = [
   "CANCELLED",
 ];
 
+function revalidateCommercePaths() {
+  revalidatePath("/admin");
+  revalidatePath("/admin/commerce");
+}
+
 export async function updateOrderStatusAction(
   orderId: string,
   status: OrderStatus,
@@ -30,13 +37,59 @@ export async function updateOrderStatusAction(
     }
 
     await updateOrderStatus(orderId, status);
-
-    revalidatePath("/admin");
-    revalidatePath("/admin/commerce");
+    revalidateCommercePaths();
 
     return { success: true };
   } catch {
     return { success: false, error: "Could not update order status." };
+  }
+}
+
+export async function getOrderDetailAction(orderId: string) {
+  try {
+    await requireAdminUser();
+    const order = await getOrderDetailForAdmin(orderId);
+
+    if (!order) {
+      return { success: false as const, error: "Order not found." };
+    }
+
+    return { success: true as const, order };
+  } catch {
+    return { success: false as const, error: "Could not load order details." };
+  }
+}
+
+export async function retryDelhiveryShipmentAction(
+  orderId: string,
+): Promise<CommerceActionResult> {
+  try {
+    await requireAdminUser();
+
+    const result = await createShipmentForPaidOrder(orderId);
+
+    if (!result) {
+      return {
+        success: false,
+        error: "Shipment was not created. Check Delhivery configuration and shipping details.",
+      };
+    }
+
+    if (!result.delhiveryWaybill) {
+      return {
+        success: false,
+        error:
+          result.delhiveryShipmentError ??
+          "Shipment request failed. See order details for more information.",
+      };
+    }
+
+    revalidateCommercePaths();
+    return { success: true };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Could not create Delhivery shipment.";
+    return { success: false, error: message };
   }
 }
 

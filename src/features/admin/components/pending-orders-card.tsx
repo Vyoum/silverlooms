@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { PendingOrderRow } from "../types";
 
 interface PendingOrdersCardProps {
@@ -11,9 +12,12 @@ export function PendingOrdersCard({ orders }: PendingOrdersCardProps) {
         <h3 className="font-serif text-xl font-medium text-admin-ink">
           Pending Orders
         </h3>
-        <span className="rounded-full bg-admin-warning/10 px-2.5 py-1 text-[11px] font-medium text-admin-warning">
+        <Link
+          href="/admin/commerce"
+          className="rounded-full bg-admin-warning/10 px-2.5 py-1 text-[11px] font-medium text-admin-warning hover:underline"
+        >
           {orders.length} Active
-        </span>
+        </Link>
       </div>
 
       {orders.length === 0 ? (
@@ -21,9 +25,10 @@ export function PendingOrdersCard({ orders }: PendingOrdersCardProps) {
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div
+            <Link
               key={order.orderNumber}
-              className="rounded-xl border border-admin-border bg-admin-canvas p-4"
+              href={`/admin/commerce?order=${encodeURIComponent(order.orderNumber)}`}
+              className="block rounded-xl border border-admin-border bg-admin-canvas p-4 transition-colors hover:border-admin-primary/40"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -36,7 +41,7 @@ export function PendingOrdersCard({ orders }: PendingOrdersCardProps) {
                   {order.note}
                 </p>
               )}
-            </div>
+            </Link>
           ))}
         </div>
       )}
