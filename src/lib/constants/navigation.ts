@@ -1,3 +1,5 @@
+import { KURTIS_CATEGORY_OPTIONS } from "@/features/kurtis/lib/kurtis-filters";
+
 export const mainNavLinks = [
   { label: "Apparel", href: "/kurtis" },
   { label: "Jewellery", href: "/jewellery" },
@@ -33,6 +35,15 @@ export const jewelleryCategoryTabs = [
   "Pendants",
 ] as const;
 
+export const jewelleryCategoryLinks = [
+  { label: "All Jewellery", href: "/jewellery" },
+  { label: "Necklace Sets", href: "/jewellery?category=necklace-sets" },
+  { label: "Earrings", href: "/jewellery?category=earrings" },
+  { label: "Bangles & Kadas", href: "/jewellery?category=bangles-kadas" },
+  { label: "Rings", href: "/jewellery?category=rings" },
+  { label: "Pendants", href: "/jewellery?category=pendants" },
+] as const;
+
 export const jewelleryMaterialFilters = [
   "German Silver",
   "Anti-Tarnish",
@@ -64,3 +75,43 @@ export const footerLinks = {
     { label: "Privacy Policy", href: "#" },
   ],
 } as const;
+
+export interface MobileNavLink {
+  label: string;
+  href: string;
+}
+
+export interface MobileNavSection {
+  title: string;
+  links: readonly MobileNavLink[];
+}
+
+export const mobileNavSections: MobileNavSection[] = [
+  {
+    title: "Shop",
+    links: [
+      { label: "All Apparel", href: "/kurtis" },
+      { label: "All Jewellery", href: "/jewellery" },
+      { label: "New In", href: "/kurtis?sort=new" },
+      { label: "Best Sellers", href: "/kurtis?sort=bestseller" },
+    ],
+  },
+  {
+    title: "Apparel",
+    links: KURTIS_CATEGORY_OPTIONS.map((option) => ({
+      label: option.label,
+      href: `/kurtis?category=${option.slug}`,
+    })),
+  },
+  {
+    title: "Jewellery",
+    links: [...jewelleryCategoryLinks],
+  },
+  {
+    title: "Discover",
+    links: [
+      { label: "About Us", href: "/#editorial" },
+      { label: "Good Reads", href: "/#good-reads" },
+    ],
+  },
+];

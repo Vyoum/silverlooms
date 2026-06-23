@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { decrementInventoryForOrder } from "@/features/admin/services/inventory-service";
+import { createShipmentForPaidOrder } from "@/features/checkout/services/delhivery-shipment-service";
 
 export async function markOrderPaid(input: {
   orderId?: string;
@@ -17,6 +18,13 @@ export async function markOrderPaid(input: {
   }
 
   if (order.paymentStatus === "PAID") {
+    if (!order.delhiveryWaybill) {
+      try {
+        await createShipmentForPaidOrder(order.id);
+      } catch (error) {
+        console.error("[delhivery] Failed after payment:", error);
+      }
+    }
     return order;
   }
 
@@ -35,6 +43,12 @@ export async function markOrderPaid(input: {
   });
 
   await decrementInventoryForOrder(order.id);
+
+  try {
+    await createShipmentForPaidOrder(updated.id);
+  } catch (error) {
+    console.error("[delhivery] Failed after payment:", error);
+  }
 
   return updated;
 }

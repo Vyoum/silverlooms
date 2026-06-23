@@ -7,6 +7,10 @@ export const KURTIS_CATEGORY_OPTIONS = [
   { slug: "straight-kurtis", label: "Straight Kurtis", pattern: /straight kurti/i },
   { slug: "a-line-kurtis", label: "A-Line Kurtis", pattern: /a-line/i },
   { slug: "anarkali", label: "Anarkali", pattern: /anarkali/i },
+  { slug: "sarees", label: "Sarees", pattern: /saree/i },
+  { slug: "leheriya", label: "Leheriya", pattern: /leheriya/i },
+  { slug: "bandhej", label: "Bandhej", pattern: /bandhej|bandhani/i },
+  { slug: "suits", label: "Suits", pattern: /suit/i },
 ] as const;
 
 export type KurtisCategorySlug = (typeof KURTIS_CATEGORY_OPTIONS)[number]["slug"];

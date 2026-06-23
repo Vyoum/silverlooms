@@ -6,7 +6,7 @@ import { Heart, ShoppingBag } from "lucide-react";
 import { AccountNavButton } from "@/features/auth/components/account-nav-button";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchDialog } from "@/components/layout/search-dialog";
-import { mainNavLinks, homeNavLinks } from "@/lib/constants/navigation";
+import { mainNavLinks, homeNavLinks, mobileNavSections } from "@/lib/constants/navigation";
 import { useCart } from "@/features/cart/cart-provider";
 import { useWishlist } from "@/features/wishlist/wishlist-provider";
 import { cn } from "@/lib/utils";
@@ -74,7 +74,7 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
     >
       <div className="relative mx-auto flex h-20 max-w-[1280px] items-center px-4 md:px-16">
         <div className="flex min-w-0 flex-1 items-center">
-          <MobileNav links={navLinks} isDark={isDark} />
+          <MobileNav sections={mobileNavSections} isDark={isDark} />
           <nav className="hidden items-center gap-8 md:flex">
             {(isHome ? navLinks.slice(0, 2) : navLinks).map((link) => (
               <NavLink
