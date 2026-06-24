@@ -1,6 +1,6 @@
 "use client";
 
-import { signInWithGoogleAction } from "@/features/auth/actions";
+import Link from "next/link";
 
 function GoogleIcon() {
   return (
@@ -38,18 +38,17 @@ interface GoogleSignInButtonProps {
 }
 
 export function GoogleSignInButton({ redirectTo }: GoogleSignInButtonProps) {
+  const href = `/api/auth/google?redirect=${encodeURIComponent(redirectTo)}`;
+
   return (
-    <form action={signInWithGoogleAction}>
-      <input type="hidden" name="redirect" value={redirectTo} />
-      <button
-        type="submit"
-        className="group flex w-full items-center justify-center gap-3 border border-white/20 bg-transparent px-5 py-3.5 transition-all duration-300 hover:border-heritage-gold md:px-6 md:py-4"
-      >
-        <GoogleIcon />
-        <span className="text-[10px] uppercase tracking-widest text-white sm:text-xs">
-          Continue with Google
-        </span>
-      </button>
-    </form>
+    <Link
+      href={href}
+      className="group flex w-full items-center justify-center gap-3 border border-white/20 bg-transparent px-5 py-3.5 transition-all duration-300 hover:border-heritage-gold md:px-6 md:py-4"
+    >
+      <GoogleIcon />
+      <span className="text-[10px] uppercase tracking-widest text-white sm:text-xs">
+        Continue with Google
+      </span>
+    </Link>
   );
 }

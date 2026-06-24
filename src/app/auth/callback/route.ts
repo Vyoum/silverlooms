@@ -7,7 +7,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   const requestUrl = request.nextUrl;
-  const siteUrl = resolveSiteUrlFromRequest(requestUrl);
+  const siteUrl = resolveSiteUrlFromRequest(request);
   const code = requestUrl.searchParams.get("code");
   const safeRedirect = getPostLoginRedirect(
     requestUrl.searchParams.get("redirect"),

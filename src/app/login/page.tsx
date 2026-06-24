@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { LoginPage } from "@/features/auth/components/login-page";
-import { ACCOUNT_ROUTE, getPostLoginRedirect } from "@/lib/auth/routes";
+import { HOME_ROUTE, getPostLoginRedirect } from "@/lib/auth/routes";
 import { BRAND_NAME } from "@/lib/constants/brand";
 import { createClient } from "@/lib/supabase/server";
 import { isAuthConfigured } from "@/lib/supabase/env";
@@ -30,7 +30,7 @@ export default async function Page({ searchParams }: PageProps) {
 
   const redirectTo = params.redirect?.startsWith("/")
     ? params.redirect
-    : ACCOUNT_ROUTE;
+    : HOME_ROUTE;
 
   return (
     <LoginPage

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import {
   signInWithEmailAction,
   signUpWithEmailAction,
@@ -15,8 +15,13 @@ interface LoginFormProps {
 
 export function LoginForm({ redirectTo }: LoginFormProps) {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [origin, setOrigin] = useState("");
   const action = mode === "signin" ? signInWithEmailAction : signUpWithEmailAction;
   const [state, formAction, pending] = useActionState(action, initialState);
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   return (
     <div>
@@ -33,6 +38,7 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
       )}
 
       <form action={formAction} className="space-y-6 md:space-y-10">
+        <input type="hidden" name="siteOrigin" value={origin} readOnly />
         <input type="hidden" name="redirect" value={redirectTo} />
 
         <div className="relative pt-2">
@@ -82,7 +88,7 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
 
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || !origin}
           className="mt-2 w-full bg-cream py-4 text-[12px] uppercase tracking-[0.15em] text-onyx transition-colors duration-500 hover:bg-heritage-gold active:scale-[0.98] disabled:opacity-60 md:mt-4 md:py-6 md:text-[13px]"
         >
           {pending ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}

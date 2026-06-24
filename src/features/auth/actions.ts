@@ -1,8 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { buildAuthCallbackUrl, getSiteUrl } from "@/lib/auth/site-url";
-import { ACCOUNT_ROUTE, getPostLoginRedirect } from "@/lib/auth/routes";
+import { buildAuthCallbackUrl, getSiteUrl, resolveAuthSiteUrl } from "@/lib/auth/site-url";
+import { HOME_ROUTE, getPostLoginRedirect } from "@/lib/auth/routes";
 import { syncUserFromSupabase } from "@/features/auth/services/user-sync";
 import { createClient } from "@/lib/supabase/server";
 
@@ -17,7 +17,7 @@ export async function signInWithEmailAction(
 ): Promise<AuthActionResult> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const redirectTo = String(formData.get("redirect") ?? ACCOUNT_ROUTE);
+  const redirectTo = String(formData.get("redirect") ?? HOME_ROUTE);
 
   if (!email || !password) {
     return { success: false, error: "Email and password are required." };
@@ -38,7 +38,12 @@ export async function signInWithEmailAction(
     }
   }
 
-  redirect(getPostLoginRedirect(redirectTo));
+  const siteUrl = resolveAuthSiteUrl(
+    String(formData.get("siteOrigin") ?? ""),
+    await getSiteUrl(),
+  );
+
+  redirect(`${siteUrl}${getPostLoginRedirect(redirectTo)}`);
 }
 
 export async function signUpWithEmailAction(
@@ -47,7 +52,7 @@ export async function signUpWithEmailAction(
 ): Promise<AuthActionResult> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const redirectTo = String(formData.get("redirect") ?? ACCOUNT_ROUTE);
+  const redirectTo = String(formData.get("redirect") ?? HOME_ROUTE);
 
   if (!email || !password) {
     return { success: false, error: "Email and password are required." };
@@ -58,7 +63,10 @@ export async function signUpWithEmailAction(
   }
 
   const supabase = await createClient();
-  const siteUrl = await getSiteUrl();
+  const siteUrl = resolveAuthSiteUrl(
+    String(formData.get("siteOrigin") ?? ""),
+    await getSiteUrl(),
+  );
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -78,9 +86,12 @@ export async function signUpWithEmailAction(
 }
 
 export async function signInWithGoogleAction(formData: FormData) {
-  const redirectTo = String(formData.get("redirect") ?? ACCOUNT_ROUTE);
+  const redirectTo = String(formData.get("redirect") ?? HOME_ROUTE);
   const supabase = await createClient();
-  const siteUrl = await getSiteUrl();
+  const siteUrl = resolveAuthSiteUrl(
+    String(formData.get("siteOrigin") ?? ""),
+    await getSiteUrl(),
+  );
   const safeRedirect = redirectTo.startsWith("/") ? redirectTo : "/";
 
   const { data, error } = await supabase.auth.signInWithOAuth({

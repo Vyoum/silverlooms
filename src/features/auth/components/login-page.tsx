@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LoginForm } from "./login-form";
 import { GoogleSignInButton } from "./google-sign-in-button";
 import { BRAND_NAME } from "@/lib/constants/brand";
-import { ACCOUNT_ROUTE } from "@/lib/auth/routes";
+import { HOME_ROUTE } from "@/lib/auth/routes";
 import { isAuthConfigured } from "@/lib/supabase/env";
 
 interface LoginPageProps {
@@ -11,7 +11,7 @@ interface LoginPageProps {
   error?: string;
 }
 
-export function LoginPage({ redirectTo = ACCOUNT_ROUTE, error }: LoginPageProps) {
+export function LoginPage({ redirectTo = HOME_ROUTE, error }: LoginPageProps) {
   const authConfigured = isAuthConfigured();
 
   return (

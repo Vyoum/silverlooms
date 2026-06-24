@@ -5,6 +5,8 @@ export const AUTH_ROUTES = ["/login", "/auth/callback"] as const;
 
 export const ACCOUNT_ROUTE = "/account" as const;
 
+export const HOME_ROUTE = "/" as const;
+
 export function isProtectedRoute(pathname: string) {
   return PROTECTED_ROUTE_PREFIXES.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`),
@@ -23,12 +25,12 @@ export function getPostLoginRedirect(path: string | null | undefined) {
     !path ||
     !path.startsWith("/") ||
     path.startsWith("//") ||
-    path === "/"
+    path === HOME_ROUTE
   ) {
-    return ACCOUNT_ROUTE;
+    return HOME_ROUTE;
   }
   if (isAuthRoute(path) || path === "/login") {
-    return ACCOUNT_ROUTE;
+    return HOME_ROUTE;
   }
   return path;
 }
