@@ -11,21 +11,24 @@ import { MarqueeSection } from "./components/marquee-section";
 import { NewArrivalsSection } from "./components/new-arrivals-section";
 import { NewsletterSection } from "./components/newsletter-section";
 import { StyleSection } from "./components/style-section";
+import { getHomepageContent } from "@/lib/site-content/homepage";
 
-export function HomePage() {
+export async function HomePage() {
+  const content = await getHomepageContent();
+
   return (
     <PageShell>
-      <AnnouncementBar />
+      <AnnouncementBar content={content.announcement} />
       <SiteHeader variant="home" />
       <main>
-        <HeroSection className="-mt-20 pt-20" />
+        <HeroSection className="-mt-20 pt-20" content={content.hero} />
         <MarqueeSection />
         <FabricSection />
         <StyleSection />
         <NewArrivalsSection />
         <GoodReadsSection />
-        <EditorialSection />
-        <BrandStorySection />
+        <EditorialSection content={content.editorial} />
+        <BrandStorySection content={content.brandStory} />
         <NewsletterSection />
       </main>
       <SiteFooter />

@@ -231,6 +231,8 @@ export async function updateProductAction(
 
 export async function deleteProductAction(productId: string) {
   try {
+    await requireAdminUser();
+
     const { prisma } = await import("@/lib/db");
     await prisma.product.delete({ where: { id: productId } });
     revalidatePath("/");

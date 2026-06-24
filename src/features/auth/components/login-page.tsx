@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LoginForm } from "./login-form";
 import { GoogleSignInButton } from "./google-sign-in-button";
+import { signOutAction } from "@/features/auth/actions";
 import { BRAND_NAME } from "@/lib/constants/brand";
 import { HOME_ROUTE } from "@/lib/auth/routes";
 import { isAuthConfigured } from "@/lib/supabase/env";
@@ -9,9 +10,14 @@ import { isAuthConfigured } from "@/lib/supabase/env";
 interface LoginPageProps {
   redirectTo?: string;
   error?: string;
+  isLoggedIn?: boolean;
 }
 
-export function LoginPage({ redirectTo = HOME_ROUTE, error }: LoginPageProps) {
+export function LoginPage({
+  redirectTo = HOME_ROUTE,
+  error,
+  isLoggedIn = false,
+}: LoginPageProps) {
   const authConfigured = isAuthConfigured();
 
   return (
@@ -72,6 +78,17 @@ export function LoginPage({ redirectTo = HOME_ROUTE, error }: LoginPageProps) {
                       {error}
                     </p>
                   )}
+
+                  {isLoggedIn && error ? (
+                    <form action={signOutAction} className="mb-5">
+                      <button
+                        type="submit"
+                        className="text-[11px] uppercase tracking-wider text-heritage-gold underline underline-offset-2"
+                      >
+                        Sign out and try a different account
+                      </button>
+                    </form>
+                  ) : null}
 
                   <GoogleSignInButton redirectTo={redirectTo} />
 
