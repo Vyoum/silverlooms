@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   title: "Silver Looms | The Art of Wearing India",
   description:
     "Discover artisanal apparel and exquisite silver jewellery. Woven in tradition, dressed in silver.",
+  icons: {
+    icon: "/images/brand/logo.png",
+    apple: "/images/brand/logo.png",
+  },
 };
 
 export default function RootLayout({

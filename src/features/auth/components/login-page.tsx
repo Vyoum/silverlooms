@@ -38,12 +38,7 @@ export function LoginPage({
 
       <main className="relative z-10 flex min-h-dvh flex-col lg:flex-row">
         <section className="flex flex-1 flex-col justify-between px-6 pb-8 pt-[max(1.25rem,env(safe-area-inset-top))] md:px-12 lg:px-16 lg:py-12">
-          <BrandLogo
-            size="sm"
-            href="/"
-            priority
-            className="brightness-0 invert"
-          />
+          <BrandLogo size="sm" href="/" priority />
 
           <div className="mt-auto hidden max-w-lg lg:block">
             <p className="font-serif text-4xl leading-tight text-cream xl:text-5xl">
