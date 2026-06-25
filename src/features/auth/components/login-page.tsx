@@ -39,7 +39,7 @@ export function LoginPage({
       <main className="relative z-10 flex min-h-dvh flex-col lg:flex-row">
         <section className="flex flex-1 flex-col justify-between px-6 pb-8 pt-[max(1.25rem,env(safe-area-inset-top))] md:px-12 lg:px-16 lg:py-12">
           <BrandLogo
-            size="md"
+            size="lg"
             showName
             href="/"
             priority

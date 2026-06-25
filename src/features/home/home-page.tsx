@@ -25,7 +25,7 @@ export async function HomePage() {
       <AnnouncementBar content={content.announcement} />
       <SiteHeader variant="home" />
       <main>
-        <HeroSection className="-mt-20 pt-20" content={content.hero} />
+        <HeroSection className="-mt-32 pt-32" content={content.hero} />
         <MarqueeSection items={marqueeItems} />
         <FabricSection />
         <StyleSection />

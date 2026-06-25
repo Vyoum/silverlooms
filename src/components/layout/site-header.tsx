@@ -95,7 +95,7 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
         className,
       )}
     >
-      <div className="relative mx-auto flex h-[5.5rem] max-w-[1280px] items-center px-4 md:px-16">
+      <div className="relative mx-auto flex h-32 max-w-[1280px] items-center px-4 md:px-16">
         {/* Left: hamburger (mobile) + logo (desktop) */}
         <div className="flex min-w-0 flex-1 items-center gap-4">
           <MobileNav sections={navSections} isDark={isDark} />

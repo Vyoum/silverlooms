@@ -68,7 +68,7 @@ export async function KurtisPage({ searchParams }: KurtisPageProps) {
     <PageShell>
       <SiteHeader />
       <main>
-        <CategoryHero hero={hero} className="-mt-20 pt-20" />
+        <CategoryHero hero={hero} className="-mt-32 pt-32" />
         <Suspense fallback={null}>
           <ActiveFilters
             filters={filters}

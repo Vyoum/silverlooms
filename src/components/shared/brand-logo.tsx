@@ -9,17 +9,17 @@ import {
 } from "@/lib/constants/brand";
 import { cn } from "@/lib/utils";
 
-const sizeHeights = {
-  sm: 44,
-  md: 54,
-  lg: 72,
+const sizeWidths = {
+  sm: 150,
+  md: 210,
+  lg: 280,
 } as const;
 
 interface BrandLogoProps {
   className?: string;
   nameClassName?: string;
   href?: string | null;
-  size?: keyof typeof sizeHeights;
+  size?: keyof typeof sizeWidths;
   priority?: boolean;
   showName?: boolean;
 }
@@ -32,8 +32,8 @@ export function BrandLogo({
   priority = false,
   showName = false,
 }: BrandLogoProps) {
-  const height = sizeHeights[size];
-  const width = Math.round((BRAND_LOGO_WIDTH / BRAND_LOGO_HEIGHT) * height);
+  const width = sizeWidths[size];
+  const height = Math.round((BRAND_LOGO_HEIGHT / BRAND_LOGO_WIDTH) * width);
 
   const content = (
     <>
@@ -44,8 +44,8 @@ export function BrandLogo({
         height={height}
         priority={priority}
         aria-hidden={showName}
-        className={cn("h-auto w-auto object-contain", !showName && className)}
-        style={{ height, width: "auto", maxWidth: width }}
+        className={cn("h-auto object-contain", !showName && className)}
+        style={{ width, height: "auto" }}
       />
       {showName ? (
         <span
