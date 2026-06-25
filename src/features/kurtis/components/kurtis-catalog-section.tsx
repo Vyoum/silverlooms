@@ -9,8 +9,8 @@ import {
   type ProductSort,
 } from "@/features/catalog/lib/product-sort";
 import type { Product } from "@/lib/types/product";
+import type { CatalogCategoryOption } from "@/features/kurtis/lib/kurtis-filters";
 import {
-  KURTIS_CATEGORY_OPTIONS,
   getCategoryLabel,
   type KurtisCatalogFilters,
 } from "@/features/kurtis/lib/kurtis-filters";
@@ -23,6 +23,7 @@ interface KurtisCatalogSectionProps {
   products: Product[];
   filters: KurtisCatalogFilters;
   baseProducts: Product[];
+  categoryOptions: CatalogCategoryOption[];
 }
 
 type PanelType = "category" | "filter" | null;
@@ -54,6 +55,7 @@ export function KurtisCatalogSection({
   products,
   filters,
   baseProducts,
+  categoryOptions,
 }: KurtisCatalogSectionProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -61,13 +63,15 @@ export function KurtisCatalogSection({
 
   const categoryCounts = useMemo(
     () =>
-      KURTIS_CATEGORY_OPTIONS.map((option) => ({
+      categoryOptions.map((option) => ({
         ...option,
         count: baseProducts.filter((product) =>
-          option.pattern.test(product.category),
+          option.keywords.some((keyword) =>
+            product.category.toLowerCase().includes(keyword.toLowerCase()),
+          ),
         ).length,
       })),
-    [baseProducts],
+    [baseProducts, categoryOptions],
   );
 
   const colorOptions = useMemo(() => {
@@ -103,7 +107,7 @@ export function KurtisCatalogSection({
     router.push("/kurtis");
   };
 
-  const activeCategoryLabel = getCategoryLabel(filters.category);
+  const activeCategoryLabel = getCategoryLabel(filters.category, categoryOptions);
   const hasActiveFilters =
     filters.sort !== "all" ||
     Boolean(filters.category) ||

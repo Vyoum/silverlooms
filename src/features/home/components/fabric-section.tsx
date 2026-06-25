@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/shared/section-heading";
 const fabrics = [
   { name: "Cotton", image: assets.fabrics.cotton },
   { name: "Lawn Cotton", image: assets.fabrics.lawnCotton },
-  { name: "Shiffon", image: assets.fabrics.mulmulCotton },
+  { name: "Chiffon", image: assets.fabrics.mulmulCotton },
   { name: "Jaipur Fabric", image: assets.fabrics.jaipurFabric },
 ];
 

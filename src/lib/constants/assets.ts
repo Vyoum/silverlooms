@@ -13,8 +13,7 @@ export const assets = {
       "https://www.figma.com/api/mcp/asset/71e687ab-7cb5-417a-9aa7-7f4a60712e5a",
     mulmulCotton:
       "https://www.figma.com/api/mcp/asset/cdc74afa-48fc-49e7-8b99-0da51beca4be",
-    jaipurFabric:
-      "https://www.figma.com/api/mcp/asset/4267f9f3-5961-4ceb-ac69-f2ffe8b79e74",
+    jaipurFabric: "/images/fabrics/jaipur-fabric.jpg",
   },
   styles: {
     threadsOfParadise:

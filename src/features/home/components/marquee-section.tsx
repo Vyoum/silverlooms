@@ -1,13 +1,18 @@
-import { categoryMarquee } from "@/lib/constants/navigation";
+import { categoryMarquee as fallbackMarquee } from "@/lib/constants/navigation";
 
-export function MarqueeSection() {
-  const items = [...categoryMarquee, ...categoryMarquee];
+interface MarqueeSectionProps {
+  items?: string[];
+}
+
+export function MarqueeSection({ items = [...fallbackMarquee] }: MarqueeSectionProps) {
+  const marqueeItems = items.length > 0 ? items : [...fallbackMarquee];
+  const loop = [...marqueeItems, ...marqueeItems];
 
   return (
     <section className="overflow-hidden border-y border-border bg-cream-dark py-4">
       <div className="flex animate-marquee gap-12 whitespace-nowrap">
-        {items.map((item, i) => (
-          <span key={i} className="flex items-center gap-12">
+        {loop.map((item, i) => (
+          <span key={`${item}-${i}`} className="flex items-center gap-12">
             <span className="text-[11px] font-medium uppercase tracking-[2.2px] text-ink">
               {item}
             </span>

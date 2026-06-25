@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   ShoppingBag,
   Store,
+  Tag,
   UserCog,
   Users,
 } from "lucide-react";
@@ -22,6 +23,7 @@ const iconMap = {
   "user-cog": UserCog,
   "file-text": FileText,
   store: Store,
+  tag: Tag,
   gem: Gem,
 };
 

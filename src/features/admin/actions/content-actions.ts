@@ -5,21 +5,16 @@ import { saveProductImage } from "@/features/admin/services/product-image-servic
 import { requireAdminUser } from "@/features/auth/services/session";
 import {
   getHomepageContent,
-  mergeHomepageContent,
   saveHomepageContent,
 } from "@/lib/site-content/homepage";
 import type { HomepageContent } from "@/lib/site-content/types";
 
 export type ContentActionResult = { success: boolean; error?: string };
 
-function parseHomepageForm(formData: FormData): HomepageContent {
-  const current = mergeHomepageContent({});
+async function parseHomepageForm(formData: FormData): Promise<HomepageContent> {
+  const current = await getHomepageContent();
 
   const read = (key: string) => String(formData.get(key) ?? "").trim();
-
-  const heroImageFile = formData.get("heroImage");
-  const editorialImageFile = formData.get("editorialImage");
-  const brandStoryImageFile = formData.get("brandStoryImage");
 
   return {
     announcement: {
@@ -119,7 +114,7 @@ export async function updateHomepageContentAction(
   try {
     await requireAdminUser();
 
-    let content = parseHomepageForm(formData);
+    let content = await parseHomepageForm(formData);
 
     try {
       content = await applyImageUploads(content, formData);

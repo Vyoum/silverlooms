@@ -8,6 +8,7 @@ import {
   type ContentActionResult,
 } from "@/features/admin/actions/content-actions";
 import type { HomepageContent } from "@/lib/site-content/types";
+import { BrandStorySectionPreview } from "@/features/admin/components/brand-story-section-preview";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -216,9 +217,10 @@ export function HomepageContentForm({ content }: { content: HomepageContent }) {
       </SectionCard>
 
       <SectionCard
-        title="Brand Story"
-        description="Quote and portrait block near the bottom of the homepage."
+        title="Quote & Portrait Section"
+        description="The split block on the homepage: italic quote on the left, editorial portrait on the right with the caption overlay (e.g. “Threads of Paradise”)."
       >
+        <BrandStorySectionPreview content={content.brandStory} />
         <div>
           <FieldLabel>Quote</FieldLabel>
           <textarea
@@ -234,6 +236,7 @@ export function HomepageContentForm({ content }: { content: HomepageContent }) {
             <Input
               name="brandStoryCaptionEyebrow"
               defaultValue={content.brandStory.captionEyebrow}
+              placeholder="Threads of Paradise"
             />
           </div>
           <div>
@@ -241,15 +244,16 @@ export function HomepageContentForm({ content }: { content: HomepageContent }) {
             <Input
               name="brandStoryCaptionTitle"
               defaultValue={content.brandStory.captionTitle}
+              placeholder="Midnight Kari Grace"
             />
           </div>
         </div>
         <div>
-          <FieldLabel>Image Alt Text</FieldLabel>
+          <FieldLabel>Portrait Image Alt Text</FieldLabel>
           <Input name="brandStoryImageAlt" defaultValue={content.brandStory.imageAlt} />
         </div>
         <ImageField
-          label="Brand Story Image"
+          label="Portrait Image (right side)"
           name="brandStoryImage"
           urlName="brandStoryImageUrl"
           currentUrl={content.brandStory.imageUrl}

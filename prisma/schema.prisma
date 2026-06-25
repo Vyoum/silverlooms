@@ -7,16 +7,26 @@ datasource db {
   provider = "postgresql"
 }
 
+enum CategoryKind {
+  APPAREL
+  JEWELLERY
+}
+
 model Category {
-  id        String    @id @default(cuid())
-  slug      String    @unique
-  name      String
-  parentId  String?   @map("parent_id")
-  parent    Category? @relation("CategoryTree", fields: [parentId], references: [id])
-  children  Category[] @relation("CategoryTree")
-  products  Product[]
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id                  String       @id @default(cuid())
+  slug                String       @unique
+  name                String
+  kind                CategoryKind @default(APPAREL)
+  keywords            String[]     @default([])
+  showInMarquee       Boolean      @default(true) @map("show_in_marquee")
+  showInCatalogFilter Boolean      @default(true) @map("show_in_catalog_filter")
+  sortOrder           Int          @default(0) @map("sort_order")
+  parentId            String?      @map("parent_id")
+  parent              Category?    @relation("CategoryTree", fields: [parentId], references: [id])
+  children            Category[]   @relation("CategoryTree")
+  products            Product[]
+  createdAt           DateTime     @default(now()) @map("created_at")
+  updatedAt           DateTime     @updatedAt @map("updated_at")
 
   @@map("categories")
 }

@@ -1,4 +1,3 @@
-import { KURTIS_CATEGORY_OPTIONS } from "@/features/kurtis/lib/kurtis-filters";
 
 export const mainNavLinks = [
   { label: "Apparel", href: "/kurtis" },
@@ -22,6 +21,8 @@ export const categoryMarquee = [
   "SAREES",
   "LEHERIYA",
   "BANDHEJ",
+  "SHIRTS",
+  "BAGS",
   "SILVER JEWELLERY",
   "GERMAN SILVER",
 ] as const;
@@ -86,32 +87,58 @@ export interface MobileNavSection {
   links: readonly MobileNavLink[];
 }
 
-export const mobileNavSections: MobileNavSection[] = [
-  {
-    title: "Shop",
-    links: [
-      { label: "All Apparel", href: "/kurtis" },
-      { label: "All Jewellery", href: "/jewellery" },
-      { label: "New In", href: "/kurtis?sort=new" },
-      { label: "Best Sellers", href: "/kurtis?sort=bestseller" },
-    ],
-  },
-  {
-    title: "Apparel",
-    links: KURTIS_CATEGORY_OPTIONS.map((option) => ({
-      label: option.label,
-      href: `/kurtis?category=${option.slug}`,
-    })),
-  },
-  {
-    title: "Jewellery",
-    links: [...jewelleryCategoryLinks],
-  },
-  {
-    title: "Discover",
-    links: [
-      { label: "About Us", href: "/#editorial" },
-      { label: "Good Reads", href: "/#good-reads" },
-    ],
-  },
+const fallbackApparelNavLinks: MobileNavLink[] = [
+  { label: "Kurti Sets", href: "/kurtis?category=kurti-sets" },
+  { label: "Leheriya", href: "/kurtis?category=leheriya" },
+  { label: "Bandhej", href: "/kurtis?category=bandhej" },
+  { label: "Shirts", href: "/kurtis?category=shirts" },
+  { label: "Bags", href: "/kurtis?category=bags" },
+  { label: "Suits", href: "/kurtis?category=suits" },
 ];
+
+export function buildMobileNavSections(
+  apparelCategories: Array<{
+    name: string;
+    slug: string;
+    showInCatalogFilter?: boolean;
+  }> = [],
+): MobileNavSection[] {
+  const apparelLinks =
+    apparelCategories.length > 0
+      ? apparelCategories
+          .filter((category) => category.showInCatalogFilter !== false)
+          .map((category) => ({
+            label: category.name,
+            href: `/kurtis?category=${category.slug}`,
+          }))
+      : fallbackApparelNavLinks;
+
+  return [
+    {
+      title: "Shop",
+      links: [
+        { label: "All Apparel", href: "/kurtis" },
+        { label: "All Jewellery", href: "/jewellery" },
+        { label: "New In", href: "/kurtis?sort=new" },
+        { label: "Best Sellers", href: "/kurtis?sort=bestseller" },
+      ],
+    },
+    {
+      title: "Apparel",
+      links: apparelLinks,
+    },
+    {
+      title: "Jewellery",
+      links: [...jewelleryCategoryLinks],
+    },
+    {
+      title: "Discover",
+      links: [
+        { label: "About Us", href: "/#editorial" },
+        { label: "Good Reads", href: "/#good-reads" },
+      ],
+    },
+  ];
+}
+
+export const mobileNavSections: MobileNavSection[] = buildMobileNavSections();

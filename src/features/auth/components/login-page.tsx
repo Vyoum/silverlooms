@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { LoginForm } from "./login-form";
 import { GoogleSignInButton } from "./google-sign-in-button";
 import { signOutAction } from "@/features/auth/actions";
@@ -21,12 +22,16 @@ export function LoginPage({
   const authConfigured = isAuthConfigured();
 
   return (
-    <div className="min-h-dvh bg-onyx text-white selection:bg-heritage-gold/20">
-      <main className="flex min-h-dvh flex-col md:flex-row">
-        <div className="relative hidden min-h-dvh md:block md:w-[55%] lg:w-[60%]">
+    <div className="min-h-dvh overflow-x-hidden bg-onyx text-white selection:bg-heritage-gold/20">
+      <main className="flex min-h-dvh flex-col md:h-dvh md:flex-row md:overflow-hidden">
+        {/* Hero — desktop only, contained to left column */}
+        <aside
+          className="relative hidden h-full min-h-0 shrink-0 overflow-hidden md:block md:w-[55%] lg:w-[60%]"
+          aria-hidden
+        >
           <Image
             src="/images/login-hero.jpg"
-            alt={`${BRAND_NAME} heritage editorial`}
+            alt=""
             fill
             priority
             quality={95}
@@ -34,16 +39,12 @@ export function LoginPage({
             sizes="(max-width: 768px) 0vw, 60vw"
           />
           <div className="absolute inset-0 bg-black/10" />
-        </div>
+        </aside>
 
-        <div className="flex min-h-dvh w-full flex-col md:w-[45%] lg:w-[40%]">
+        {/* Form panel — solid background so hero never bleeds through */}
+        <section className="relative z-10 flex min-h-dvh w-full flex-col bg-onyx md:h-full md:min-h-0 md:w-[45%] lg:w-[40%]">
           <div className="flex items-center justify-between px-5 pb-2 pt-[max(1rem,env(safe-area-inset-top))] md:hidden">
-            <Link
-              href="/"
-              className="font-serif text-lg tracking-[1px] text-white"
-            >
-              SILVER LOOMS
-            </Link>
+            <BrandLogo size="sm" href="/" priority />
             <Link
               href="/"
               className="text-[10px] uppercase tracking-[0.15em] text-white/50 transition-colors hover:text-white"
@@ -52,7 +53,7 @@ export function LoginPage({
             </Link>
           </div>
 
-          <div className="flex flex-1 flex-col px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4 sm:px-8 md:justify-center md:px-16 md:py-12">
+          <div className="flex flex-1 flex-col overflow-y-auto px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4 sm:px-8 md:justify-center md:px-16 md:py-12">
             <div className="mx-auto w-full max-w-[420px] md:my-auto">
               <div className="mb-8 md:mb-12">
                 <h1 className="font-serif text-[2rem] leading-tight text-white sm:text-[2.25rem] md:text-[48px]">
@@ -120,7 +121,7 @@ export function LoginPage({
               </Link>
             </div>
           </div>
-        </div>
+        </section>
       </main>
     </div>
   );

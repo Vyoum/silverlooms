@@ -35,8 +35,10 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 
 export function AddProductForm({
   defaultProductType = "apparel",
+  categoryPresets: categoryPresetsProp,
 }: {
   defaultProductType?: ProductType;
+  categoryPresets?: string[];
 }) {
   const [state, action, pending] = useActionState(formAction, initialState);
   const [productType, setProductType] = useState<ProductType>(defaultProductType);
@@ -108,7 +110,11 @@ export function AddProductForm({
   const previewImageUrl = imagePreviewUrl ?? imageUrl;
   const hasImage = Boolean(imageFile || imageUrl);
   const categoryPresets =
-    productType === "apparel" ? apparelCategoryPresets : jewelleryCategoryPresets;
+    categoryPresetsProp && categoryPresetsProp.length > 0
+      ? categoryPresetsProp
+      : productType === "apparel"
+        ? apparelCategoryPresets
+        : jewelleryCategoryPresets;
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_320px]">

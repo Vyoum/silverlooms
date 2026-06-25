@@ -3,6 +3,7 @@ import { PrismaClient, ProductBadge } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { jewelleryProducts, kurtisProducts } from "../src/lib/constants/products";
+import { DEFAULT_STORE_CATEGORIES } from "../src/features/catalog/lib/store-categories";
 
 config({ path: ".env.local" });
 
@@ -19,6 +20,15 @@ const prisma = new PrismaClient({ adapter });
 const allProducts = [...kurtisProducts, ...jewelleryProducts];
 
 async function main() {
+  for (const category of DEFAULT_STORE_CATEGORIES) {
+    await prisma.category.upsert({
+      where: { slug: category.slug },
+      create: category,
+      update: {},
+    });
+  }
+  console.log(`Seeded ${DEFAULT_STORE_CATEGORIES.length} categories`);
+
   for (const product of allProducts) {
     await prisma.product.upsert({
       where: { slug: product.slug },

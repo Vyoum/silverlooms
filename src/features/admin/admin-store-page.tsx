@@ -1,4 +1,6 @@
 import { listAdminProducts } from "@/features/admin/services/analytics-service";
+import { CategoryKind } from "@/generated/prisma/client";
+import { listStoreCategories } from "@/features/catalog/services/category-service";
 import type { ProductType } from "@/features/admin/lib/product-presets";
 import { AddProductForm } from "./components/add-product-form";
 import { ProductsTable } from "./components/products-table";
@@ -18,7 +20,13 @@ export async function AdminStorePage({
   storefrontHref = "/kurtis",
   storefrontLabel = "View /kurtis",
 }: AdminStorePageProps) {
-  const products = await listAdminProducts();
+  const [products, categories] = await Promise.all([
+    listAdminProducts(),
+    listStoreCategories(
+      defaultProductType === "jewellery" ? CategoryKind.JEWELLERY : CategoryKind.APPAREL,
+    ),
+  ]);
+  const categoryPresets = categories.map((category) => category.name.toUpperCase());
 
   return (
     <div className="space-y-8">
@@ -37,7 +45,10 @@ export async function AdminStorePage({
         </a>
       </div>
 
-      <AddProductForm defaultProductType={defaultProductType} />
+      <AddProductForm
+        defaultProductType={defaultProductType}
+        categoryPresets={categoryPresets}
+      />
       <ProductsTable
         products={products}
         defaultFilter={defaultProductType}

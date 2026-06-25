@@ -5,6 +5,7 @@ import {
   Package,
   Shirt,
   ShoppingBag,
+  Tag,
   Users,
 } from "lucide-react";
 
@@ -24,8 +25,15 @@ const panels = [
     accent: "border-[#1c1a16]/40 hover:border-gold",
   },
   {
+    title: "Categories",
+    description: "Add Shirts, Bags, Leheriya, Bandhej, and more for filters & marquee.",
+    href: "/admin/categories",
+    icon: Tag,
+    accent: "border-admin-primary/30 hover:border-admin-primary",
+  },
+  {
     title: "Homepage Content",
-    description: "Edit hero banners, announcement bar, editorial copy, and images.",
+    description: "Edit hero, editorial copy, quote & portrait image, and banners.",
     href: "/admin/content",
     icon: FileText,
     accent: "border-admin-primary/30 hover:border-admin-primary",

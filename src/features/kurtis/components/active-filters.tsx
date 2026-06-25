@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import {
   PRODUCT_SORT_LABELS,
 } from "@/features/catalog/lib/product-sort";
+import type { CatalogCategoryOption } from "@/features/kurtis/lib/kurtis-filters";
 import {
   getCategoryLabel,
   type KurtisCatalogFilters,
@@ -13,9 +14,14 @@ import {
 interface ActiveFiltersProps {
   filters: KurtisCatalogFilters;
   productCount: number;
+  categoryOptions: CatalogCategoryOption[];
 }
 
-export function ActiveFilters({ filters, productCount }: ActiveFiltersProps) {
+export function ActiveFilters({
+  filters,
+  productCount,
+  categoryOptions,
+}: ActiveFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -37,7 +43,7 @@ export function ActiveFilters({ filters, productCount }: ActiveFiltersProps) {
         ? "Home / Collections / New Arrivals"
         : "Home / Apparel / Kurtis & Sets";
 
-  const categoryLabel = getCategoryLabel(filters.category);
+  const categoryLabel = getCategoryLabel(filters.category, categoryOptions);
   const hasChips =
     filters.sort !== "all" ||
     Boolean(filters.category) ||

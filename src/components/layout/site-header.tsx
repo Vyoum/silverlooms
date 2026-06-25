@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { Heart, ShoppingBag } from "lucide-react";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { AccountNavButton } from "@/features/auth/components/account-nav-button";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchDialog } from "@/components/layout/search-dialog";
-import { mainNavLinks, homeNavLinks, mobileNavSections } from "@/lib/constants/navigation";
+import { mainNavLinks, homeNavLinks, buildMobileNavSections, mobileNavSections } from "@/lib/constants/navigation";
+import { useStoreCategories } from "@/features/catalog/store-categories-provider";
 import { useCart } from "@/features/cart/cart-provider";
 import { useWishlist } from "@/features/wishlist/wishlist-provider";
 import { cn } from "@/lib/utils";
@@ -31,7 +34,7 @@ function NavLink({
     <Link
       href={href}
       className={cn(
-        "text-[13px] uppercase tracking-[1.3px] transition-colors",
+        "whitespace-nowrap text-[13px] uppercase tracking-[1.3px] transition-colors",
         isDark
           ? isActive
             ? "border-b border-forest-light pb-0.5 text-[#cbecbd]"
@@ -54,6 +57,16 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
   const isDark = variant === "jewellery";
   const isHome = variant === "home";
 
+  const storeCategories = useStoreCategories();
+  const navSections = useMemo(() => {
+    const apparel = storeCategories.filter(
+      (category) => category.kind === "APPAREL" && category.showInCatalogFilter,
+    );
+    return apparel.length > 0
+      ? buildMobileNavSections(apparel)
+      : mobileNavSections;
+  }, [storeCategories]);
+
   const isLinkActive = (href: string) => {
     const baseHref = href.split("?")[0].split("#")[0];
     return (
@@ -73,48 +86,39 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
       )}
     >
       <div className="relative mx-auto flex h-20 max-w-[1280px] items-center px-4 md:px-16">
-        <div className="flex min-w-0 flex-1 items-center">
-          <MobileNav sections={mobileNavSections} isDark={isDark} />
-          <nav className="hidden items-center gap-8 md:flex">
-            {(isHome ? navLinks.slice(0, 2) : navLinks).map((link) => (
-              <NavLink
-                key={link.href}
-                href={link.href}
-                label={link.label}
-                isActive={isLinkActive(link.href)}
-                isDark={isDark}
-              />
-            ))}
-          </nav>
+        {/* Left: hamburger (mobile) + logo (desktop) */}
+        <div className="flex min-w-0 flex-1 items-center gap-4">
+          <MobileNav sections={navSections} isDark={isDark} />
+          <BrandLogo
+            size="sm"
+            className="hidden md:inline-flex md:h-10 lg:h-12"
+            priority={isHome}
+          />
         </div>
 
-        <Link
-          href="/"
-          className={cn(
-            "absolute left-1/2 -translate-x-1/2 shrink-0 font-serif font-light",
-            isDark
-              ? "text-xl tracking-[1.26px] text-cream md:text-[42px] md:leading-[50.4px]"
-              : "text-2xl tracking-[2px] text-ink md:text-[28px]",
-          )}
+        {/* Center: logo on mobile, nav links on desktop */}
+        <div className="absolute left-1/2 -translate-x-1/2 md:hidden">
+          <BrandLogo size="sm" priority={isHome} />
+        </div>
+
+        {/* Center: all primary nav links (desktop) */}
+        <nav
+          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-4 md:flex lg:gap-8"
+          aria-label="Main navigation"
         >
-          {isDark ? "Silver Looms" : "SILVER LOOMS"}
-        </Link>
+          {navLinks.map((link) => (
+            <NavLink
+              key={link.href}
+              href={link.href}
+              label={link.label}
+              isActive={isLinkActive(link.href)}
+              isDark={isDark}
+            />
+          ))}
+        </nav>
 
-        <div className="ml-auto flex shrink-0 items-center justify-end gap-4 md:gap-5">
-          {isHome && (
-            <nav className="mr-2 hidden items-center gap-8 md:flex">
-              {navLinks.slice(2).map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-[13px] uppercase tracking-[1.3px] text-ink transition-colors hover:text-forest"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          )}
-
+        {/* Right: search, account, wishlist, cart */}
+        <div className="flex flex-1 items-center justify-end gap-4 md:gap-5">
           <SearchDialog isDark={isDark} />
           <div className="hidden md:inline-flex">
             <AccountNavButton isDark={isDark} />

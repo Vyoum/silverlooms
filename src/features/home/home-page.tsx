@@ -12,9 +12,13 @@ import { NewArrivalsSection } from "./components/new-arrivals-section";
 import { NewsletterSection } from "./components/newsletter-section";
 import { StyleSection } from "./components/style-section";
 import { getHomepageContent } from "@/lib/site-content/homepage";
+import { listMarqueeCategoryLabels } from "@/features/catalog/services/category-service";
 
 export async function HomePage() {
-  const content = await getHomepageContent();
+  const [content, marqueeItems] = await Promise.all([
+    getHomepageContent(),
+    listMarqueeCategoryLabels(),
+  ]);
 
   return (
     <PageShell>
@@ -22,7 +26,7 @@ export async function HomePage() {
       <SiteHeader variant="home" />
       <main>
         <HeroSection className="-mt-20 pt-20" content={content.hero} />
-        <MarqueeSection />
+        <MarqueeSection items={marqueeItems} />
         <FabricSection />
         <StyleSection />
         <NewArrivalsSection />

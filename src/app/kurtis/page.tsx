@@ -1,5 +1,4 @@
 import { KurtisPage } from "@/features/kurtis/kurtis-page";
-import { parseKurtisCatalogFilters } from "@/features/kurtis/lib/kurtis-filters";
 
 export const metadata = {
   title: "Kurtis & Sets | Silver Looms",
@@ -17,7 +16,6 @@ interface PageProps {
 
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams;
-  const filters = parseKurtisCatalogFilters(params);
 
-  return <KurtisPage filters={filters} />;
+  return <KurtisPage searchParams={params} />;
 }

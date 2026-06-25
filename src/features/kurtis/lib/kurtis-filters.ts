@@ -1,19 +1,20 @@
 import type { Product } from "@/lib/types/product";
 import type { ProductSort } from "@/features/catalog/lib/product-sort";
 import { parseProductSort } from "@/features/catalog/lib/product-sort";
+import {
+  productMatchesCategory,
+  toCatalogCategoryOption,
+  type CatalogCategoryOption,
+} from "@/features/catalog/lib/store-categories";
 
-export const KURTIS_CATEGORY_OPTIONS = [
-  { slug: "kurti-sets", label: "Kurti Sets", pattern: /kurti set/i },
-  { slug: "straight-kurtis", label: "Straight Kurtis", pattern: /straight kurti/i },
-  { slug: "a-line-kurtis", label: "A-Line Kurtis", pattern: /a-line/i },
-  { slug: "anarkali", label: "Anarkali", pattern: /anarkali/i },
-  { slug: "sarees", label: "Sarees", pattern: /saree/i },
-  { slug: "leheriya", label: "Leheriya", pattern: /leheriya/i },
-  { slug: "bandhej", label: "Bandhej", pattern: /bandhej|bandhani/i },
-  { slug: "suits", label: "Suits", pattern: /suit/i },
-] as const;
+export type { CatalogCategoryOption };
 
-export type KurtisCategorySlug = (typeof KURTIS_CATEGORY_OPTIONS)[number]["slug"];
+export const FALLBACK_CATALOG_CATEGORY_OPTIONS: CatalogCategoryOption[] = [
+  { slug: "leheriya", label: "Leheriya", keywords: ["leheriya"] },
+  { slug: "bandhej", label: "Bandhej", keywords: ["bandhej", "bandhani"] },
+  { slug: "shirts", label: "Shirts", keywords: ["shirt"] },
+  { slug: "bags", label: "Bags", keywords: ["bag", "tote", "clutch"] },
+];
 
 export interface KurtisCatalogFilters {
   sort: ProductSort;
@@ -22,43 +23,52 @@ export interface KurtisCatalogFilters {
   color: string | null;
 }
 
-export function parseKurtisCategory(value: string | null | undefined) {
+export function parseKurtisCategory(
+  value: string | null | undefined,
+  options: CatalogCategoryOption[],
+) {
   if (!value) return null;
-  const match = KURTIS_CATEGORY_OPTIONS.find((option) => option.slug === value);
-  return match?.slug ?? null;
+  return options.some((option) => option.slug === value) ? value : null;
 }
 
-export function parseKurtisCatalogFilters(params: {
-  sort?: string;
-  category?: string;
-  size?: string;
-  color?: string;
-}): KurtisCatalogFilters {
+export function parseKurtisCatalogFilters(
+  params: {
+    sort?: string;
+    category?: string;
+    size?: string;
+    color?: string;
+  },
+  options: CatalogCategoryOption[] = FALLBACK_CATALOG_CATEGORY_OPTIONS,
+): KurtisCatalogFilters {
   return {
     sort: parseProductSort(params.sort),
-    category: parseKurtisCategory(params.category),
+    category: parseKurtisCategory(params.category, options),
     size: params.size?.trim() || null,
     color: params.color?.trim().toLowerCase() || null,
   };
 }
 
-export function getCategoryLabel(slug: string | null) {
+export function getCategoryLabel(
+  slug: string | null,
+  options: CatalogCategoryOption[],
+) {
   if (!slug) return null;
-  return KURTIS_CATEGORY_OPTIONS.find((option) => option.slug === slug)?.label ?? null;
+  return options.find((option) => option.slug === slug)?.label ?? null;
 }
 
 export function applyKurtisCatalogFilters(
   products: Product[],
   filters: KurtisCatalogFilters,
+  options: CatalogCategoryOption[],
 ): Product[] {
   let result = products;
 
   if (filters.category) {
-    const option = KURTIS_CATEGORY_OPTIONS.find(
-      (item) => item.slug === filters.category,
-    );
+    const option = options.find((item) => item.slug === filters.category);
     if (option) {
-      result = result.filter((product) => option.pattern.test(product.category));
+      result = result.filter((product) =>
+        productMatchesCategory(product.category, option.keywords),
+      );
     }
   }
 
@@ -80,10 +90,20 @@ export function applyKurtisCatalogFilters(
   return result;
 }
 
-export function countByCategory(products: Product[]) {
-  return KURTIS_CATEGORY_OPTIONS.map((option) => ({
+export function countByCategory(
+  products: Product[],
+  options: CatalogCategoryOption[],
+) {
+  return options.map((option) => ({
     ...option,
-    count: products.filter((product) => option.pattern.test(product.category))
-      .length,
+    count: products.filter((product) =>
+      productMatchesCategory(product.category, option.keywords),
+    ).length,
   }));
+}
+
+export function toCatalogCategoryOptions(
+  categories: Array<{ slug: string; name: string; keywords: string[] }>,
+): CatalogCategoryOption[] {
+  return categories.map(toCatalogCategoryOption);
 }
