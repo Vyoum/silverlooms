@@ -14,6 +14,9 @@ export type StoreCategory = {
   showInMarquee: boolean;
   showInCatalogFilter: boolean;
   sortOrder: number;
+  heroImageUrl: string | null;
+  heroTitle: string | null;
+  heroSubtitle: string | null;
 };
 
 export type CatalogCategoryOption = {
@@ -24,7 +27,7 @@ export type CatalogCategoryOption = {
 
 export const DEFAULT_STORE_CATEGORIES: Omit<
   StoreCategory,
-  "id"
+  "id" | "heroImageUrl" | "heroTitle" | "heroSubtitle"
 >[] = [
   {
     slug: "kurti-sets",

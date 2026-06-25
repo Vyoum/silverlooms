@@ -15,6 +15,9 @@ function mapCategory(row: {
   showInMarquee: boolean;
   showInCatalogFilter: boolean;
   sortOrder: number;
+  heroImageUrl: string | null;
+  heroTitle: string | null;
+  heroSubtitle: string | null;
 }): StoreCategory {
   return {
     id: row.id,
@@ -25,6 +28,9 @@ function mapCategory(row: {
     showInMarquee: row.showInMarquee,
     showInCatalogFilter: row.showInCatalogFilter,
     sortOrder: row.sortOrder,
+    heroImageUrl: row.heroImageUrl,
+    heroTitle: row.heroTitle,
+    heroSubtitle: row.heroSubtitle,
   };
 }
 
@@ -32,7 +38,12 @@ export async function ensureDefaultCategories() {
   for (const category of DEFAULT_STORE_CATEGORIES) {
     await prisma.category.upsert({
       where: { slug: category.slug },
-      create: category,
+      create: {
+        ...category,
+        heroImageUrl: null,
+        heroTitle: null,
+        heroSubtitle: null,
+      },
       update: {},
     });
   }
@@ -53,9 +64,12 @@ export async function listStoreCategories(kind?: CategoryKind) {
     return rows.map(mapCategory);
   } catch (error) {
     console.error("[categories] Failed to load categories:", error);
-    return DEFAULT_STORE_CATEGORIES.map((category, index) => ({
+    return DEFAULT_STORE_CATEGORIES.map((category) => ({
       ...category,
       id: `fallback-${category.slug}`,
+      heroImageUrl: null,
+      heroTitle: null,
+      heroSubtitle: null,
     }));
   }
 }
@@ -79,6 +93,9 @@ export async function createStoreCategory(input: {
   showInMarquee?: boolean;
   showInCatalogFilter?: boolean;
   sortOrder?: number;
+  heroImageUrl?: string | null;
+  heroTitle?: string | null;
+  heroSubtitle?: string | null;
 }) {
   const name = input.name.trim();
   if (!name) {
@@ -99,6 +116,33 @@ export async function createStoreCategory(input: {
       showInMarquee: input.showInMarquee ?? true,
       showInCatalogFilter: input.showInCatalogFilter ?? true,
       sortOrder: input.sortOrder ?? 0,
+      heroImageUrl: input.heroImageUrl ?? null,
+      heroTitle: input.heroTitle ?? null,
+      heroSubtitle: input.heroSubtitle ?? null,
+    },
+  });
+}
+
+export async function updateStoreCategory(
+  id: string,
+  input: {
+    heroImageUrl?: string | null;
+    heroTitle?: string | null;
+    heroSubtitle?: string | null;
+    showInMarquee?: boolean;
+    showInCatalogFilter?: boolean;
+  },
+) {
+  return prisma.category.update({
+    where: { id },
+    data: {
+      ...(input.heroImageUrl !== undefined ? { heroImageUrl: input.heroImageUrl } : {}),
+      ...(input.heroTitle !== undefined ? { heroTitle: input.heroTitle } : {}),
+      ...(input.heroSubtitle !== undefined ? { heroSubtitle: input.heroSubtitle } : {}),
+      ...(input.showInMarquee !== undefined ? { showInMarquee: input.showInMarquee } : {}),
+      ...(input.showInCatalogFilter !== undefined
+        ? { showInCatalogFilter: input.showInCatalogFilter }
+        : {}),
     },
   });
 }
@@ -113,5 +157,10 @@ export async function deleteStoreCategory(id: string) {
 }
 
 export async function getCategoryBySlug(slug: string) {
-  return prisma.category.findUnique({ where: { slug } });
+  try {
+    const row = await prisma.category.findUnique({ where: { slug } });
+    return row ? mapCategory(row) : null;
+  } catch {
+    return null;
+  }
 }

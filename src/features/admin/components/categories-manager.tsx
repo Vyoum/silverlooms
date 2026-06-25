@@ -7,7 +7,10 @@ import {
   deleteCategoryFormAction,
   type CategoryActionResult,
 } from "@/features/admin/actions/category-actions";
+import { CatalogHeroManager } from "@/features/admin/components/catalog-hero-manager";
+import { CategoryHeroEditor } from "@/features/admin/components/category-hero-editor";
 import type { StoreCategory } from "@/features/catalog/lib/store-categories";
+import type { ApparelCatalogHeroes } from "@/lib/site-content/catalog-hero";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -21,7 +24,13 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function CategoriesManager({ categories }: { categories: StoreCategory[] }) {
+export function CategoriesManager({
+  categories,
+  catalogHeroes,
+}: {
+  categories: StoreCategory[];
+  catalogHeroes: ApparelCatalogHeroes;
+}) {
   const [state, formAction, pending] = useActionState(
     createCategoryAction,
     initialState,
@@ -29,13 +38,15 @@ export function CategoriesManager({ categories }: { categories: StoreCategory[] 
 
   return (
     <div className="space-y-8">
+      <CatalogHeroManager heroes={catalogHeroes} />
+
       <section className="rounded-2xl border border-admin-border bg-admin-surface p-6">
         <div className="mb-6">
           <h2 className="font-serif text-xl font-medium text-admin-ink">Add Category</h2>
           <p className="mt-1 text-sm text-admin-muted">
             New categories appear in the homepage marquee, apparel filters, and
-            product forms. Use keywords to match existing product labels (e.g.
-            &quot;shirt&quot; for Shirts).
+            product forms. You can also set a hero banner for when customers filter
+            by that category on /kurtis.
           </p>
         </div>
 
@@ -57,9 +68,22 @@ export function CategoriesManager({ categories }: { categories: StoreCategory[] 
           </div>
           <div className="lg:col-span-2">
             <FieldLabel>Match Keywords (comma-separated)</FieldLabel>
+            <Input name="keywords" placeholder="shirt, shirts, top" />
+          </div>
+          <div>
+            <FieldLabel>Hero title (optional)</FieldLabel>
+            <Input name="heroTitle" placeholder="Shirts" />
+          </div>
+          <div>
+            <FieldLabel>Hero subtitle (optional)</FieldLabel>
+            <Input name="heroSubtitle" placeholder="Everyday cotton & linen shirts" />
+          </div>
+          <div className="lg:col-span-2">
+            <FieldLabel>Category hero background (optional)</FieldLabel>
             <Input
-              name="keywords"
-              placeholder="shirt, shirts, top"
+              name="heroImage"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
             />
           </div>
           <label className="flex items-center gap-2 text-sm text-admin-ink">
@@ -97,12 +121,13 @@ export function CategoriesManager({ categories }: { categories: StoreCategory[] 
                 <th className="px-6 py-3 font-medium">Keywords</th>
                 <th className="px-6 py-3 font-medium">Marquee</th>
                 <th className="px-6 py-3 font-medium">Filter</th>
+                <th className="px-6 py-3 font-medium">Hero</th>
                 <th className="px-6 py-3 font-medium" />
               </tr>
             </thead>
             <tbody>
               {categories.map((category) => (
-                <tr key={category.id} className="border-t border-admin-border">
+                <tr key={category.id} className="border-t border-admin-border align-top">
                   <td className="px-6 py-4 font-medium text-admin-ink">{category.name}</td>
                   <td className="px-6 py-4 text-admin-muted">
                     {category.kind === "APPAREL" ? "Apparel" : "Jewellery"}
@@ -115,6 +140,9 @@ export function CategoriesManager({ categories }: { categories: StoreCategory[] 
                   </td>
                   <td className="px-6 py-4 text-admin-muted">
                     {category.showInCatalogFilter ? "Yes" : "No"}
+                  </td>
+                  <td className="px-6 py-4">
+                    <CategoryHeroEditor category={category} />
                   </td>
                   <td className="px-6 py-4 text-right">
                     <form action={deleteCategoryFormAction}>
