@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { AccountNavButton } from "@/features/auth/components/account-nav-button";
 import type { MobileNavSection } from "@/lib/constants/navigation";
+import { isNavLinkActive } from "@/lib/navigation/is-nav-link-active";
 import { cn } from "@/lib/utils";
 
 interface MobileNavProps {
@@ -16,12 +17,21 @@ interface MobileNavProps {
 
 export function MobileNav({ sections, isDark }: MobileNavProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [hash, setHash] = useState("");
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const updateHash = () => setHash(window.location.hash);
+    updateHash();
+    window.addEventListener("hashchange", updateHash);
+    return () => window.removeEventListener("hashchange", updateHash);
+  }, [pathname]);
 
   useEffect(() => {
     setOpen(false);
@@ -42,22 +52,10 @@ export function MobileNav({ sections, isDark }: MobileNavProps) {
     };
   }, [open]);
 
-  const isLinkActive = (href: string) => {
-    const [baseHref, query] = href.split("?");
-    if (!baseHref || baseHref === "/") {
-      return pathname === "/" && !href.includes("#");
-    }
+  const search = searchParams.toString() ? `?${searchParams.toString()}` : "";
 
-    const pathMatches =
-      pathname === baseHref || pathname.startsWith(`${baseHref}/`);
-
-    if (!pathMatches) return false;
-    if (!query) return true;
-
-    const currentQuery =
-      typeof window !== "undefined" ? window.location.search.slice(1) : "";
-    return currentQuery === query;
-  };
+  const isLinkActive = (href: string) =>
+    isNavLinkActive(href, pathname, search, hash);
 
   const menuOverlay =
     open && mounted

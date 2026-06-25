@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Heart, ShoppingBag } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { AccountNavButton } from "@/features/auth/components/account-nav-button";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchDialog } from "@/components/layout/search-dialog";
 import { siteNavLinks, buildMobileNavSections, mobileNavSections } from "@/lib/constants/navigation";
+import { isNavLinkActive } from "@/lib/navigation/is-nav-link-active";
 import { useStoreCategories } from "@/features/catalog/store-categories-provider";
 import { useCart } from "@/features/cart/cart-provider";
 import { useWishlist } from "@/features/wishlist/wishlist-provider";
@@ -51,11 +52,25 @@ function NavLink({
 
 export function SiteHeader({ variant = "default", className }: SiteHeaderProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [hash, setHash] = useState("");
   const { itemCount } = useCart();
   const { itemCount: wishlistCount } = useWishlist();
   const navLinks = siteNavLinks;
   const isDark = variant === "jewellery";
   const isHome = variant === "home";
+
+  useEffect(() => {
+    const updateHash = () => setHash(window.location.hash);
+    updateHash();
+    window.addEventListener("hashchange", updateHash);
+    return () => window.removeEventListener("hashchange", updateHash);
+  }, [pathname]);
+
+  const search = useMemo(() => {
+    const value = searchParams.toString();
+    return value ? `?${value}` : "";
+  }, [searchParams]);
 
   const storeCategories = useStoreCategories();
   const navSections = useMemo(() => {
@@ -67,13 +82,8 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
       : mobileNavSections;
   }, [storeCategories]);
 
-  const isLinkActive = (href: string) => {
-    const baseHref = href.split("?")[0].split("#")[0];
-    return (
-      pathname === baseHref ||
-      (baseHref !== "/" && pathname.startsWith(baseHref))
-    );
-  };
+  const isLinkActive = (href: string) =>
+    isNavLinkActive(href, pathname, search, hash);
 
   return (
     <header
