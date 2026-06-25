@@ -4,9 +4,9 @@ import { Container } from "@/components/layout/page-shell";
 const trustItems = [
   {
     icon: Award,
-    title: "92.5 Pure Silver",
+    title: "German Silver",
     description:
-      "Hallmarked quality guaranteeing purity, durability, and a lifetime of brilliance.",
+      "Artisan-crafted german silver pieces with lasting shine, durability, and timeless appeal.",
   },
   {
     icon: Shield,

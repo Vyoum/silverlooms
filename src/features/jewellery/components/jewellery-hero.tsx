@@ -20,7 +20,7 @@ export function JewelleryHero() {
             artisans in Jaipur.
           </p>
           <div className="mt-5 flex flex-wrap gap-4 text-[10px] uppercase tracking-[0.5px] text-[#e4e2dd] sm:mt-8 sm:gap-6">
-            <span className="flex items-center gap-2">✦ 92.5 Silver Base</span>
+            <span className="flex items-center gap-2">✦ German Silver</span>
             <span className="flex items-center gap-2">✦ Anti-Tarnish Finish</span>
           </div>
         </div>
