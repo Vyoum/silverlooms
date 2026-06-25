@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { CategoryKind } from "@/generated/prisma/client";
+import { CategoryKind } from "@/features/catalog/lib/store-categories";
 import { SiteHeader } from "@/components/layout/site-header";
 import { Container, PageShell } from "@/components/layout/page-shell";
 import { listCatalogFilterCategories } from "@/features/catalog/services/category-service";

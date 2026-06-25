@@ -1,4 +1,4 @@
-import { CategoryKind } from "@/generated/prisma/client";
+import type { CategoryKind } from "@/features/catalog/lib/store-categories";
 import { prisma } from "@/lib/db";
 import { slugify } from "@/features/catalog/services/product-service";
 import {

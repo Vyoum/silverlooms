@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { CategoryKind } from "@/generated/prisma/client";
+import type { CategoryKind } from "@/features/catalog/lib/store-categories";
 import {
   createStoreCategory,
   deleteStoreCategory,
