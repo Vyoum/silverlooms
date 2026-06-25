@@ -15,6 +15,9 @@ export const assets = {
       "https://www.figma.com/api/mcp/asset/cdc74afa-48fc-49e7-8b99-0da51beca4be",
     jaipurFabric: "/images/fabrics/jaipur-fabric.jpg",
   },
+  auth: {
+    loginHero: "/images/auth/login-hero.jpg",
+  },
   styles: {
     threadsOfParadise:
       "https://www.figma.com/api/mcp/asset/a21f987b-5e4b-4a8b-b89f-21ec728abb72",
