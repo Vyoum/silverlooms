@@ -1,4 +1,4 @@
-import { CategoryKind } from "@/generated/prisma/client";
+export type CategoryKind = "APPAREL" | "JEWELLERY";
 
 export type StoreCategory = {
   id: string;
@@ -24,7 +24,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "kurti-sets",
     name: "Kurti Sets",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["kurti set"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -33,7 +33,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "straight-kurtis",
     name: "Straight Kurtis",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["straight kurti"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -42,7 +42,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "a-line-kurtis",
     name: "A-Line Kurtis",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["a-line"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -51,7 +51,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "anarkali",
     name: "Anarkali",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["anarkali"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -60,7 +60,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "sarees",
     name: "Sarees",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["saree"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -69,7 +69,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "leheriya",
     name: "Leheriya",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["leheriya"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -78,7 +78,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "bandhej",
     name: "Bandhej",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["bandhej", "bandhani"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -87,7 +87,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "suits",
     name: "Suits",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["suit"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -96,7 +96,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "shirts",
     name: "Shirts",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["shirt"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -105,7 +105,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "bags",
     name: "Bags",
-    kind: CategoryKind.APPAREL,
+    kind: "APPAREL",
     keywords: ["bag", "tote", "clutch"],
     showInMarquee: true,
     showInCatalogFilter: true,
@@ -114,7 +114,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "silver-jewellery",
     name: "Silver Jewellery",
-    kind: CategoryKind.JEWELLERY,
+    kind: "JEWELLERY",
     keywords: ["silver", "jewellery", "jewelry", "jhumka", "necklace", "earring"],
     showInMarquee: true,
     showInCatalogFilter: false,
@@ -123,7 +123,7 @@ export const DEFAULT_STORE_CATEGORIES: Omit<
   {
     slug: "german-silver",
     name: "German Silver",
-    kind: CategoryKind.JEWELLERY,
+    kind: "JEWELLERY",
     keywords: ["german silver"],
     showInMarquee: true,
     showInCatalogFilter: false,
