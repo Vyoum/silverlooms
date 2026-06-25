@@ -89,12 +89,12 @@ export function AccountNavButton({
       return (
         <Link
           href={ACCOUNT_ROUTE}
-          aria-label="My account"
+          aria-label="My profile"
           onClick={onNavigate}
           className={menuItemClass}
         >
           <User className="size-4" />
-          My Account
+          My Profile
         </Link>
       );
     }
@@ -102,8 +102,8 @@ export function AccountNavButton({
     return (
       <Link
         href={ACCOUNT_ROUTE}
-        aria-label="My account"
-        title="My account"
+        aria-label="My profile"
+        title="My profile"
         className={cn(
           iconClass,
           isAccountPage &&
@@ -120,7 +120,7 @@ export function AccountNavButton({
     pathname === "/login"
       ? "/login"
       : pathname === ACCOUNT_ROUTE
-        ? "/login"
+        ? `/login?redirect=${encodeURIComponent(ACCOUNT_ROUTE)}`
         : `/login?redirect=${encodeURIComponent(pathname)}`;
 
   if (variant === "menu-item") {

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Order, OrderItem, OrderStatus } from "@/generated/prisma/client";
 import type { AccountProfile } from "@/features/auth/services/session";
-import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PageShell } from "@/components/layout/page-shell";
 import { ProfileMenuSection } from "@/features/account/components/profile-menu-section";
@@ -89,7 +88,7 @@ export function ProfileDashboardPage({
   const customOrders = 0;
 
   return (
-    <PageShell className="pb-28 md:pb-0">
+    <PageShell>
       <SiteHeader />
       <main className="mx-auto w-full max-w-lg md:max-w-[1280px]">
         <section className="px-5 pb-2 pt-10 text-center md:pt-14">
@@ -255,7 +254,6 @@ export function ProfileDashboardPage({
           )}
         </section>
       </main>
-      <MobileTabBar />
     </PageShell>
   );
 }

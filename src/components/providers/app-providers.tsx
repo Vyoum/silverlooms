@@ -5,6 +5,7 @@ import { StoreCategoriesProvider } from "@/features/catalog/store-categories-pro
 import { getWishlistAction } from "@/features/wishlist/actions";
 import { WishlistProvider } from "@/features/wishlist/wishlist-provider";
 import { AuthSyncListener } from "@/features/auth/components/auth-sync-listener";
+import { MobileStorefrontChrome } from "@/components/layout/mobile-storefront-chrome";
 import { Toaster } from "@/components/ui/sonner";
 
 export async function AppProviders({ children }: { children: React.ReactNode }) {
@@ -22,7 +23,7 @@ export async function AppProviders({ children }: { children: React.ReactNode }) 
           initialAuthenticated={initialWishlist.authenticated}
         >
           <AuthSyncListener />
-          {children}
+          <MobileStorefrontChrome>{children}</MobileStorefrontChrome>
           <Toaster position="top-center" richColors closeButton />
         </WishlistProvider>
       </CartProvider>

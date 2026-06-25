@@ -130,9 +130,7 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
         {/* Right: search, account, wishlist, cart */}
         <div className="flex flex-1 items-center justify-end gap-4 md:gap-5">
           <SearchDialog isDark={isDark} />
-          <div className="hidden md:inline-flex">
-            <AccountNavButton isDark={isDark} />
-          </div>
+          <AccountNavButton isDark={isDark} />
           <Link
             href="/wishlist"
             aria-label="Wishlist"
