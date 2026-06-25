@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { DM_Sans, EB_Garamond } from "next/font/google";
 import { AuthSessionSync } from "@/features/auth/components/auth-session-sync";
 import { AppProviders } from "@/components/providers/app-providers";
-import { BRAND_LOGO_PATH } from "@/lib/constants/brand";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -23,8 +22,9 @@ export const metadata: Metadata = {
   description:
     "Discover artisanal apparel and exquisite silver jewellery. Woven in tradition, dressed in silver.",
   icons: {
-    icon: BRAND_LOGO_PATH,
-    apple: BRAND_LOGO_PATH,
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/apple-icon.png",
   },
 };
 
