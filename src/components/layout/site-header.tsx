@@ -8,7 +8,7 @@ import { BrandLogo } from "@/components/shared/brand-logo";
 import { AccountNavButton } from "@/features/auth/components/account-nav-button";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchDialog } from "@/components/layout/search-dialog";
-import { mainNavLinks, homeNavLinks, buildMobileNavSections, mobileNavSections } from "@/lib/constants/navigation";
+import { siteNavLinks, buildMobileNavSections, mobileNavSections } from "@/lib/constants/navigation";
 import { useStoreCategories } from "@/features/catalog/store-categories-provider";
 import { useCart } from "@/features/cart/cart-provider";
 import { useWishlist } from "@/features/wishlist/wishlist-provider";
@@ -53,7 +53,7 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
   const pathname = usePathname();
   const { itemCount } = useCart();
   const { itemCount: wishlistCount } = useWishlist();
-  const navLinks = variant === "home" ? homeNavLinks : mainNavLinks;
+  const navLinks = siteNavLinks;
   const isDark = variant === "jewellery";
   const isHome = variant === "home";
 

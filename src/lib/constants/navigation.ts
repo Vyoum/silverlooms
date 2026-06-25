@@ -1,18 +1,17 @@
 
-export const mainNavLinks = [
+export const siteNavLinks = [
   { label: "Apparel", href: "/kurtis" },
-  { label: "Jewellery", href: "/jewellery" },
-  { label: "Editorial", href: "/#good-reads" },
-  { label: "Heritage", href: "/#editorial" },
-] as const;
-
-export const homeNavLinks = [
-  { label: "All Products", href: "/kurtis" },
   { label: "Jewellery", href: "/jewellery" },
   { label: "New In", href: "/kurtis?sort=new" },
   { label: "Collections", href: "/kurtis?sort=bestseller" },
   { label: "About Us", href: "/#editorial" },
 ] as const;
+
+/** @deprecated Use siteNavLinks */
+export const mainNavLinks = siteNavLinks;
+
+/** @deprecated Use siteNavLinks */
+export const homeNavLinks = siteNavLinks;
 
 export const categoryMarquee = [
   "SUITS",
