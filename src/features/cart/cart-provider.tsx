@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   useTransition,
@@ -15,6 +16,7 @@ import {
   addToCartAction,
   applyPromoCodeAction,
   clearPromoCodeAction,
+  getCartAction,
   removeCartItemAction,
   updateCartItemQuantityAction,
 } from "./actions";
@@ -48,6 +50,14 @@ export function CartProvider({
 }: CartProviderProps) {
   const [cart, setCart] = useState<CartState>(initialCart);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    void getCartAction()
+      .then(setCart)
+      .catch(() => {
+        // Cart loads from cookies on the client after hydration.
+      });
+  }, []);
 
   const addToCart = useCallback(
     async (input: {
