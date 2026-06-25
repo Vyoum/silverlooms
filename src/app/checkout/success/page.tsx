@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { Container, PageShell } from "@/components/layout/page-shell";
 import { buttonVariants } from "@/components/ui/button";
+import { getPaidOrderConfirmation } from "@/features/checkout/services/order-service";
 import { BRAND_NAME } from "@/lib/constants/brand";
+import { getDelhiveryTrackingUrl } from "@/lib/delhivery/tracking";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
@@ -11,12 +14,15 @@ export const metadata = {
 };
 
 interface PageProps {
-  searchParams: Promise<{ order?: string }>;
+  searchParams: Promise<{ order?: string; tracking?: string }>;
 }
 
 export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const orderNumber = params.order;
+  const orderNumber = params.order?.trim();
+  const order = orderNumber ? await getPaidOrderConfirmation(orderNumber) : null;
+  const trackingNumber =
+    order?.delhiveryWaybill?.trim() || params.tracking?.trim() || null;
 
   return (
     <PageShell>
@@ -32,9 +38,34 @@ export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
           {orderNumber && (
             <p className="mt-4 text-sage">
               Order <span className="font-medium text-ink">{orderNumber}</span> is
-              confirmed. We&apos;ll email you shipping updates soon.
+              confirmed.
+              {!trackingNumber && " We'll email you shipping updates soon."}
             </p>
           )}
+
+          {trackingNumber ? (
+            <div className="mx-auto mt-8 max-w-md rounded-2xl border border-border bg-cream-warm px-6 py-5 text-left">
+              <p className="text-[11px] font-medium uppercase tracking-[1.65px] text-forest">
+                Delhivery Tracking Number
+              </p>
+              <p className="mt-2 font-mono text-lg tracking-wide text-ink">
+                {trackingNumber}
+              </p>
+              <p className="mt-2 text-sm text-sage">
+                Your shipment has been booked. Use this number to track delivery.
+              </p>
+              <a
+                href={getDelhiveryTrackingUrl(trackingNumber)}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-forest hover:underline"
+              >
+                Track on Delhivery
+                <ExternalLink className="size-4" />
+              </a>
+            </div>
+          ) : null}
+
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Link
               href="/kurtis"

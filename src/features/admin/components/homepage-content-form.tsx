@@ -217,6 +217,41 @@ export function HomepageContentForm({ content }: { content: HomepageContent }) {
       </SectionCard>
 
       <SectionCard
+        title="Shop By Styles"
+        description="The three style tiles on the homepage (Threads of Paradise, Midnight Kari Grace, Whispers of Charm). Upload or replace each photo."
+      >
+        <div className="grid gap-6 lg:grid-cols-3">
+          {content.shopByStyles.map((style, index) => (
+            <div
+              key={`style-${index}`}
+              className="space-y-4 rounded-xl border border-admin-border bg-admin-canvas p-4"
+            >
+              <p className="text-sm font-medium text-admin-ink">Style {index + 1}</p>
+              <div>
+                <FieldLabel>Title</FieldLabel>
+                <Input name={`style${index}Name`} defaultValue={style.name} />
+              </div>
+              <div>
+                <FieldLabel>Link URL</FieldLabel>
+                <Input name={`style${index}Href`} defaultValue={style.href} />
+              </div>
+              <div>
+                <FieldLabel>Image Alt Text</FieldLabel>
+                <Input name={`style${index}ImageAlt`} defaultValue={style.imageAlt} />
+              </div>
+              <ImageField
+                label="Style Photo"
+                name={`style${index}Image`}
+                urlName={`style${index}ImageUrl`}
+                currentUrl={style.imageUrl}
+                alt={style.imageAlt}
+              />
+            </div>
+          ))}
+        </div>
+      </SectionCard>
+
+      <SectionCard
         title="Quote & Portrait Section"
         description="The split block on the homepage: italic quote on the left, editorial portrait on the right with the caption overlay (e.g. “Threads of Paradise”)."
       >

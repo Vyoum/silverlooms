@@ -68,7 +68,11 @@ export function CheckoutForm({ defaultEmail = "", defaultName = "" }: CheckoutFo
         });
 
         if (result.success && result.orderNumber) {
-          router.push(`/checkout/success?order=${encodeURIComponent(result.orderNumber)}`);
+          const params = new URLSearchParams({ order: result.orderNumber });
+          if (result.trackingNumber) {
+            params.set("tracking", result.trackingNumber);
+          }
+          router.push(`/checkout/success?${params.toString()}`);
           return;
         }
 

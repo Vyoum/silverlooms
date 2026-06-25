@@ -61,7 +61,7 @@ export function OrderSummary() {
         </Link>
       )}
       <p className="mt-4 text-center text-[11px] text-sage">
-        Free shipping on orders above ₹5,000
+        Free shipping on all orders
       </p>
     </aside>
   );

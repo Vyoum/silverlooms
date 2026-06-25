@@ -61,7 +61,7 @@ export function BrandLogo({
   );
 
   const wrapperClassName = cn(
-    showName ? "inline-flex flex-col items-center gap-1" : "inline-flex shrink-0",
+    showName ? "inline-flex flex-col items-center gap-px" : "inline-flex shrink-0",
     showName && className,
   );
 

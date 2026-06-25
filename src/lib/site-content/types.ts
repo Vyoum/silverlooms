@@ -36,11 +36,19 @@ export type HomepageBrandStoryContent = {
   imageAlt: string;
 };
 
+export type HomepageStyleTile = {
+  name: string;
+  imageUrl: string;
+  imageAlt: string;
+  href: string;
+};
+
 export type HomepageContent = {
   announcement: HomepageAnnouncementContent;
   hero: HomepageHeroContent;
   editorial: HomepageEditorialContent;
   brandStory: HomepageBrandStoryContent;
+  shopByStyles: HomepageStyleTile[];
 };
 
 export const HOMEPAGE_CONTENT_KEY = "homepage";

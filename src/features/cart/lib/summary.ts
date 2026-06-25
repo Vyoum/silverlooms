@@ -1,10 +1,5 @@
 import type { CartItem, CartState, CartSummary } from "@/lib/types/cart";
-import {
-  FREE_SHIPPING_THRESHOLD,
-  PROMO_CODES,
-  STANDARD_SHIPPING_FEE,
-  type PromoCode,
-} from "./constants";
+import { PROMO_CODES, type PromoCode } from "./constants";
 
 export function calculateCartSummary(
   items: CartItem[],
@@ -25,10 +20,7 @@ export function calculateCartSummary(
   }
 
   const discountedSubtotal = Math.max(subtotal - discount, 0);
-  const shipping =
-    discountedSubtotal >= FREE_SHIPPING_THRESHOLD || discountedSubtotal === 0
-      ? 0
-      : STANDARD_SHIPPING_FEE;
+  const shipping = 0;
 
   return {
     subtotal,

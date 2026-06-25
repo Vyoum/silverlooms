@@ -39,4 +39,24 @@ export const defaultHomepageContent: HomepageContent = {
     imageUrl: assets.editorial.brandStory,
     imageAlt: "Editorial fashion portrait",
   },
+  shopByStyles: [
+    {
+      name: "Threads of Paradise",
+      imageUrl: assets.styles.threadsOfParadise,
+      imageAlt: "Threads of Paradise",
+      href: "/kurtis",
+    },
+    {
+      name: "Midnight Kari Grace",
+      imageUrl: assets.styles.midnightKariGrace,
+      imageAlt: "Midnight Kari Grace",
+      href: "/kurtis",
+    },
+    {
+      name: "Whispers of Charm",
+      imageUrl: assets.styles.whispersOfCharm,
+      imageAlt: "Whispers of Charm",
+      href: "/kurtis",
+    },
+  ],
 };

@@ -55,6 +55,12 @@ async function parseHomepageForm(formData: FormData): Promise<HomepageContent> {
       imageUrl: read("brandStoryImageUrl") || current.brandStory.imageUrl,
       imageAlt: read("brandStoryImageAlt") || current.brandStory.imageAlt,
     },
+    shopByStyles: current.shopByStyles.map((style, index) => ({
+      name: read(`style${index}Name`) || style.name,
+      imageUrl: read(`style${index}ImageUrl`) || style.imageUrl,
+      imageAlt: read(`style${index}ImageAlt`) || style.imageAlt,
+      href: read(`style${index}Href`) || style.href,
+    })),
   };
 }
 
@@ -93,6 +99,17 @@ async function applyImageUploads(
     } else {
       next.brandStory = { ...next.brandStory, imageUrl };
     }
+  }
+
+  const styleCount = next.shopByStyles.length;
+  for (let index = 0; index < styleCount; index += 1) {
+    const file = formData.get(`style${index}Image`);
+    if (!(file instanceof File) || file.size === 0) continue;
+
+    const imageUrl = await saveProductImage(file, `homepage-style-${index}`);
+    next.shopByStyles = next.shopByStyles.map((style, styleIndex) =>
+      styleIndex === index ? { ...style, imageUrl } : style,
+    );
   }
 
   return next;

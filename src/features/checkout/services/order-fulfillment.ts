@@ -20,7 +20,10 @@ export async function markOrderPaid(input: {
   if (order.paymentStatus === "PAID") {
     if (!order.delhiveryWaybill) {
       try {
-        await createShipmentForPaidOrder(order.id);
+        const shipped = await createShipmentForPaidOrder(order.id);
+        if (shipped) {
+          return shipped;
+        }
       } catch (error) {
         console.error("[delhivery] Failed after payment:", error);
       }
@@ -45,7 +48,10 @@ export async function markOrderPaid(input: {
   await decrementInventoryForOrder(order.id);
 
   try {
-    await createShipmentForPaidOrder(updated.id);
+    const shipped = await createShipmentForPaidOrder(updated.id);
+    if (shipped) {
+      return shipped;
+    }
   } catch (error) {
     console.error("[delhivery] Failed after payment:", error);
   }

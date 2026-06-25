@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { defaultHomepageContent } from "./defaults";
-import type { HomepageContent } from "./types";
+import type { HomepageContent, HomepageStyleTile } from "./types";
 import { HOMEPAGE_CONTENT_KEY } from "./types";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -12,6 +12,15 @@ function mergeSection<T extends Record<string, unknown>>(defaults: T, patch: unk
   return { ...defaults, ...patch } as T;
 }
 
+function mergeShopByStyles(patch: unknown): HomepageStyleTile[] {
+  const defaults = defaultHomepageContent.shopByStyles;
+  if (!Array.isArray(patch)) return defaults;
+
+  return defaults.map((item, index) =>
+    mergeSection(item, patch[index]),
+  );
+}
+
 export function mergeHomepageContent(patch: unknown): HomepageContent {
   if (!isRecord(patch)) return defaultHomepageContent;
 
@@ -20,6 +29,7 @@ export function mergeHomepageContent(patch: unknown): HomepageContent {
     hero: mergeSection(defaultHomepageContent.hero, patch.hero),
     editorial: mergeSection(defaultHomepageContent.editorial, patch.editorial),
     brandStory: mergeSection(defaultHomepageContent.brandStory, patch.brandStory),
+    shopByStyles: mergeShopByStyles(patch.shopByStyles),
   };
 }
 

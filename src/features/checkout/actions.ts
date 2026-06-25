@@ -41,7 +41,12 @@ export async function verifyPaymentAction(input: {
   razorpayOrderId: string;
   razorpayPaymentId: string;
   razorpaySignature: string;
-}): Promise<{ success: boolean; orderNumber?: string; error?: string }> {
+}): Promise<{
+  success: boolean;
+  orderNumber?: string;
+  trackingNumber?: string;
+  error?: string;
+}> {
   try {
     const valid = verifyRazorpaySignature(
       input.razorpayOrderId,
@@ -59,7 +64,11 @@ export async function verifyPaymentAction(input: {
     revalidatePath("/cart");
     revalidatePath("/admin");
 
-    return { success: true, orderNumber: order.orderNumber };
+    return {
+      success: true,
+      orderNumber: order.orderNumber,
+      trackingNumber: order.delhiveryWaybill ?? undefined,
+    };
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Could not verify payment.";

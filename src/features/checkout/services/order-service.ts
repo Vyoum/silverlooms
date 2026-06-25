@@ -103,3 +103,13 @@ export async function completeOrderPayment(input: {
     razorpayPaymentId: input.razorpayPaymentId,
   });
 }
+
+export async function getPaidOrderConfirmation(orderNumber: string) {
+  return prisma.order.findFirst({
+    where: { orderNumber, paymentStatus: "PAID" },
+    select: {
+      orderNumber: true,
+      delhiveryWaybill: true,
+    },
+  });
+}
