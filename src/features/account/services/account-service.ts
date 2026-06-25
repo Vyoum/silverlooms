@@ -21,3 +21,7 @@ export async function getAccountOrders(userId: string, limit = 5) {
 export async function getAccountOrderCount(userId: string) {
   return prisma.order.count({ where: { userId } });
 }
+
+export async function getAccountWishlistCount(userId: string) {
+  return prisma.wishlist.count({ where: { userId } });
+}

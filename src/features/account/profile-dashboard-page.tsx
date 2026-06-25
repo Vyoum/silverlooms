@@ -2,11 +2,26 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Order, OrderItem, OrderStatus } from "@/generated/prisma/client";
 import type { AccountProfile } from "@/features/auth/services/session";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PageShell } from "@/components/layout/page-shell";
+import { ProfileMenuSection } from "@/features/account/components/profile-menu-section";
 import { signOutAction } from "@/features/auth/actions";
-import { cn } from "@/lib/utils";
+import { BRAND_NAME } from "@/lib/constants/brand";
+import {
+  Bell,
+  BookOpen,
+  CreditCard,
+  Eye,
+  Heart,
+  HelpCircle,
+  History,
+  MapPin,
+  Package,
+  Palette,
+  Sparkles,
+  Truck,
+} from "lucide-react";
 
 type OrderWithItems = Order & {
   items: (OrderItem & {
@@ -18,15 +33,9 @@ interface ProfileDashboardPageProps {
   profile: AccountProfile;
   orders: OrderWithItems[];
   totalOrders: number;
+  wishlistCount: number;
+  memberSince: number;
 }
-
-const accountNavItems = [
-  { label: "Order History", active: true },
-  { label: "Bespoke Requests", active: false },
-  { label: "Saved Pieces", active: false },
-  { label: "Personal Details", active: false },
-  { label: "Addresses", active: false },
-] as const;
 
 function formatOrderDate(date: Date) {
   return new Intl.DateTimeFormat("en-IN", {
@@ -51,228 +60,202 @@ function getStatusLabel(status: OrderStatus) {
   }
 }
 
-function getStatusClass(status: OrderStatus) {
-  switch (status) {
-    case "DELIVERED":
-      return "border-forest text-forest";
-    case "SHIPPED":
-    case "PROCESSING":
-      return "border-heritage-gold text-heritage-gold";
-    case "CANCELLED":
-      return "border-red-600 text-red-600";
-    default:
-      return "border-sage text-sage";
+function getInitials(name: string | null, email: string) {
+  if (name?.trim()) {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return `${parts[0][0] ?? ""}${parts[1][0] ?? ""}`.toUpperCase();
+    }
+    return parts[0].slice(0, 2).toUpperCase();
   }
+
+  return email.slice(0, 2).toUpperCase();
 }
 
-function getDisplayName(profile: AccountProfile) {
-  if (profile.name?.trim()) {
-    return profile.name.trim().split(" ")[0];
-  }
-
-  return profile.email.split("@")[0];
+function getDisplayName(name: string | null, email: string) {
+  if (name?.trim()) return name.trim();
+  return email.split("@")[0];
 }
 
 export function ProfileDashboardPage({
   profile,
   orders,
   totalOrders,
+  wishlistCount,
+  memberSince,
 }: ProfileDashboardPageProps) {
-  const firstName = getDisplayName(profile);
+  const fullName = getDisplayName(profile.name, profile.email);
+  const initials = getInitials(profile.name, profile.email);
+  const customOrders = 0;
 
   return (
-    <PageShell>
+    <PageShell className="pb-28 md:pb-0">
       <SiteHeader />
-      <main className="mx-auto max-w-[1280px] px-5 py-16 md:px-16">
-        <div className="mb-24 text-center md:text-left">
-          <h1 className="font-serif text-[40px] leading-tight text-ink md:text-[64px] md:leading-[72px]">
-            The Curated Heritage
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-sage">
-            A sanctuary for your personal collection and bespoke journeys.
+      <main className="mx-auto w-full max-w-lg md:max-w-[1280px]">
+        <section className="px-5 pb-2 pt-10 text-center md:pt-14">
+          <div className="mx-auto mb-5 flex size-20 items-center justify-center rounded-2xl border border-border bg-cream-warm font-serif text-2xl tracking-wide text-ink">
+            {initials}
+          </div>
+          <h1 className="font-serif text-[2rem] leading-tight text-ink">{fullName}</h1>
+          <p className="mt-2 text-sm text-sage">
+            Patron since {memberSince}
+            <span className="mx-2 text-border">·</span>
+            <span className="uppercase tracking-[0.12em] text-ink/70">Edit</span>
           </p>
-        </div>
+        </section>
 
-        <div className="flex flex-col gap-6 md:flex-row md:gap-16">
-          <aside className="mb-12 w-full shrink-0 md:mb-0 md:w-64">
-            <nav className="flex flex-col space-y-6">
-              {accountNavItems.map((item) => (
-                <span
-                  key={item.label}
-                  className={cn(
-                    "flex items-center gap-4 text-xs font-medium uppercase tracking-[0.1em]",
-                    item.active
-                      ? "text-heritage-gold"
-                      : "text-sage",
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "block h-px",
-                      item.active
-                        ? "w-8 bg-heritage-gold"
-                        : "w-4 bg-border",
-                    )}
-                  />
-                  {item.label}
-                </span>
-              ))}
-            </nav>
+        <section className="mx-5 mt-6 overflow-hidden rounded-xl border border-border bg-white">
+          <div className="grid grid-cols-3 divide-x divide-border">
+            {[
+              { value: totalOrders, label: "Orders" },
+              { value: wishlistCount, label: "Wishlist" },
+              { value: customOrders, label: "Custom" },
+            ].map((stat) => (
+              <div key={stat.label} className="px-3 py-5 text-center">
+                <p className="font-serif text-3xl leading-none text-ink">{stat.value}</p>
+                <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.16em] text-sage">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-            <form action={signOutAction} className="mt-12">
-              <button
-                type="submit"
-                className="text-xs font-medium uppercase tracking-[0.1em] text-sage transition-colors hover:text-ink"
-              >
-                Sign out
-              </button>
-            </form>
-          </aside>
-
-          <div className="min-w-0 flex-1">
-            <div className="mb-16">
-              <h2 className="font-serif text-[32px] leading-10 text-ink">
-                Welcome back, {firstName}
-              </h2>
-              <p className="mt-2 text-base text-sage">
-                Manage your collection and track your recent acquisitions below.
+        <section className="mx-5 mt-5 rounded-xl border border-heritage-gold/20 bg-[#f1ead8] px-5 py-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="border-l-2 border-heritage-gold pl-4">
+              <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-ink/70">
+                Artisan Patronage
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-ink/80">
+                Every order supports handloom weavers and silversmiths in Jaipur.
               </p>
             </div>
+            <Sparkles className="size-4 shrink-0 text-heritage-gold" />
+          </div>
+        </section>
 
-            <section className="mb-24">
-              <div className="mb-8 flex items-end justify-between border-b border-ink/10 pb-4">
-                <h3 className="font-serif text-2xl text-ink">Recent Orders</h3>
-                {totalOrders > orders.length && (
-                  <span className="text-xs font-medium uppercase tracking-[0.1em] text-sage">
-                    {totalOrders} total
-                  </span>
-                )}
-              </div>
+        <div className="my-8 flex justify-center" aria-hidden>
+          <span className="size-2 rotate-45 bg-heritage-gold/80" />
+        </div>
 
-              {orders.length === 0 ? (
-                <div className="border border-dashed border-border bg-cream-dark/40 px-8 py-16 text-center">
-                  <p className="font-serif text-2xl text-ink">No orders yet</p>
-                  <p className="mt-3 text-sage">
-                    When you place an order, it will appear here.
-                  </p>
-                  <Link
-                    href="/kurtis"
-                    className="mt-8 inline-block border-b border-ink pb-1 text-xs font-medium uppercase tracking-[0.1em] text-ink transition-colors hover:border-heritage-gold hover:text-heritage-gold"
+        <ProfileMenuSection
+          title="My Orders"
+          items={[
+            { label: "All Orders", href: "#orders", icon: Package },
+            { label: "Custom Orders", href: "/jewellery", icon: Palette, badge: customOrders > 0 },
+            { label: "Track Shipment", href: "#orders", icon: Truck },
+          ]}
+        />
+
+        <ProfileMenuSection
+          title="My Collection"
+          items={[
+            { label: "Wishlist", href: "/wishlist", icon: Heart },
+            { label: "Recently Viewed", href: "/kurtis", icon: Eye },
+            { label: "Browse History", href: "/kurtis?sort=bestseller", icon: History },
+          ]}
+        />
+
+        <ProfileMenuSection
+          title="Account"
+          items={[
+            { label: "Addresses", href: "#", icon: MapPin },
+            { label: "Payment", href: "#", icon: CreditCard },
+            { label: "Notifications", href: "#", icon: Bell },
+            { label: "Help", href: "#", icon: HelpCircle },
+            { label: "Our Story", href: "/#editorial", icon: BookOpen },
+          ]}
+        />
+
+        <form action={signOutAction} className="mt-10 px-5 text-center">
+          <button
+            type="submit"
+            className="border-b border-ink/30 pb-0.5 text-sm text-ink transition-colors hover:border-ink"
+          >
+            Sign Out
+          </button>
+        </form>
+
+        <section id="orders" className="mt-12 px-5 pb-10 md:px-16">
+          <div className="mb-6 flex items-end justify-between border-b border-ink/10 pb-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-sage">{BRAND_NAME}</p>
+              <h2 className="mt-1 font-serif text-2xl text-ink">Recent Orders</h2>
+            </div>
+            {totalOrders > orders.length ? (
+              <span className="text-[10px] uppercase tracking-[0.14em] text-sage">
+                {totalOrders} total
+              </span>
+            ) : null}
+          </div>
+
+          {orders.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border bg-white px-6 py-12 text-center">
+              <p className="font-serif text-xl text-ink">No orders yet</p>
+              <p className="mt-2 text-sm text-sage">
+                When you place an order, it will appear here.
+              </p>
+              <Link
+                href="/kurtis"
+                className="mt-6 inline-block border-b border-ink pb-1 text-[11px] uppercase tracking-[0.14em] text-ink"
+              >
+                Explore Collections
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {orders.map((order) => {
+                const item = order.items[0];
+                const imageUrl = item?.product.imageUrl;
+
+                return (
+                  <article
+                    key={order.id}
+                    className="overflow-hidden rounded-xl border border-border bg-white"
                   >
-                    Explore Collections
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-8">
-                  {orders.map((order, index) => {
-                    const item = order.items[0];
-                    const imageUrl = item?.product.imageUrl;
-
-                    return (
-                      <div key={order.id}>
-                        <div className="group flex flex-col items-start gap-6 sm:flex-row sm:items-center">
-                          <div className="aspect-[3/4] w-full overflow-hidden bg-cream-dark sm:w-48">
-                            {imageUrl ? (
-                              <Image
-                                src={imageUrl}
-                                alt={item.productName}
-                                width={192}
-                                height={256}
-                                className="size-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
-                              />
-                            ) : (
-                              <div className="flex size-full items-center justify-center bg-cream-dark px-4 text-center text-xs font-medium uppercase tracking-[0.1em] text-sage">
-                                Order
-                                <br />
-                                Item
-                              </div>
-                            )}
+                    <div className="flex gap-4 p-4">
+                      <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-cream-dark">
+                        {imageUrl ? (
+                          <Image
+                            src={imageUrl}
+                            alt={item.productName}
+                            fill
+                            className="object-cover"
+                            sizes="80px"
+                          />
+                        ) : (
+                          <div className="flex size-full items-center justify-center text-[10px] uppercase tracking-wider text-sage">
+                            Order
                           </div>
-
-                          <div className="min-w-0 flex-1">
-                            <div className="mb-2 flex items-start justify-between gap-4">
-                              <div>
-                                <p className="mb-1 text-xs font-medium uppercase tracking-[0.1em] text-sage">
-                                  Order #{order.orderNumber}
-                                </p>
-                                <h4 className="mb-2 font-serif text-2xl text-ink">
-                                  {item?.productName ?? "Order items"}
-                                </h4>
-                                {item && (
-                                  <p className="text-base text-sage">
-                                    Qty {item.quantity}
-                                    {item.size ? ` · Size ${item.size}` : ""}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="shrink-0 text-right">
-                                <span
-                                  className={cn(
-                                    "mb-2 inline-block border px-3 py-1 text-xs font-medium uppercase tracking-wider",
-                                    getStatusClass(order.status),
-                                  )}
-                                >
-                                  {getStatusLabel(order.status)}
-                                </span>
-                                <p className="text-base text-sage">
-                                  {formatOrderDate(order.createdAt)}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="mt-6">
-                              <Link
-                                href={`/checkout/success?order=${order.orderNumber}`}
-                                className="border-b border-ink pb-1 text-xs font-medium uppercase tracking-[0.1em] text-ink transition-colors hover:border-heritage-gold hover:text-heritage-gold"
-                              >
-                                View order
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                        {index < orders.length - 1 && (
-                          <div className="mt-8 h-px bg-ink/5" />
                         )}
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </section>
-
-            <section className="relative overflow-hidden bg-[#F1EAD8] px-5 py-16 md:p-16">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/40 to-transparent" />
-              <div className="relative z-10 flex flex-col items-center gap-12 lg:flex-row">
-                <div className="w-full lg:w-1/2">
-                  <Image
-                    src="https://lh3.googleusercontent.com/aida/AP1WRLuVa7n-bJNYMonhrm5zp_REuOxsJGFJiadO8aJ6Db0Fq45Cn9qBW0_yH6vzQPpH5MZO7rSg3bvr5vRpvWzulTl7A3E8EUZqy2dNxDwGJN6DUuYUCa44iI-bMc7BblO6aWmmfgJReeGLOIuyJ_1I8XPJo_XPuceW8fOQUb84SqA0SXKqgxSUj7ENm6yGwKDQdTpmn5GyBZogflOXu5tkr1mtkCLcqyjjTw5Ur4d861kUXRZx9jx1BgaXTW7a"
-                    alt="Bespoke inspiration editorial"
-                    width={640}
-                    height={800}
-                    className="aspect-[4/5] w-full object-cover shadow-sm"
-                  />
-                </div>
-                <div className="w-full space-y-6 lg:w-1/2">
-                  <h3 className="font-serif text-2xl text-ink">
-                    Bespoke Inspiration
-                  </h3>
-                  <p className="text-lg text-sage">
-                    Elevate your personal narrative with pieces crafted
-                    exclusively for you. Our artisans are ready to translate
-                    your heritage into silver.
-                  </p>
-                  <Link
-                    href="/jewellery"
-                    className="inline-block bg-onyx px-8 py-4 text-xs font-medium uppercase tracking-[0.1em] text-white transition-colors duration-300 hover:bg-heritage-gold"
-                  >
-                    Start a Commission
-                  </Link>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[10px] uppercase tracking-[0.14em] text-sage">
+                          Order #{order.orderNumber}
+                        </p>
+                        <h3 className="mt-1 font-serif text-lg text-ink">
+                          {item?.productName ?? "Order items"}
+                        </h3>
+                        <p className="mt-1 text-sm text-sage">
+                          {formatOrderDate(order.createdAt)} · {getStatusLabel(order.status)}
+                        </p>
+                        <Link
+                          href={`/checkout/success?order=${order.orderNumber}`}
+                          className="mt-3 inline-block text-[11px] uppercase tracking-[0.14em] text-ink underline-offset-2 hover:underline"
+                        >
+                          View order
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </section>
       </main>
-      <SiteFooter />
+      <MobileTabBar />
     </PageShell>
   );
 }
