@@ -46,7 +46,7 @@ export function JewelleryFooter() {
           </div>
         </div>
         <p className="pt-8 text-xs text-cream-dark/50">
-          © 2024 Silver Looms. Crafted in Jaipur.
+          © 2026 Silver Looms. Crafted in Jaipur.
         </p>
       </Container>
     </footer>

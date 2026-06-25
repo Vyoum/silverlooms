@@ -45,7 +45,7 @@ export function KurtisFooter() {
           </div>
         </div>
         <p className="mt-12 border-t border-border pt-8 text-[11px] uppercase tracking-wider text-muted-light">
-          © 2024 Silver Looms. Crafted in Jaipur.
+          © 2026 Silver Looms. Crafted in Jaipur.
         </p>
       </Container>
     </footer>
