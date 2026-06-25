@@ -14,6 +14,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "admin:check": "tsx scripts/check-auth-setup.ts",
     "admin:promote": "tsx scripts/promote-admin.ts",
+    "storage:setup": "tsx scripts/setup-supabase-storage.ts",
     "db:verify": "tsx scripts/verify-db.ts"
   },
   "prisma": {

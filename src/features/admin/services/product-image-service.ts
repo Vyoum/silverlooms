@@ -1,14 +1,13 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/features/catalog/services/product-service";
+import {
+  ensureProductImageBucket,
+  MAX_PRODUCT_IMAGE_BYTES,
+  PRODUCT_IMAGE_BUCKET,
+  PRODUCT_IMAGE_MIME_TYPES,
+} from "@/lib/supabase/product-image-storage";
 
-export const PRODUCT_IMAGE_BUCKET = "product-images";
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
-const ALLOWED_IMAGE_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-]);
+const ALLOWED_IMAGE_TYPES = new Set<string>(PRODUCT_IMAGE_MIME_TYPES);
 
 function getFileExtension(file: File) {
   const fromName = file.name.split(".").pop()?.toLowerCase();
@@ -33,7 +32,7 @@ export function validateProductImageFile(file: File) {
     throw new Error("Please upload a JPG, PNG, or WebP image.");
   }
 
-  if (file.size > MAX_IMAGE_BYTES) {
+  if (file.size > MAX_PRODUCT_IMAGE_BYTES) {
     throw new Error("Image must be 5 MB or smaller.");
   }
 }
@@ -56,12 +55,20 @@ async function saveProductImageLocally(file: File, slugHint: string) {
 
 async function uploadProductImageToSupabase(file: File, slugHint: string) {
   const admin = createAdminClient();
-  const supabase = admin ?? (await createClient());
+
+  if (!admin) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY is not configured for image uploads.",
+    );
+  }
+
+  await ensureProductImageBucket(admin);
+
   const extension = getFileExtension(file);
   const objectPath = `${slugify(slugHint) || "product"}-${Date.now()}.${extension}`;
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  const { error } = await supabase.storage
+  const { error } = await admin.storage
     .from(PRODUCT_IMAGE_BUCKET)
     .upload(objectPath, buffer, {
       contentType: file.type,
@@ -72,7 +79,7 @@ async function uploadProductImageToSupabase(file: File, slugHint: string) {
     throw new Error(error.message);
   }
 
-  const { data } = supabase.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(objectPath);
+  const { data } = admin.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(objectPath);
   return data.publicUrl;
 }
 
@@ -89,7 +96,7 @@ export async function saveProductImage(file: File, slugHint: string) {
     const message =
       error instanceof Error ? error.message : "Could not upload product image.";
     throw new Error(
-      `Image upload failed: ${message}. Create a public "${PRODUCT_IMAGE_BUCKET}" bucket in Supabase Storage, or run locally in development.`,
+      `Image upload failed: ${message}. Add SUPABASE_SERVICE_ROLE_KEY on Vercel and run "npm run storage:setup", or create a public "${PRODUCT_IMAGE_BUCKET}" bucket in Supabase Storage.`,
     );
   }
 }
