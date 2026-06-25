@@ -18,7 +18,6 @@ import {
   MapPin,
   Package,
   Palette,
-  Sparkles,
   Truck,
 } from "lucide-react";
 
@@ -119,24 +118,6 @@ export function ProfileDashboardPage({
             ))}
           </div>
         </section>
-
-        <section className="mx-5 mt-5 rounded-xl border border-heritage-gold/20 bg-[#f1ead8] px-5 py-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="border-l-2 border-heritage-gold pl-4">
-              <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-ink/70">
-                Artisan Patronage
-              </p>
-              <p className="mt-1 text-sm leading-relaxed text-ink/80">
-                Every order supports handloom weavers and silversmiths in Jaipur.
-              </p>
-            </div>
-            <Sparkles className="size-4 shrink-0 text-heritage-gold" />
-          </div>
-        </section>
-
-        <div className="my-8 flex justify-center" aria-hidden>
-          <span className="size-2 rotate-45 bg-heritage-gold/80" />
-        </div>
 
         <ProfileMenuSection
           title="My Orders"
