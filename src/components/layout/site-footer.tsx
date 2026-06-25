@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Share2 } from "lucide-react";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { footerLinks } from "@/lib/constants/navigation";
@@ -11,10 +12,13 @@ export function SiteFooter() {
       <Container className="py-16">
         <div className="grid gap-12 border-b border-border pb-16 md:grid-cols-2">
           <div>
-            <Link href="/" className="font-serif text-[42px] font-light text-gold">
-              Silver Looms
-            </Link>
-            <p className="mt-2 font-serif text-xl italic tracking-wide text-muted-light">
+            <BrandLogo
+              size="lg"
+              showName
+              href="/"
+              nameClassName="text-gold text-sm tracking-[0.28em]"
+            />
+            <p className="mt-3 font-serif text-xl italic tracking-wide text-muted-light">
               Woven in tradition, dressed in silver.
             </p>
           </div>
@@ -75,7 +79,7 @@ export function SiteFooter() {
 
         <div className="flex flex-col items-center justify-between gap-4 py-8 sm:flex-row">
           <p className="text-[11px] uppercase tracking-[1.1px] text-muted-light">
-            © 2025 Silver Looms. All Rights Reserved.
+            © 2026 Silver Looms. All Rights Reserved.
           </p>
           <div className="flex gap-4 text-[11px] uppercase tracking-wider text-muted-light">
             <span>Visa</span>

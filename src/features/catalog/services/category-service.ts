@@ -34,7 +34,7 @@ function mapCategory(row: {
   };
 }
 
-export async function ensureDefaultCategories() {
+export async function syncDefaultCategories() {
   for (const category of DEFAULT_STORE_CATEGORIES) {
     await prisma.category.upsert({
       where: { slug: category.slug },
@@ -49,12 +49,12 @@ export async function ensureDefaultCategories() {
   }
 }
 
+/** @deprecated Use syncDefaultCategories */
+export const ensureDefaultCategories = syncDefaultCategories;
+
 export async function listStoreCategories(kind?: CategoryKind) {
   try {
-    const count = await prisma.category.count();
-    if (count === 0) {
-      await ensureDefaultCategories();
-    }
+    await syncDefaultCategories();
 
     const rows = await prisma.category.findMany({
       where: kind ? { kind } : undefined,
@@ -126,6 +126,10 @@ export async function createStoreCategory(input: {
 export async function updateStoreCategory(
   id: string,
   input: {
+    name?: string;
+    kind?: CategoryKind;
+    keywords?: string[];
+    sortOrder?: number;
     heroImageUrl?: string | null;
     heroTitle?: string | null;
     heroSubtitle?: string | null;
@@ -133,17 +137,49 @@ export async function updateStoreCategory(
     showInCatalogFilter?: boolean;
   },
 ) {
+  const data: {
+    name?: string;
+    slug?: string;
+    kind?: CategoryKind;
+    keywords?: string[];
+    sortOrder?: number;
+    heroImageUrl?: string | null;
+    heroTitle?: string | null;
+    heroSubtitle?: string | null;
+    showInMarquee?: boolean;
+    showInCatalogFilter?: boolean;
+  } = {};
+
+  if (input.name !== undefined) {
+    const name = input.name.trim();
+    if (!name) {
+      throw new Error("Category name is required.");
+    }
+
+    const nextSlug = slugify(name);
+    const existing = await prisma.category.findUnique({ where: { slug: nextSlug } });
+    if (existing && existing.id !== id) {
+      throw new Error("Another category already uses this name.");
+    }
+
+    data.name = name;
+    data.slug = nextSlug;
+  }
+
+  if (input.kind !== undefined) data.kind = input.kind;
+  if (input.keywords !== undefined) data.keywords = input.keywords;
+  if (input.sortOrder !== undefined) data.sortOrder = input.sortOrder;
+  if (input.heroImageUrl !== undefined) data.heroImageUrl = input.heroImageUrl;
+  if (input.heroTitle !== undefined) data.heroTitle = input.heroTitle;
+  if (input.heroSubtitle !== undefined) data.heroSubtitle = input.heroSubtitle;
+  if (input.showInMarquee !== undefined) data.showInMarquee = input.showInMarquee;
+  if (input.showInCatalogFilter !== undefined) {
+    data.showInCatalogFilter = input.showInCatalogFilter;
+  }
+
   return prisma.category.update({
     where: { id },
-    data: {
-      ...(input.heroImageUrl !== undefined ? { heroImageUrl: input.heroImageUrl } : {}),
-      ...(input.heroTitle !== undefined ? { heroTitle: input.heroTitle } : {}),
-      ...(input.heroSubtitle !== undefined ? { heroSubtitle: input.heroSubtitle } : {}),
-      ...(input.showInMarquee !== undefined ? { showInMarquee: input.showInMarquee } : {}),
-      ...(input.showInCatalogFilter !== undefined
-        ? { showInCatalogFilter: input.showInCatalogFilter }
-        : {}),
-    },
+    data,
   });
 }
 

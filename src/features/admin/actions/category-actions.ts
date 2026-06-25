@@ -88,6 +88,67 @@ export async function createCategoryAction(
   }
 }
 
+export async function updateCategoryAction(
+  _prev: CategoryActionResult,
+  formData: FormData,
+): Promise<CategoryActionResult> {
+  try {
+    await requireAdminUser();
+
+    const id = String(formData.get("id") ?? "").trim();
+    const name = String(formData.get("name") ?? "").trim();
+    const kind = String(formData.get("kind") ?? "APPAREL") as CategoryKind;
+    const keywordsRaw = String(formData.get("keywords") ?? "").trim();
+    const sortOrderRaw = String(formData.get("sortOrder") ?? "").trim();
+    const showInMarquee = formData.get("showInMarquee") === "on";
+    const showInCatalogFilter = formData.get("showInCatalogFilter") === "on";
+    const heroTitle = String(formData.get("heroTitle") ?? "").trim();
+    const heroSubtitle = String(formData.get("heroSubtitle") ?? "").trim();
+    const existingImageUrl = String(formData.get("heroImageUrl") ?? "").trim();
+    const imageFile = formData.get("heroImage");
+    const slug = String(formData.get("slug") ?? "category").trim();
+
+    if (!id) {
+      return { success: false, error: "Category id is required." };
+    }
+
+    if (!name) {
+      return { success: false, error: "Category name is required." };
+    }
+
+    let heroImageUrl = existingImageUrl || null;
+    if (imageFile instanceof File && imageFile.size > 0) {
+      heroImageUrl = await saveProductImage(imageFile, `category-${slug}`);
+    }
+
+    const sortOrder = sortOrderRaw ? Number.parseInt(sortOrderRaw, 10) : 0;
+    if (Number.isNaN(sortOrder)) {
+      return { success: false, error: "Sort order must be a number." };
+    }
+
+    await updateStoreCategory(id, {
+      name,
+      kind,
+      keywords: keywordsRaw
+        ? keywordsRaw.split(",").map((keyword) => keyword.trim().toLowerCase())
+        : [name.toLowerCase()],
+      sortOrder,
+      showInMarquee,
+      showInCatalogFilter,
+      heroTitle: heroTitle || null,
+      heroSubtitle: heroSubtitle || null,
+      heroImageUrl,
+    });
+
+    revalidateCategoryPaths();
+    return { success: true };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to update category.";
+    return { success: false, error: message };
+  }
+}
+
 export async function updateCategoryHeroAction(
   _prev: CategoryActionResult,
   formData: FormData,

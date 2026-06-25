@@ -10,46 +10,68 @@ import {
 import { cn } from "@/lib/utils";
 
 const sizeHeights = {
-  sm: 36,
-  md: 48,
-  lg: 64,
+  sm: 44,
+  md: 54,
+  lg: 72,
 } as const;
 
 interface BrandLogoProps {
   className?: string;
+  nameClassName?: string;
   href?: string | null;
   size?: keyof typeof sizeHeights;
   priority?: boolean;
+  showName?: boolean;
 }
 
 export function BrandLogo({
   className,
+  nameClassName,
   href = "/",
   size = "md",
   priority = false,
+  showName = false,
 }: BrandLogoProps) {
   const height = sizeHeights[size];
   const width = Math.round((BRAND_LOGO_WIDTH / BRAND_LOGO_HEIGHT) * height);
 
-  const image = (
-    <Image
-      src={BRAND_LOGO_PATH}
-      alt={`${BRAND_NAME} — ${BRAND_TAGLINE}`}
-      width={width}
-      height={height}
-      priority={priority}
-      className={cn("h-auto w-auto object-contain", className)}
-      style={{ height, width: "auto", maxWidth: width }}
-    />
+  const content = (
+    <>
+      <Image
+        src={BRAND_LOGO_PATH}
+        alt={showName ? "" : `${BRAND_NAME} — ${BRAND_TAGLINE}`}
+        width={width}
+        height={height}
+        priority={priority}
+        aria-hidden={showName}
+        className={cn("h-auto w-auto object-contain", !showName && className)}
+        style={{ height, width: "auto", maxWidth: width }}
+      />
+      {showName ? (
+        <span
+          className={cn(
+            "font-serif text-[11px] font-medium uppercase tracking-[0.22em] text-ink",
+            nameClassName,
+          )}
+        >
+          {BRAND_NAME}
+        </span>
+      ) : null}
+    </>
+  );
+
+  const wrapperClassName = cn(
+    showName ? "inline-flex flex-col items-center gap-1" : "inline-flex shrink-0",
+    showName && className,
   );
 
   if (href) {
     return (
-      <Link href={href} className="inline-flex shrink-0" aria-label={BRAND_NAME}>
-        {image}
+      <Link href={href} className={wrapperClassName} aria-label={BRAND_NAME}>
+        {content}
       </Link>
     );
   }
 
-  return image;
+  return <div className={wrapperClassName}>{content}</div>;
 }

@@ -95,20 +95,27 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
         className,
       )}
     >
-      <div className="relative mx-auto flex h-20 max-w-[1280px] items-center px-4 md:px-16">
+      <div className="relative mx-auto flex h-[5.5rem] max-w-[1280px] items-center px-4 md:px-16">
         {/* Left: hamburger (mobile) + logo (desktop) */}
         <div className="flex min-w-0 flex-1 items-center gap-4">
           <MobileNav sections={navSections} isDark={isDark} />
           <BrandLogo
-            size="sm"
-            className="hidden md:inline-flex md:h-10 lg:h-12"
+            size="md"
+            showName
             priority={isHome}
+            nameClassName={isDark ? "text-cream" : "text-ink"}
+            className="hidden md:inline-flex"
           />
         </div>
 
         {/* Center: logo on mobile, nav links on desktop */}
         <div className="absolute left-1/2 -translate-x-1/2 md:hidden">
-          <BrandLogo size="sm" priority={isHome} />
+          <BrandLogo
+            size="sm"
+            showName
+            priority={isHome}
+            nameClassName={isDark ? "text-cream" : "text-ink"}
+          />
         </div>
 
         {/* Center: all primary nav links (desktop) */}

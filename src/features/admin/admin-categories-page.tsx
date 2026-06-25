@@ -15,8 +15,9 @@ export async function AdminCategoriesPage() {
       <div>
         <h1 className="font-serif text-3xl font-medium text-admin-ink">Categories</h1>
         <p className="mt-2 max-w-2xl text-sm text-admin-muted">
-          Manage storefront categories, catalog banner photos on /kurtis, and per-category
-          hero backgrounds when customers filter by Leheriya, Bandhej, Shirts, Bags, and more.
+          Edit all storefront categories — apparel (Leheriya, Bandhej, Shirts, Bags, etc.)
+          and jewellery (Necklace Sets, Earrings, Silver Jewellery, and more). Update names,
+          keywords, marquee/filter visibility, sort order, and hero banners.
         </p>
       </div>
       <CategoriesManager categories={categories} catalogHeroes={catalogHeroes} />
