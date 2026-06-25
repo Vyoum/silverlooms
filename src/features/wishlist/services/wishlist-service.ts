@@ -1,4 +1,5 @@
 import { getSessionUser } from "@/features/auth/services/session";
+import { buildProductImages } from "@/features/catalog/lib/product-images";
 import {
   resolveProductBySlug,
 } from "@/features/catalog/services/product-service";
@@ -20,6 +21,7 @@ type DbProduct = {
   rating: number;
   reviewCount: number;
   imageUrl: string;
+  galleryImageUrls: string[];
   badge: Product["badge"] | null;
   sizes: string[];
   colors: { hex: string; name: string | null }[];
@@ -39,6 +41,7 @@ function mapDbProduct(product: DbProduct): Product {
     rating: product.rating,
     reviewCount: product.reviewCount,
     image: product.imageUrl,
+    images: buildProductImages(product.imageUrl, product.galleryImageUrls),
     badge: product.badge ?? undefined,
     sizes: product.sizes,
     colors: product.colors.map((color) => ({

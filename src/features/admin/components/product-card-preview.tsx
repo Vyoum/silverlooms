@@ -41,6 +41,7 @@ function buildPreviewProduct(props: ProductCardPreviewProps): Product {
     rating: props.rating,
     reviewCount: props.reviewCount,
     image: props.imageUrl || "/placeholder.jpg",
+    images: props.imageUrl ? [props.imageUrl] : ["/placeholder.jpg"],
     badge: parseBadge(props.badge),
     sizes: parseSizes(props.sizes, props.productType),
     colors: parseColors(props.colors, props.productType),

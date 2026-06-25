@@ -89,6 +89,7 @@ export interface AdminProductEditData {
   price: number;
   originalPrice: number;
   imageUrl: string;
+  galleryImageUrls: string[];
   badge: string;
   sizes: string;
   colors: string;

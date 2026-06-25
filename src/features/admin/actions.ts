@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { resolveProductImageUrlsFromForm } from "@/features/admin/lib/resolve-product-images";
 import {
   computeDiscount,
   parseBadge,
@@ -8,7 +9,6 @@ import {
   parseSizes,
   type ProductType,
 } from "@/features/admin/lib/product-presets";
-import { saveProductImage } from "@/features/admin/services/product-image-service";
 import { requireAdminUser } from "@/features/auth/services/session";
 import { createProduct, slugify, updateProduct } from "@/features/catalog/services/product-service";
 
@@ -45,8 +45,6 @@ export async function createProductAction(
     const categoryLabel = String(formData.get("categoryLabel") ?? "").trim();
     const price = Number(formData.get("price"));
     const originalPriceRaw = Number(formData.get("originalPrice"));
-    const imageFile = formData.get("image");
-    let imageUrl = String(formData.get("imageUrl") ?? "").trim();
     const description = String(formData.get("description") ?? "").trim();
     const collection = String(formData.get("collection") ?? "").trim();
     const sizesRaw = String(formData.get("sizes") ?? "").trim();
@@ -63,24 +61,13 @@ export async function createProductAction(
 
     const slug = slugInput || slugify(name);
 
-    if (imageFile instanceof File && imageFile.size > 0) {
-      try {
-        imageUrl = await saveProductImage(imageFile, slug);
-      } catch (uploadError) {
-        const message =
-          uploadError instanceof Error
-            ? uploadError.message
-            : "Could not upload product image.";
-        return { success: false, error: message };
-      }
+    const resolvedImages = await resolveProductImageUrlsFromForm(formData, slug);
+    if ("error" in resolvedImages) {
+      return { success: false, error: resolvedImages.error };
     }
 
-    if (!imageUrl) {
-      return {
-        success: false,
-        error: "Upload a product photo or provide an image URL.",
-      };
-    }
+    const { imageUrl, galleryImageUrls } = resolvedImages;
+
     const sizes = parseSizes(sizesRaw, productType);
     const colors = parseColors(colorsRaw, productType);
     const badge = parseBadge(badgeRaw);
@@ -103,6 +90,7 @@ export async function createProductAction(
       rating: Number.isNaN(rating) ? 4.5 : rating,
       reviewCount: Number.isNaN(reviewCount) ? 0 : reviewCount,
       imageUrl,
+      galleryImageUrls,
       badge,
       sizes,
       colors,
@@ -154,8 +142,6 @@ export async function updateProductAction(
     const categoryLabel = String(formData.get("categoryLabel") ?? "").trim();
     const price = Number(formData.get("price"));
     const originalPriceRaw = Number(formData.get("originalPrice"));
-    const imageFile = formData.get("image");
-    let imageUrl = String(formData.get("imageUrl") ?? "").trim();
     const description = String(formData.get("description") ?? "").trim();
     const collection = String(formData.get("collection") ?? "").trim();
     const sizesRaw = String(formData.get("sizes") ?? "").trim();
@@ -171,24 +157,12 @@ export async function updateProductAction(
 
     const slug = slugInput || slugify(name);
 
-    if (imageFile instanceof File && imageFile.size > 0) {
-      try {
-        imageUrl = await saveProductImage(imageFile, slug);
-      } catch (uploadError) {
-        const message =
-          uploadError instanceof Error
-            ? uploadError.message
-            : "Could not upload product image.";
-        return { success: false, error: message };
-      }
+    const resolvedImages = await resolveProductImageUrlsFromForm(formData, slug);
+    if ("error" in resolvedImages) {
+      return { success: false, error: resolvedImages.error };
     }
 
-    if (!imageUrl) {
-      return {
-        success: false,
-        error: "Upload a product photo or provide an image URL.",
-      };
-    }
+    const { imageUrl, galleryImageUrls } = resolvedImages;
 
     const sizes = parseSizes(sizesRaw, productType);
     const colors = parseColors(colorsRaw, productType);
@@ -212,6 +186,7 @@ export async function updateProductAction(
       rating: Number.isNaN(rating) ? 4.5 : rating,
       reviewCount: Number.isNaN(reviewCount) ? 0 : reviewCount,
       imageUrl,
+      galleryImageUrls,
       badge,
       sizes,
       colors,

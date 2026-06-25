@@ -386,6 +386,7 @@ export async function getProductForEdit(
       price: product.price,
       originalPrice: product.originalPrice ?? 0,
       imageUrl: product.imageUrl,
+      galleryImageUrls: product.galleryImageUrls ?? [],
       badge: product.badge ?? "",
       sizes: product.sizes.join(", "),
       colors: product.colors.map((color) => color.hex).join(", "),

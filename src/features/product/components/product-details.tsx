@@ -28,24 +28,26 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   return (
     <div className="w-full lg:w-[45%] lg:pl-12">
       {product.collection && (
-        <p className="mb-4 text-[11px] uppercase tracking-[2.2px] text-sage">
+        <p className="mb-2 text-[10px] uppercase tracking-[1.8px] text-sage md:mb-4 md:text-[11px] md:tracking-[2.2px]">
           {product.collection}
         </p>
       )}
-      <h1 className="font-serif text-4xl font-light text-ink">{product.name}</h1>
+      <h1 className="font-serif text-2xl font-light text-ink sm:text-3xl lg:text-4xl">
+        {product.name}
+      </h1>
 
-      <div className="mt-4 flex items-center gap-3">
+      <div className="mt-2 flex items-center gap-2 md:mt-4 md:gap-3">
         <StarRating rating={product.rating} />
-        <span className="text-sm text-sage">{product.reviewCount} reviews</span>
+        <span className="text-xs text-sage md:text-sm">{product.reviewCount} reviews</span>
       </div>
 
-      <div className="mt-6 flex items-center gap-4">
-        <span className="text-2xl font-medium text-ink">
+      <div className="mt-3 flex flex-wrap items-center gap-2 md:mt-6 md:gap-4">
+        <span className="text-xl font-medium text-ink md:text-2xl">
           ₹{product.price.toLocaleString("en-IN")}
         </span>
         {product.originalPrice && (
           <>
-            <span className="text-lg text-sage line-through">
+            <span className="text-base text-sage line-through md:text-lg">
               ₹{product.originalPrice.toLocaleString("en-IN")}
             </span>
             {product.discountPercent && (
@@ -60,25 +62,25 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       <DeliveryEstimateBox />
 
       {product.description && (
-        <p className="mt-6 text-base leading-relaxed text-sage">
+        <p className="mt-4 text-sm leading-relaxed text-sage md:mt-6 md:text-base">
           {product.description}
         </p>
       )}
 
       {sizes.length > 0 && (
-        <div className="mt-8">
-          <div className="mb-3 flex items-center justify-between gap-4">
+        <div className="mt-5 md:mt-8">
+          <div className="mb-2 flex items-center justify-between gap-4 md:mb-3">
             <p className="text-sm font-medium text-ink">Select Size</p>
             <SizeGuideTrigger onClick={() => setSizeGuideOpen(true)} />
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 md:gap-2">
             {sizes.map((size) => (
               <button
                 key={size}
                 type="button"
                 onClick={() => setSelectedSize(size)}
                 className={cn(
-                  "flex size-10 items-center justify-center rounded-full border text-[11px]",
+                  "flex size-9 items-center justify-center rounded-full border text-[10px] md:size-10 md:text-[11px]",
                   selectedSize === size
                     ? "border-ink bg-ink text-white"
                     : "border-sage-light text-ink hover:border-ink",
@@ -97,8 +99,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       )}
 
       {product.colors.length > 0 && (
-        <div className="mt-6">
-          <p className="mb-3 text-sm font-medium text-ink">Color</p>
+        <div className="mt-4 md:mt-6">
+          <p className="mb-2 text-sm font-medium text-ink md:mb-3">Color</p>
           <div className="flex gap-2">
             {product.colors.map((color) => (
               <button
@@ -106,7 +108,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 type="button"
                 onClick={() => setSelectedColor(color.hex)}
                 className={cn(
-                  "size-8 rounded-full border",
+                  "size-7 rounded-full border md:size-8",
                   selectedColor === color.hex &&
                     "ring-2 ring-ink ring-offset-2",
                 )}
@@ -118,17 +120,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </div>
       )}
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-5 flex flex-col gap-2.5 sm:flex-row md:mt-8 md:gap-3">
         <AddToBagButton
           slug={product.slug}
           size={selectedSize}
           colorHex={selectedColor}
+          className="h-11 text-[12px] tracking-[1.1px] md:h-12 md:text-[13px] md:tracking-[1.3px]"
         />
         <Button
           type="button"
           variant="outline"
           className={cn(
-            "h-12 flex-1 rounded-full border-ink text-[13px] uppercase tracking-[1.3px]",
+            "h-11 flex-1 rounded-full border-ink text-[12px] uppercase tracking-[1.1px] md:h-12 md:text-[13px] md:tracking-[1.3px]",
             wishlisted && "bg-ink/5",
           )}
           onClick={() => toggleWishlist(product.slug, product.name)}

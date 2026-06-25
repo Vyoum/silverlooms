@@ -12,9 +12,9 @@ export async function RelatedProducts({ currentSlug }: RelatedProductsProps) {
   if (related.length === 0) return null;
 
   return (
-    <section className="border-t border-border py-16">
-      <SectionHeading title="You May Also Like" className="mb-10" />
-      <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
+    <section className="border-t border-border py-10 md:py-16">
+      <SectionHeading title="You May Also Like" className="mb-6 md:mb-10" />
+      <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-4">
         {related.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

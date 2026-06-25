@@ -18,6 +18,7 @@ export interface Product {
   rating: number;
   reviewCount: number;
   image: string;
+  images?: string[];
   colors: ProductColor[];
   badge?: ProductBadge;
   sizes?: string[];

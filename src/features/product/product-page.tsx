@@ -26,7 +26,7 @@ export async function ProductPage({ slug }: ProductPageProps) {
     <PageShell>
       <SiteHeader variant={isJewellery ? "jewellery" : "default"} />
       <main>
-        <Container className="py-8">
+        <Container className="py-4 md:py-8">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
@@ -40,9 +40,9 @@ export async function ProductPage({ slug }: ProductPageProps) {
               },
               { label: product.name },
             ]}
-            className="mb-8"
+            className="mb-4 text-xs md:mb-8 md:text-sm"
           />
-          <div className="flex flex-col gap-12 lg:flex-row">
+          <div className="flex flex-col gap-6 lg:flex-row lg:gap-12">
             <ProductGallery product={product} />
             <ProductDetails product={product} />
           </div>

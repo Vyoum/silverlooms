@@ -53,6 +53,7 @@ model Product {
   rating          Float         @default(0)
   reviewCount     Int           @default(0) @map("review_count")
   imageUrl        String        @map("image_url")
+  galleryImageUrls String[]     @default([]) @map("gallery_image_urls")
   badge           ProductBadge?
   sizes           String[]      @default([])
   categoryId      String?       @map("category_id")

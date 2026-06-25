@@ -6,6 +6,7 @@ import {
 } from "@/features/catalog/lib/product-sort";
 import { getProductBySlug, jewelleryProducts, kurtisProducts } from "@/lib/constants/products";
 import { prisma } from "@/lib/db";
+import { buildProductImages } from "@/features/catalog/lib/product-images";
 import { isJewelleryCategory, slugify } from "../lib/category-utils";
 
 type DbProduct = {
@@ -21,13 +22,23 @@ type DbProduct = {
   rating: number;
   reviewCount: number;
   imageUrl: string;
+  galleryImageUrls: string[];
   badge: ProductBadge | null;
   sizes: string[];
   colors: { hex: string; name: string | null }[];
 };
 
-function mapDbProduct(product: DbProduct): Product {
+function normalizeProduct(product: Product): Product {
   return {
+    ...product,
+    images: product.images?.length ? product.images : [product.image],
+  };
+}
+
+function mapDbProduct(product: DbProduct): Product {
+  const images = buildProductImages(product.imageUrl, product.galleryImageUrls);
+
+  return normalizeProduct({
     id: product.id,
     slug: product.slug,
     name: product.name,
@@ -39,14 +50,15 @@ function mapDbProduct(product: DbProduct): Product {
     discountPercent: product.discountPercent ?? undefined,
     rating: product.rating,
     reviewCount: product.reviewCount,
-    image: product.imageUrl,
+    image: images[0] ?? product.imageUrl,
+    images,
     badge: product.badge ?? undefined,
     sizes: product.sizes,
     colors: product.colors.map((c) => ({
       hex: c.hex,
       name: c.name ?? undefined,
     })),
-  };
+  });
 }
 
 const productInclude = { colors: true } as const;
@@ -63,7 +75,7 @@ async function fetchAllProducts(): Promise<Product[]> {
   } catch {
     // fall through to static catalog
   }
-  return [...kurtisProducts, ...jewelleryProducts];
+  return [...kurtisProducts, ...jewelleryProducts].map(normalizeProduct);
 }
 
 export async function listProducts(): Promise<Product[]> {
@@ -109,7 +121,7 @@ export async function resolveProductBySlug(slug: string): Promise<Product | null
     // Database unavailable — fall back to static catalog
   }
 
-  return getProductBySlug(slug) ?? null;
+  return getProductBySlug(slug) ? normalizeProduct(getProductBySlug(slug)!) : null;
 }
 
 export async function resolveProductIdBySlug(slug: string): Promise<string | null> {
@@ -191,6 +203,7 @@ export interface CreateProductData {
   rating?: number;
   reviewCount?: number;
   imageUrl: string;
+  galleryImageUrls?: string[];
   badge?: ProductBadge;
   sizes: string[];
   colors: { hex: string; name?: string }[];
@@ -213,6 +226,7 @@ export async function createProduct(data: CreateProductData) {
       rating: data.rating ?? 4.5,
       reviewCount: data.reviewCount ?? 0,
       imageUrl: data.imageUrl,
+      galleryImageUrls: data.galleryImageUrls ?? [],
       badge: data.badge,
       sizes: data.sizes,
       colors: {
@@ -249,6 +263,7 @@ export interface UpdateProductData {
   rating?: number;
   reviewCount?: number;
   imageUrl: string;
+  galleryImageUrls?: string[];
   badge?: ProductBadge;
   sizes: string[];
   colors: { hex: string; name?: string }[];
@@ -271,6 +286,7 @@ export async function updateProduct(productId: string, data: UpdateProductData) 
       rating: data.rating ?? 4.5,
       reviewCount: data.reviewCount ?? 0,
       imageUrl: data.imageUrl,
+      galleryImageUrls: data.galleryImageUrls ?? [],
       badge: data.badge,
       sizes: data.sizes,
       colors: {

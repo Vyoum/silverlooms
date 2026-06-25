@@ -72,13 +72,13 @@ export function DeliveryEstimateBox() {
   }
 
   return (
-    <div className="mt-6 rounded-2xl border border-border bg-cream-warm p-5">
-      <div className="mb-4 flex items-center gap-2 text-ink">
+    <div className="mt-4 rounded-xl border border-border bg-cream-warm p-4 md:mt-6 md:rounded-2xl md:p-5">
+      <div className="mb-3 flex items-center gap-2 text-ink md:mb-4">
         <Truck className="size-4" />
         <p className="text-sm font-medium">Check delivery date</p>
       </div>
 
-      <form onSubmit={checkDelivery} className="flex flex-col gap-3 sm:flex-row">
+      <form onSubmit={checkDelivery} className="flex flex-col gap-2.5 sm:flex-row md:gap-3">
         <div className="relative flex-1">
           <MapPin className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-sage" />
           <Input
@@ -93,14 +93,14 @@ export function DeliveryEstimateBox() {
               setResult(null);
             }}
             placeholder="Enter delivery pincode"
-            className="h-11 rounded-full border-border bg-white pl-10"
+            className="h-10 rounded-full border-border bg-white pl-10 md:h-11"
             aria-label="Delivery pincode"
           />
         </div>
         <Button
           type="submit"
           disabled={loading || pincode.length !== 6}
-          className="h-11 rounded-full bg-ink px-6 text-[11px] uppercase tracking-[1.2px] text-cream hover:bg-forest"
+          className="h-10 rounded-full bg-ink px-5 text-[10px] uppercase tracking-[1.1px] text-cream hover:bg-forest md:h-11 md:px-6 md:text-[11px] md:tracking-[1.2px]"
         >
           {loading ? (
             <>

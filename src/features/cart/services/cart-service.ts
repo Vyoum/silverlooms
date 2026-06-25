@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { randomUUID } from "crypto";
 import type { CartItem, CartState } from "@/lib/types/cart";
 import { prisma } from "@/lib/db";
+import { buildProductImages } from "@/features/catalog/lib/product-images";
 import { getProductBySlug } from "@/lib/constants/products";
 import {
   CART_FALLBACK_COOKIE,
@@ -113,6 +114,7 @@ function mapDbCartItems(
       rating: number;
       reviewCount: number;
       imageUrl: string;
+      galleryImageUrls: string[];
       badge: "NEW" | "SALE" | "BESTSELLER" | null;
       sizes: string[];
       colors: { hex: string; name: string | null }[];
@@ -137,6 +139,7 @@ function mapDbCartItems(
       rating: item.product.rating,
       reviewCount: item.product.reviewCount,
       image: item.product.imageUrl,
+      images: buildProductImages(item.product.imageUrl, item.product.galleryImageUrls),
       badge: item.product.badge ?? undefined,
       sizes: item.product.sizes,
       colors: item.product.colors.map((c) => ({

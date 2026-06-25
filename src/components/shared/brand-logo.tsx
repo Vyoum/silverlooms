@@ -10,9 +10,9 @@ import {
 import { cn } from "@/lib/utils";
 
 const sizeWidths = {
-  sm: 150,
-  md: 210,
-  lg: 280,
+  sm: 72,
+  md: 96,
+  lg: 130,
 } as const;
 
 interface BrandLogoProps {
