@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Heart, ShoppingBag } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
@@ -50,7 +50,65 @@ function NavLink({
   );
 }
 
-export function SiteHeader({ variant = "default", className }: SiteHeaderProps) {
+function SiteHeaderShell({
+  variant = "default",
+  className,
+  children,
+}: SiteHeaderProps & { children: React.ReactNode }) {
+  const isDark = variant === "jewellery";
+
+  return (
+    <header
+      className={cn(
+        "sticky top-0 z-50",
+        isDark
+          ? "border-b border-white/10 bg-ink/90 backdrop-blur-[6px]"
+          : "glass-nav",
+        className,
+      )}
+    >
+      {children}
+    </header>
+  );
+}
+
+function SiteHeaderFallback({ variant = "default", className }: SiteHeaderProps) {
+  const isDark = variant === "jewellery";
+  const isHome = variant === "home";
+
+  return (
+    <SiteHeaderShell variant={variant} className={className}>
+      <div className="relative mx-auto flex h-32 max-w-[1280px] items-center px-4 md:px-16">
+        <div className="flex min-w-0 flex-1 items-center gap-4">
+          <div className="size-6 md:hidden" aria-hidden />
+          <BrandLogo
+            size="md"
+            showName
+            priority={isHome}
+            nameClassName={isDark ? "text-cream" : "text-ink"}
+            className="hidden md:inline-flex"
+          />
+        </div>
+        <div className="absolute left-1/2 -translate-x-1/2 md:hidden">
+          <BrandLogo
+            size="sm"
+            showName
+            priority={isHome}
+            nameClassName={isDark ? "text-cream" : "text-ink"}
+          />
+        </div>
+        <div className="flex flex-1 items-center justify-end gap-4 md:gap-5">
+          <div className="size-5" aria-hidden />
+          <div className="size-5" aria-hidden />
+          <div className="size-5" aria-hidden />
+          <div className="size-5" aria-hidden />
+        </div>
+      </div>
+    </SiteHeaderShell>
+  );
+}
+
+function SiteHeaderContent({ variant = "default", className }: SiteHeaderProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [hash, setHash] = useState("");
@@ -86,15 +144,7 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
     isNavLinkActive(href, pathname, search, hash);
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50",
-        isDark
-          ? "border-b border-white/10 bg-ink/90 backdrop-blur-[6px]"
-          : "glass-nav",
-        className,
-      )}
-    >
+    <SiteHeaderShell variant={variant} className={className}>
       <div className="relative mx-auto flex h-32 max-w-[1280px] items-center px-4 md:px-16">
         {/* Left: hamburger (mobile) + logo (desktop) */}
         <div className="flex min-w-0 flex-1 items-center gap-4">
@@ -164,6 +214,14 @@ export function SiteHeader({ variant = "default", className }: SiteHeaderProps) 
           </Link>
         </div>
       </div>
-    </header>
+    </SiteHeaderShell>
+  );
+}
+
+export function SiteHeader(props: SiteHeaderProps) {
+  return (
+    <Suspense fallback={<SiteHeaderFallback {...props} />}>
+      <SiteHeaderContent {...props} />
+    </Suspense>
   );
 }
