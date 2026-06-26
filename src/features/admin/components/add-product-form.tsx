@@ -9,11 +9,14 @@ import {
   type ProductImageItem,
 } from "@/features/admin/components/product-images-field";
 import {
-  apparelCategoryPresets,
-  jewelleryCategoryPresets,
+  CategoryLabelSelect,
+  defaultCategoryLabel,
+} from "@/features/admin/components/category-label-select";
+import {
   mockStyleDefaults,
   type ProductType,
 } from "@/features/admin/lib/product-presets";
+import type { StoreCategory } from "@/features/catalog/lib/store-categories";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -37,17 +40,19 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 
 export function AddProductForm({
   defaultProductType = "apparel",
-  categoryPresets: categoryPresetsProp,
+  categories = [],
 }: {
   defaultProductType?: ProductType;
-  categoryPresets?: string[];
+  categories?: StoreCategory[];
 }) {
   const [state, action, pending] = useActionState(formAction, initialState);
   const [productType, setProductType] = useState<ProductType>(defaultProductType);
   const defaults = mockStyleDefaults[productType];
 
   const [name, setName] = useState("");
-  const [categoryLabel, setCategoryLabel] = useState<string>(defaults.category);
+  const [categoryLabel, setCategoryLabel] = useState<string>(() =>
+    defaultCategoryLabel(categories, defaultProductType) || defaults.category,
+  );
   const [collection, setCollection] = useState<string>(defaults.collection);
   const [price, setPrice] = useState(2490);
   const [originalPrice, setOriginalPrice] = useState(3200);
@@ -61,7 +66,7 @@ export function AddProductForm({
   function switchType(type: ProductType) {
     const next = mockStyleDefaults[type];
     setProductType(type);
-    setCategoryLabel(next.category);
+    setCategoryLabel(defaultCategoryLabel(categories, type) || next.category);
     setCollection(next.collection);
     setGalleryItems([]);
     setSizes(next.sizes);
@@ -79,12 +84,6 @@ export function AddProductForm({
 
   const previewImageUrl = galleryItems[0]?.url ?? "";
   const hasImage = galleryItems.length > 0;
-  const categoryPresets =
-    categoryPresetsProp && categoryPresetsProp.length > 0
-      ? categoryPresetsProp
-      : productType === "apparel"
-        ? apparelCategoryPresets
-        : jewelleryCategoryPresets;
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
@@ -155,21 +154,14 @@ export function AddProductForm({
           </div>
 
           <div>
-            <FieldLabel>Category Label *</FieldLabel>
-            <Input
-              name="categoryLabel"
-              required
-              list="category-presets"
+            <FieldLabel>Category *</FieldLabel>
+            <CategoryLabelSelect
+              categories={categories}
+              productType={productType}
               value={categoryLabel}
-              onChange={(e) => setCategoryLabel(e.target.value)}
-              placeholder="LEHERIYA · KURTI SET"
-              className="bg-admin-canvas"
+              onChange={setCategoryLabel}
+              required
             />
-            <datalist id="category-presets">
-              {categoryPresets.map((preset) => (
-                <option key={preset} value={preset} />
-              ))}
-            </datalist>
           </div>
 
           <div>

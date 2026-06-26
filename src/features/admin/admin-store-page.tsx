@@ -1,5 +1,4 @@
 import { listAdminProducts } from "@/features/admin/services/analytics-service";
-import { CategoryKind } from "@/features/catalog/lib/store-categories";
 import { listStoreCategories } from "@/features/catalog/services/category-service";
 import type { ProductType } from "@/features/admin/lib/product-presets";
 import { AddProductForm } from "./components/add-product-form";
@@ -22,11 +21,8 @@ export async function AdminStorePage({
 }: AdminStorePageProps) {
   const [products, categories] = await Promise.all([
     listAdminProducts(),
-    listStoreCategories(
-      defaultProductType === "jewellery" ? CategoryKind.JEWELLERY : CategoryKind.APPAREL,
-    ),
+    listStoreCategories(),
   ]);
-  const categoryPresets = categories.map((category) => category.name.toUpperCase());
 
   return (
     <div className="space-y-8">
@@ -47,10 +43,11 @@ export async function AdminStorePage({
 
       <AddProductForm
         defaultProductType={defaultProductType}
-        categoryPresets={categoryPresets}
+        categories={categories}
       />
       <ProductsTable
         products={products}
+        categories={categories}
         defaultFilter={defaultProductType}
         title={defaultProductType === "jewellery" ? "Jewellery Products" : "Apparel Products"}
       />

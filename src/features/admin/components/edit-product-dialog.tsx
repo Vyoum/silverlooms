@@ -12,12 +12,10 @@ import {
   toProductImageItems,
   type ProductImageItem,
 } from "@/features/admin/components/product-images-field";
-import {
-  apparelCategoryPresets,
-  jewelleryCategoryPresets,
-  type ProductType,
-} from "@/features/admin/lib/product-presets";
+import { CategoryLabelSelect } from "@/features/admin/components/category-label-select";
+import type { ProductType } from "@/features/admin/lib/product-presets";
 import type { AdminProductEditData } from "@/features/admin/types";
+import type { StoreCategory } from "@/features/catalog/lib/store-categories";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -41,6 +39,7 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 interface EditProductDialogProps {
   productId: string;
   productName: string;
+  categories: StoreCategory[];
   onClose: () => void;
   onSaved: () => void;
 }
@@ -48,6 +47,7 @@ interface EditProductDialogProps {
 export function EditProductDialog({
   productId,
   productName,
+  categories,
   onClose,
   onSaved,
 }: EditProductDialogProps) {
@@ -113,8 +113,6 @@ export function EditProductDialog({
   }, [state.success, onClose, onSaved]);
 
   const productType: ProductType = product?.productType ?? "apparel";
-  const categoryPresets =
-    productType === "apparel" ? apparelCategoryPresets : jewelleryCategoryPresets;
   const hasImage = galleryItems.length > 0;
 
   return (
@@ -178,20 +176,14 @@ export function EditProductDialog({
                 </div>
 
                 <div>
-                  <FieldLabel>Category Label *</FieldLabel>
-                  <Input
-                    name="categoryLabel"
-                    required
-                    list="edit-category-presets"
+                  <FieldLabel>Category *</FieldLabel>
+                  <CategoryLabelSelect
+                    categories={categories}
+                    productType={productType}
                     value={categoryLabel}
-                    onChange={(event) => setCategoryLabel(event.target.value)}
-                    className="bg-admin-canvas"
+                    onChange={setCategoryLabel}
+                    required
                   />
-                  <datalist id="edit-category-presets">
-                    {categoryPresets.map((preset) => (
-                      <option key={preset} value={preset} />
-                    ))}
-                  </datalist>
                 </div>
 
                 <div>

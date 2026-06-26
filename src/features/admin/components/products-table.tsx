@@ -8,10 +8,12 @@ import { EditProductDialog } from "@/features/admin/components/edit-product-dial
 import { ProductInventoryEditor } from "@/features/admin/components/product-inventory-editor";
 import type { ProductType } from "@/features/admin/lib/product-presets";
 import type { AdminProductRow } from "@/features/admin/types";
+import type { StoreCategory } from "@/features/catalog/lib/store-categories";
 import { cn } from "@/lib/utils";
 
 interface ProductsTableProps {
   products: AdminProductRow[];
+  categories: StoreCategory[];
   defaultFilter?: ProductType | "all";
   title?: string;
 }
@@ -24,6 +26,7 @@ const filters: { id: ProductType | "all"; label: string }[] = [
 
 export function ProductsTable({
   products,
+  categories,
   defaultFilter = "all",
   title = "Store Products",
 }: ProductsTableProps) {
@@ -159,6 +162,7 @@ export function ProductsTable({
         <EditProductDialog
           productId={editProduct.id}
           productName={editProduct.name}
+          categories={categories}
           onClose={() => setEditProduct(null)}
           onSaved={() => router.refresh()}
         />
