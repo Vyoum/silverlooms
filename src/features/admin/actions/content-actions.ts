@@ -1,8 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { saveProductImage } from "@/features/admin/services/product-image-service";
 import { requireAdminUser } from "@/features/auth/services/session";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import {
   getHomepageContent,
   saveHomepageContent,
@@ -145,6 +146,7 @@ export async function updateHomepageContentAction(
 
     await saveHomepageContent(content);
 
+    revalidateTag(CACHE_TAGS.homepage, "max");
     revalidatePath("/");
     revalidatePath("/admin");
     revalidatePath("/admin/content");

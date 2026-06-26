@@ -1,11 +1,13 @@
 import type { ProductBadge } from "@/lib/types/product";
 import type { Product } from "@/lib/types/product";
+import { unstable_cache } from "next/cache";
 import {
   filterProductsBySort,
   type ProductSort,
 } from "@/features/catalog/lib/product-sort";
 import { getProductBySlug, jewelleryProducts, kurtisProducts } from "@/lib/constants/products";
 import { prisma } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import { buildProductImages } from "@/features/catalog/lib/product-images";
 import { isJewelleryCategory, slugify } from "../lib/category-utils";
 
@@ -63,19 +65,43 @@ function mapDbProduct(product: DbProduct): Product {
 
 const productInclude = { colors: true } as const;
 
-async function fetchAllProducts(): Promise<Product[]> {
+async function loadProductsFromDatabase(): Promise<Product[] | null> {
   try {
     const dbProducts = await prisma.product.findMany({
       include: productInclude,
       orderBy: { createdAt: "desc" },
     });
+
     if (dbProducts.length > 0) {
       return dbProducts.map(mapDbProduct);
     }
   } catch {
     // fall through to static catalog
   }
+
+  return null;
+}
+
+const getCachedProducts = unstable_cache(
+  loadProductsFromDatabase,
+  ["catalog-products"],
+  {
+    tags: [CACHE_TAGS.products],
+    revalidate: 60,
+  },
+);
+
+function staticCatalogProducts(): Product[] {
   return [...kurtisProducts, ...jewelleryProducts].map(normalizeProduct);
+}
+
+async function fetchAllProducts(): Promise<Product[]> {
+  const fromDb = await getCachedProducts();
+  if (fromDb && fromDb.length > 0) {
+    return fromDb;
+  }
+
+  return staticCatalogProducts();
 }
 
 export async function listProducts(): Promise<Product[]> {
@@ -108,20 +134,32 @@ export async function listNewArrivals(limit = 4): Promise<Product[]> {
 }
 
 export async function resolveProductBySlug(slug: string): Promise<Product | null> {
-  try {
-    const dbProduct = await prisma.product.findUnique({
-      where: { slug },
-      include: productInclude,
-    });
+  const cachedProduct = await unstable_cache(
+    async () => {
+      try {
+        const dbProduct = await prisma.product.findUnique({
+          where: { slug },
+          include: productInclude,
+        });
 
-    if (dbProduct) {
-      return mapDbProduct(dbProduct);
-    }
-  } catch {
-    // Database unavailable — fall back to static catalog
-  }
+        if (dbProduct) {
+          return mapDbProduct(dbProduct);
+        }
+      } catch {
+        // Database unavailable — fall back to static catalog
+      }
 
-  return getProductBySlug(slug) ? normalizeProduct(getProductBySlug(slug)!) : null;
+      const staticProduct = getProductBySlug(slug);
+      return staticProduct ? normalizeProduct(staticProduct) : null;
+    },
+    ["product-by-slug", slug],
+    {
+      tags: [CACHE_TAGS.products, `product-${slug}`],
+      revalidate: 60,
+    },
+  )();
+
+  return cachedProduct;
 }
 
 export async function resolveProductIdBySlug(slug: string): Promise<string | null> {

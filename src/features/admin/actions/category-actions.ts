@@ -1,14 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import type { ProductSort } from "@/features/catalog/lib/product-sort";
 import type { CategoryKind } from "@/features/catalog/lib/store-categories";
 import {
   createStoreCategory,
   deleteStoreCategory,
-  listStoreCategories,
+  listStoreCategoriesForAdmin,
   updateStoreCategory,
 } from "@/features/catalog/services/category-service";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import { saveProductImage } from "@/features/admin/services/product-image-service";
 import { requireAdminUser } from "@/features/auth/services/session";
 import {
@@ -25,7 +26,7 @@ export async function getCategoriesForAdminAction() {
   try {
     await requireAdminUser();
     const [categories, catalogHeroes] = await Promise.all([
-      listStoreCategories(),
+      listStoreCategoriesForAdmin(),
       getApparelCatalogHeroes(),
     ]);
     return { success: true as const, categories, catalogHeroes };
@@ -35,6 +36,8 @@ export async function getCategoriesForAdminAction() {
 }
 
 function revalidateCategoryPaths() {
+  revalidateTag(CACHE_TAGS.categories, "max");
+  revalidateTag(CACHE_TAGS.catalogHeroes, "max");
   revalidatePath("/");
   revalidatePath("/kurtis");
   revalidatePath("/jewellery");

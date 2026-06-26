@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { resolveProductImageUrlsFromForm } from "@/features/admin/lib/resolve-product-images";
 import {
   computeDiscount,
@@ -11,6 +11,7 @@ import {
 } from "@/features/admin/lib/product-presets";
 import { requireAdminUser } from "@/features/auth/services/session";
 import { createProduct, slugify, updateProduct } from "@/features/catalog/services/product-service";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 
 export interface CreateProductResult {
   success: boolean;
@@ -21,6 +22,11 @@ export interface CreateProductResult {
 export type UpdateProductResult = CreateProductResult;
 
 function revalidateProductPaths(slug: string, previousSlug?: string) {
+  revalidateTag(CACHE_TAGS.products, "max");
+  revalidateTag(`product-${slug}`, "max");
+  if (previousSlug && previousSlug !== slug) {
+    revalidateTag(`product-${previousSlug}`, "max");
+  }
   revalidatePath("/");
   revalidatePath("/kurtis");
   revalidatePath("/jewellery");
@@ -210,6 +216,7 @@ export async function deleteProductAction(productId: string) {
 
     const { prisma } = await import("@/lib/db");
     await prisma.product.delete({ where: { id: productId } });
+    revalidateTag(CACHE_TAGS.products, "max");
     revalidatePath("/");
     revalidatePath("/kurtis");
     revalidatePath("/jewellery");
@@ -252,6 +259,7 @@ export async function updateProductInventoryAction(
 
     await updateProductInventoryQuantities(productId, updates);
 
+    revalidateTag(CACHE_TAGS.products, "max");
     revalidatePath("/admin");
     revalidatePath("/admin/store");
     revalidatePath("/admin/jewellery");

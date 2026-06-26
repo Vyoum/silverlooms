@@ -1,6 +1,8 @@
+import { unstable_cache } from "next/cache";
 import { assets } from "@/lib/constants/assets";
 import type { ProductSort } from "@/features/catalog/lib/product-sort";
 import { prisma } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 
 export const APPAREL_CATALOG_HEROES_KEY = "apparel_catalog_heroes";
 
@@ -74,7 +76,7 @@ export function mergeApparelCatalogHeroes(patch: unknown): ApparelCatalogHeroes 
   };
 }
 
-export async function getApparelCatalogHeroes(): Promise<ApparelCatalogHeroes> {
+async function loadApparelCatalogHeroes(): Promise<ApparelCatalogHeroes> {
   try {
     const row = await prisma.siteContent.findUnique({
       where: { key: APPAREL_CATALOG_HEROES_KEY },
@@ -87,6 +89,15 @@ export async function getApparelCatalogHeroes(): Promise<ApparelCatalogHeroes> {
     return defaultApparelCatalogHeroes;
   }
 }
+
+export const getApparelCatalogHeroes = unstable_cache(
+  loadApparelCatalogHeroes,
+  ["catalog-heroes"],
+  {
+    tags: [CACHE_TAGS.catalogHeroes],
+    revalidate: 300,
+  },
+);
 
 export async function saveApparelCatalogHeroes(content: ApparelCatalogHeroes) {
   return prisma.siteContent.upsert({

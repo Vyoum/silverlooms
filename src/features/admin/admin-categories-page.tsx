@@ -1,12 +1,12 @@
 import { CategoriesManager } from "@/features/admin/components/categories-manager";
 import {
-  listStoreCategories,
+  listStoreCategoriesForAdmin,
 } from "@/features/catalog/services/category-service";
 import { getApparelCatalogHeroes } from "@/lib/site-content/catalog-hero";
 
 export async function AdminCategoriesPage() {
   const [categories, catalogHeroes] = await Promise.all([
-    listStoreCategories(),
+    listStoreCategoriesForAdmin(),
     getApparelCatalogHeroes(),
   ]);
 

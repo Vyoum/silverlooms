@@ -1,4 +1,6 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import { defaultHomepageContent } from "./defaults";
 import type { HomepageContent, HomepageStyleTile } from "./types";
 import { HOMEPAGE_CONTENT_KEY } from "./types";
@@ -33,7 +35,7 @@ export function mergeHomepageContent(patch: unknown): HomepageContent {
   };
 }
 
-export async function getHomepageContent(): Promise<HomepageContent> {
+async function loadHomepageContent(): Promise<HomepageContent> {
   try {
     const row = await prisma.siteContent.findUnique({
       where: { key: HOMEPAGE_CONTENT_KEY },
@@ -46,6 +48,15 @@ export async function getHomepageContent(): Promise<HomepageContent> {
     return defaultHomepageContent;
   }
 }
+
+export const getHomepageContent = unstable_cache(
+  loadHomepageContent,
+  ["homepage-content"],
+  {
+    tags: [CACHE_TAGS.homepage],
+    revalidate: 300,
+  },
+);
 
 export async function saveHomepageContent(content: HomepageContent) {
   return prisma.siteContent.upsert({

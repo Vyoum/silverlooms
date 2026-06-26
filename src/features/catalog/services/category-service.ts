@@ -1,5 +1,7 @@
+import { unstable_cache } from "next/cache";
 import type { CategoryKind } from "@/features/catalog/lib/store-categories";
 import { prisma } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import { slugify } from "@/features/catalog/services/product-service";
 import {
   DEFAULT_STORE_CATEGORIES,
@@ -34,6 +36,42 @@ function mapCategory(row: {
   };
 }
 
+function fallbackCategories(kind?: CategoryKind): StoreCategory[] {
+  const categories = DEFAULT_STORE_CATEGORIES.map((category) => ({
+    ...category,
+    id: `fallback-${category.slug}`,
+    heroImageUrl: null,
+    heroTitle: null,
+    heroSubtitle: null,
+  }));
+
+  return kind ? categories.filter((category) => category.kind === kind) : categories;
+}
+
+async function queryCategoriesFromDb(): Promise<StoreCategory[]> {
+  let rows = await prisma.category.findMany({
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+  });
+
+  if (rows.length === 0) {
+    await syncDefaultCategories();
+    rows = await prisma.category.findMany({
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    });
+  }
+
+  return rows.map(mapCategory);
+}
+
+const getCachedCategories = unstable_cache(
+  queryCategoriesFromDb,
+  ["store-categories"],
+  {
+    tags: [CACHE_TAGS.categories],
+    revalidate: 300,
+  },
+);
+
 export async function syncDefaultCategories() {
   for (const category of DEFAULT_STORE_CATEGORIES) {
     await prisma.category.upsert({
@@ -54,23 +92,36 @@ export const ensureDefaultCategories = syncDefaultCategories;
 
 export async function listStoreCategories(kind?: CategoryKind) {
   try {
-    await syncDefaultCategories();
+    const all = await getCachedCategories();
+    const categories = kind ? all.filter((category) => category.kind === kind) : all;
 
-    const rows = await prisma.category.findMany({
-      where: kind ? { kind } : undefined,
-      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-    });
+    if (categories.length === 0) {
+      return fallbackCategories(kind);
+    }
 
-    return rows.map(mapCategory);
+    return categories;
   } catch (error) {
     console.error("[categories] Failed to load categories:", error);
-    return DEFAULT_STORE_CATEGORIES.map((category) => ({
-      ...category,
-      id: `fallback-${category.slug}`,
-      heroImageUrl: null,
-      heroTitle: null,
-      heroSubtitle: null,
-    }));
+    return fallbackCategories(kind);
+  }
+}
+
+/** Ensures code defaults exist, then returns fresh rows for admin screens. */
+export async function listStoreCategoriesForAdmin(kind?: CategoryKind) {
+  await syncDefaultCategories();
+
+  try {
+    const all = await queryCategoriesFromDb();
+    const categories = kind ? all.filter((category) => category.kind === kind) : all;
+
+    if (categories.length === 0) {
+      return fallbackCategories(kind);
+    }
+
+    return categories;
+  } catch (error) {
+    console.error("[categories] Failed to load categories for admin:", error);
+    return fallbackCategories(kind);
   }
 }
 
@@ -194,8 +245,8 @@ export async function deleteStoreCategory(id: string) {
 
 export async function getCategoryBySlug(slug: string) {
   try {
-    const row = await prisma.category.findUnique({ where: { slug } });
-    return row ? mapCategory(row) : null;
+    const categories = await listStoreCategories();
+    return categories.find((category) => category.slug === slug) ?? null;
   } catch {
     return null;
   }
