@@ -78,7 +78,7 @@ function SiteHeaderFallback({ variant = "default", className }: SiteHeaderProps)
 
   return (
     <SiteHeaderShell variant={variant} className={className}>
-      <div className="relative mx-auto flex h-32 max-w-[1280px] items-center px-4 md:px-16">
+      <div className="relative mx-auto flex h-28 max-w-[1280px] items-center px-4 md:px-16">
         <div className="flex min-w-0 flex-1 items-center gap-4">
           <div className="size-6 md:hidden" aria-hidden />
           <BrandLogo
@@ -99,7 +99,7 @@ function SiteHeaderFallback({ variant = "default", className }: SiteHeaderProps)
         </div>
         <div className="flex flex-1 items-center justify-end gap-4 md:gap-5">
           <div className="size-5" aria-hidden />
-          <div className="size-5" aria-hidden />
+          <div className="size-5 hidden md:block" aria-hidden />
           <div className="size-5" aria-hidden />
           <div className="size-5" aria-hidden />
         </div>
@@ -145,7 +145,7 @@ function SiteHeaderContent({ variant = "default", className }: SiteHeaderProps) 
 
   return (
     <SiteHeaderShell variant={variant} className={className}>
-      <div className="relative mx-auto flex h-32 max-w-[1280px] items-center px-4 md:px-16">
+      <div className="relative mx-auto flex h-28 max-w-[1280px] items-center px-4 md:px-16">
         {/* Left: hamburger (mobile) + logo (desktop) */}
         <div className="flex min-w-0 flex-1 items-center gap-4">
           <MobileNav sections={navSections} isDark={isDark} />
@@ -187,7 +187,7 @@ function SiteHeaderContent({ variant = "default", className }: SiteHeaderProps) 
         {/* Right: search, account, wishlist, cart */}
         <div className="flex flex-1 items-center justify-end gap-4 md:gap-5">
           <SearchDialog isDark={isDark} />
-          <AccountNavButton isDark={isDark} />
+          <AccountNavButton isDark={isDark} className="hidden md:inline-flex" />
           <Link
             href="/wishlist"
             aria-label="Wishlist"

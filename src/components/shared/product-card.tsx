@@ -2,11 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
 import { WishlistHeartButton } from "@/features/wishlist/components/wishlist-heart-button";
+import { AddToBagButton } from "@/components/shared/add-to-bag-button";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/shared/star-rating";
-import { useCart } from "@/features/cart/cart-provider";
 import type { Product } from "@/lib/types/product";
 import { cn } from "@/lib/utils";
 
@@ -22,11 +21,11 @@ const badgeStyles: Record<string, string> = {
 };
 
 export function ProductCard({ product, className }: ProductCardProps) {
-  const { addToCart } = useCart();
   const href = `/product/${product.slug}`;
   const defaultSize = product.sizes?.includes("M")
     ? "M"
     : product.sizes?.[0];
+  const defaultColor = product.colors[0]?.hex;
 
   return (
     <article className={cn("group flex flex-col", className)}>
@@ -50,7 +49,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             {product.badge}
           </Badge>
         )}
-        <div className="absolute right-3 top-3 flex gap-2 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100">
+        <div className="absolute right-3 top-3 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100">
           <WishlistHeartButton
             slug={product.slug}
             productName={product.name}
@@ -58,20 +57,6 @@ export function ProductCard({ product, className }: ProductCardProps) {
             iconClassName="size-4 text-ink"
             filledClassName="fill-forest text-forest"
           />
-          <button
-            type="button"
-            aria-label="Quick add to bag"
-            className="rounded-full bg-cream/90 p-2 backdrop-blur-sm"
-            onClick={() =>
-              addToCart({
-                slug: product.slug,
-                size: defaultSize,
-                colorHex: product.colors[0]?.hex,
-              })
-            }
-          >
-            <ShoppingBag className="size-4 text-ink" />
-          </button>
         </div>
       </div>
 
@@ -117,6 +102,15 @@ export function ProductCard({ product, className }: ProductCardProps) {
         reviewCount={product.reviewCount}
         className="mt-2"
       />
+
+      <AddToBagButton
+        slug={product.slug}
+        size={defaultSize}
+        colorHex={defaultColor}
+        className="mt-auto h-10 w-full flex-none text-[10px] tracking-[1.1px] sm:h-11 sm:text-[11px] sm:tracking-[1.2px]"
+      >
+        Add to Cart
+      </AddToBagButton>
     </article>
   );
 }

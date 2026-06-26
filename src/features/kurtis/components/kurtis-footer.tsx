@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { Container } from "@/components/layout/page-shell";
 
 export function KurtisFooter() {
@@ -7,11 +8,12 @@ export function KurtisFooter() {
       <Container>
         <div className="grid gap-12 md:grid-cols-2">
           <div>
-            <p className="font-serif text-4xl font-light leading-tight text-gold">
-              SILVER
-              <br />
-              LOOMS
-            </p>
+            <BrandLogo
+              size="lg"
+              showName
+              href="/"
+              nameClassName="text-gold text-sm tracking-[0.28em]"
+            />
             <p className="mt-4 font-serif text-xl italic text-muted-light">
               Woven in tradition, dressed in silver.
             </p>

@@ -3,7 +3,6 @@ import { listStoreCategories } from "@/features/catalog/services/category-servic
 import { StoreCategoriesProvider } from "@/features/catalog/store-categories-provider";
 import { WishlistProvider } from "@/features/wishlist/wishlist-provider";
 import { AuthSyncListener } from "@/features/auth/components/auth-sync-listener";
-import { MobileStorefrontChrome } from "@/components/layout/mobile-storefront-chrome";
 import { Toaster } from "@/components/ui/sonner";
 
 export async function AppProviders({ children }: { children: React.ReactNode }) {
@@ -14,7 +13,7 @@ export async function AppProviders({ children }: { children: React.ReactNode }) 
       <CartProvider>
         <WishlistProvider>
           <AuthSyncListener />
-          <MobileStorefrontChrome>{children}</MobileStorefrontChrome>
+          {children}
           <Toaster position="top-center" richColors closeButton />
         </WishlistProvider>
       </CartProvider>

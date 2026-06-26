@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Order, OrderItem, OrderStatus } from "@/generated/prisma/client";
 import type { AccountProfile } from "@/features/auth/services/session";
 import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { PageShell } from "@/components/layout/page-shell";
 import { ProfileMenuSection } from "@/features/account/components/profile-menu-section";
 import { signOutAction } from "@/features/auth/actions";
@@ -235,6 +236,7 @@ export function ProfileDashboardPage({
           )}
         </section>
       </main>
+      <SiteFooter />
     </PageShell>
   );
 }

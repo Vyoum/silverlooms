@@ -7,6 +7,7 @@ import { signOutAction } from "@/features/auth/actions";
 import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/constants/brand";
 import { assets } from "@/lib/constants/assets";
 import { HOME_ROUTE } from "@/lib/auth/routes";
+import { formatAuthErrorMessage } from "@/lib/auth/oauth-errors";
 import { isAuthConfigured } from "@/lib/supabase/env";
 
 interface LoginPageProps {
@@ -21,6 +22,7 @@ export function LoginPage({
   isLoggedIn = false,
 }: LoginPageProps) {
   const authConfigured = isAuthConfigured();
+  const authError = formatAuthErrorMessage(error);
 
   return (
     <div className="relative min-h-dvh overflow-hidden bg-ink text-ink selection:bg-heritage-gold/20">
@@ -80,13 +82,13 @@ export function LoginPage({
               </p>
             ) : (
               <>
-                {error && (
+                {authError && (
                   <p className="mb-5 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
-                    {error}
+                    {authError}
                   </p>
                 )}
 
-                {isLoggedIn && error ? (
+                {isLoggedIn && authError ? (
                   <form action={signOutAction} className="mb-5">
                     <button
                       type="submit"

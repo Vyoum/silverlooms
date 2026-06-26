@@ -114,4 +114,8 @@ export const SUPABASE_REDIRECT_URLS = [
   "http://localhost:3000/auth/callback",
 ] as const;
 
+/** Add in Google Cloud → Credentials → OAuth client → Authorized redirect URIs */
+export const GOOGLE_OAUTH_REDIRECT_URI =
+  "https://wdrslpoowatuxcgdowsw.supabase.co/auth/v1/callback";
+
 export const SUPABASE_SITE_URL = PRODUCTION_SITE_URL;

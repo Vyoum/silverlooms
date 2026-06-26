@@ -10,9 +10,9 @@ import {
 import { cn } from "@/lib/utils";
 
 const sizeWidths = {
-  sm: 72,
-  md: 96,
-  lg: 130,
+  sm: 64,
+  md: 84,
+  lg: 118,
 } as const;
 
 interface BrandLogoProps {
@@ -50,7 +50,7 @@ export function BrandLogo({
       {showName ? (
         <span
           className={cn(
-            "font-serif text-[11px] font-medium uppercase tracking-[0.22em] text-ink",
+            "font-serif text-[10px] font-medium uppercase tracking-[0.2em] text-ink",
             nameClassName,
           )}
         >

@@ -15,8 +15,9 @@ export function HeroSection({
     <section
       className={cn(
         "relative flex items-center justify-center overflow-hidden",
-        "h-[min(calc(100dvh-2.25rem),480px)]",
-        "sm:h-[min(calc(100dvh-2.25rem),560px)]",
+        /* Leave room for announcement + navbar + marquee peek on mobile */
+        "h-[min(calc(100dvh-2.25rem-7rem-4rem),460px)]",
+        "sm:h-[min(calc(100dvh-2.25rem-7rem-4rem),520px)]",
         "md:h-auto md:min-h-[600px] md:max-h-[900px]",
         className,
       )}
@@ -30,21 +31,21 @@ export function HeroSection({
         sizes="100vw"
       />
       <div className="pointer-events-none absolute inset-0 bg-black/25" />
-      <Container className="relative z-10 flex flex-col items-center px-5 py-10 text-center sm:py-16 md:py-24">
-        <span className="mb-3 rounded-full border border-border bg-cream/80 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[1px] backdrop-blur-sm sm:mb-6 sm:px-4 sm:py-2 sm:text-[11px] sm:tracking-[1.1px]">
+      <Container className="relative z-10 flex flex-col items-center px-5 py-8 text-center sm:py-12 md:py-24">
+        <span className="mb-2 rounded-full border border-border bg-cream/80 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[1px] backdrop-blur-sm sm:mb-6 sm:px-4 sm:py-2 sm:text-[11px] sm:tracking-[1.1px]">
           {content.eyebrow}
         </span>
-        <h1 className="font-serif text-[2rem] font-light leading-[1.15] tracking-[2px] text-white sm:text-5xl sm:tracking-[3.4px] md:text-[68px] md:leading-[74.8px]">
+        <h1 className="font-serif text-[1.75rem] font-light leading-[1.15] tracking-[2px] text-white sm:text-5xl sm:tracking-[3.4px] md:text-[68px] md:leading-[74.8px]">
           {content.titleLine1}
           <br />
           <em className="text-gold-bright">{content.titleAccent}</em>
           <br />
           {content.titleLine2}
         </h1>
-        <p className="mt-3 max-w-[18rem] text-sm font-light leading-relaxed text-white/90 sm:mt-6 sm:max-w-xl sm:text-lg md:text-[21px]">
+        <p className="mt-2 max-w-[18rem] text-sm font-light leading-relaxed text-white/90 sm:mt-6 sm:max-w-xl sm:text-lg md:text-[21px]">
           {content.subtitle}
         </p>
-        <div className="relative z-20 mt-5 flex w-full max-w-xs flex-col gap-2.5 sm:mt-8 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
+        <div className="relative z-20 mt-4 flex w-full max-w-xs flex-col gap-2 sm:mt-8 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
           <PillButton href={content.primaryCtaHref} variant="primary" className="w-full sm:w-auto">
             {content.primaryCtaLabel}
           </PillButton>

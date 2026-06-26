@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Mail, Share2 } from "lucide-react";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { Container } from "@/components/layout/page-shell";
 
 const exploreLinks = [
@@ -15,9 +15,12 @@ export function JewelleryFooter() {
       <Container>
         <div className="flex flex-col justify-between gap-12 border-b border-white/5 pb-16 md:flex-row">
           <div className="max-w-md">
-            <Link href="/" className="font-serif text-[42px] font-light text-gold">
-              Silver Looms
-            </Link>
+            <BrandLogo
+              size="lg"
+              showName
+              href="/"
+              nameClassName="text-gold text-sm tracking-[0.28em]"
+            />
             <p className="mt-4 text-sm leading-relaxed text-cream-dark/70">
               Elevating Jaipur&apos;s artisanal heritage through contemporary,
               minimalist design. Join our newsletter for private collections.
