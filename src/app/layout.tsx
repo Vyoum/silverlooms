@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${ebGaramond.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${ebGaramond.variable} smooth-scroll h-full antialiased`}
     >
       <body className="min-h-full">
         <AppProviders>{children}</AppProviders>

@@ -94,7 +94,7 @@ export function MobileNav({ sections, isDark }: MobileNavProps) {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-5 py-4">
+              <div className="smooth-scroll flex-1 overflow-y-auto px-5 py-4">
                 {sections.map((section) => (
                   <div key={section.title} className="mb-6 last:mb-2">
                     <p
