@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 
-/** Production domain — fallback when env/headers are missing on Vercel */
-export const PRODUCTION_SITE_URL = "https://silverlooms.in";
+/** Production domain — must match Vercel primary (www redirects at the edge). */
+export const PRODUCTION_SITE_URL = "https://www.silverlooms.in";
 
 function isLocalHost(host: string) {
   const hostname = host.split(":")[0].trim().toLowerCase();
