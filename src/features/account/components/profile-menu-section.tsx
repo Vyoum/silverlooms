@@ -1,14 +1,43 @@
 "use client";
 
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
+import {
+  Bell,
+  BookOpen,
+  CreditCard,
+  Eye,
+  Heart,
+  HelpCircle,
+  History,
+  MapPin,
+  Package,
+  Palette,
+  Truck,
+  type LucideIcon,
+} from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const profileMenuIcons = {
+  package: Package,
+  palette: Palette,
+  truck: Truck,
+  heart: Heart,
+  eye: Eye,
+  history: History,
+  "map-pin": MapPin,
+  "credit-card": CreditCard,
+  bell: Bell,
+  "help-circle": HelpCircle,
+  "book-open": BookOpen,
+} as const satisfies Record<string, LucideIcon>;
+
+export type ProfileMenuIconName = keyof typeof profileMenuIcons;
 
 export interface ProfileMenuItem {
   label: string;
   href: string;
-  icon: LucideIcon;
+  icon: ProfileMenuIconName;
   badge?: boolean;
 }
 
@@ -25,7 +54,7 @@ export function ProfileMenuSection({ title, items }: ProfileMenuSectionProps) {
       </h2>
       <div className="overflow-hidden rounded-xl border border-border bg-white">
         {items.map((item, index) => {
-          const Icon = item.icon;
+          const Icon = profileMenuIcons[item.icon];
 
           return (
             <Link

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, Instagram } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
+import { InstagramIcon } from "@/components/icons/instagram-icon";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { INSTAGRAM_URL } from "@/lib/constants/brand";
@@ -78,7 +79,7 @@ export function SiteFooter() {
                 aria-label="Follow Silver Looms on Instagram"
                 className="inline-flex items-center gap-2 text-cream-light transition-colors hover:text-gold"
               >
-                <Instagram className="size-5" />
+                <InstagramIcon />
                 <span className="text-[13px]">@silverlooms_2026</span>
               </a>
             </div>

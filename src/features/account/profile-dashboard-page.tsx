@@ -8,19 +8,6 @@ import { PageShell } from "@/components/layout/page-shell";
 import { ProfileMenuSection } from "@/features/account/components/profile-menu-section";
 import { signOutAction } from "@/features/auth/actions";
 import { BRAND_NAME } from "@/lib/constants/brand";
-import {
-  Bell,
-  BookOpen,
-  CreditCard,
-  Eye,
-  Heart,
-  HelpCircle,
-  History,
-  MapPin,
-  Package,
-  Palette,
-  Truck,
-} from "lucide-react";
 
 type OrderWithItems = Order & {
   items: (OrderItem & {
@@ -123,29 +110,29 @@ export function ProfileDashboardPage({
         <ProfileMenuSection
           title="My Orders"
           items={[
-            { label: "All Orders", href: "#orders", icon: Package },
-            { label: "Custom Orders", href: "/jewellery", icon: Palette, badge: customOrders > 0 },
-            { label: "Track Shipment", href: "#orders", icon: Truck },
+            { label: "All Orders", href: "#orders", icon: "package" },
+            { label: "Custom Orders", href: "/jewellery", icon: "palette", badge: customOrders > 0 },
+            { label: "Track Shipment", href: "#orders", icon: "truck" },
           ]}
         />
 
         <ProfileMenuSection
           title="My Collection"
           items={[
-            { label: "Wishlist", href: "/wishlist", icon: Heart },
-            { label: "Recently Viewed", href: "/kurtis", icon: Eye },
-            { label: "Browse History", href: "/kurtis?sort=bestseller", icon: History },
+            { label: "Wishlist", href: "/wishlist", icon: "heart" },
+            { label: "Recently Viewed", href: "/kurtis", icon: "eye" },
+            { label: "Browse History", href: "/kurtis?sort=bestseller", icon: "history" },
           ]}
         />
 
         <ProfileMenuSection
           title="Account"
           items={[
-            { label: "Addresses", href: "#", icon: MapPin },
-            { label: "Payment", href: "#", icon: CreditCard },
-            { label: "Notifications", href: "#", icon: Bell },
-            { label: "Help", href: "#", icon: HelpCircle },
-            { label: "Our Story", href: "/#editorial", icon: BookOpen },
+            { label: "Addresses", href: "#", icon: "map-pin" },
+            { label: "Payment", href: "#", icon: "credit-card" },
+            { label: "Notifications", href: "#", icon: "bell" },
+            { label: "Help", href: "#", icon: "help-circle" },
+            { label: "Our Story", href: "/#editorial", icon: "book-open" },
           ]}
         />
 

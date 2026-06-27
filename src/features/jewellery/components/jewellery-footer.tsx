@@ -1,5 +1,6 @@
-import { Instagram, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
+import { InstagramIcon } from "@/components/icons/instagram-icon";
 import { Container } from "@/components/layout/page-shell";
 import { INSTAGRAM_URL } from "@/lib/constants/brand";
 
@@ -34,7 +35,7 @@ export function JewelleryFooter() {
                 aria-label="Follow Silver Looms on Instagram"
                 className="transition-colors hover:text-cream"
               >
-                <Instagram className="size-5" />
+                <InstagramIcon />
               </a>
               <Mail className="size-5" aria-hidden />
             </div>

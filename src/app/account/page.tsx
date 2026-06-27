@@ -8,6 +8,8 @@ import {
 import { requireAccountProfile, getSessionUser } from "@/features/auth/services/session";
 import { noIndexMetadata } from "@/lib/seo/metadata";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "My Account",
   description: "Manage your orders and personal collection.",
@@ -21,13 +23,21 @@ export default async function AccountPage() {
     ? new Date(sessionUser.createdAt).getFullYear()
     : new Date().getFullYear();
 
-  const [orders, totalOrders, wishlistCount] = profile.dbUserId
-    ? await Promise.all([
+  let orders: Awaited<ReturnType<typeof getAccountOrders>> = [];
+  let totalOrders = 0;
+  let wishlistCount = 0;
+
+  if (profile.dbUserId) {
+    try {
+      [orders, totalOrders, wishlistCount] = await Promise.all([
         getAccountOrders(profile.dbUserId),
         getAccountOrderCount(profile.dbUserId),
         getAccountWishlistCount(profile.dbUserId),
-      ])
-    : [[], 0, 0];
+      ]);
+    } catch (error) {
+      console.error("[account] Failed to load account stats:", error);
+    }
+  }
 
   return (
     <ProfileDashboardPage

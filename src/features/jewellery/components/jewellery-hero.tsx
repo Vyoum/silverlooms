@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { assets } from "@/lib/constants/assets";
+import type { JewelleryCatalogFilters } from "@/features/jewellery/lib/jewellery-filters";
 import { CategoryTabs } from "./category-tabs";
 
 interface JewelleryHeroProps {
