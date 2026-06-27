@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, Share2 } from "lucide-react";
+import { ArrowRight, Instagram } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { INSTAGRAM_URL } from "@/lib/constants/brand";
 import { footerLinks } from "@/lib/constants/navigation";
 import { Container } from "./page-shell";
 
@@ -69,8 +70,17 @@ export function SiteFooter() {
             <h4 className="mb-8 text-[11px] uppercase tracking-[2.2px] text-gold">
               Social
             </h4>
-            <div className="flex gap-6">
-              <Share2 className="size-5 text-cream-light" aria-label="Social links" />
+            <div className="flex items-center gap-4">
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow Silver Looms on Instagram"
+                className="inline-flex items-center gap-2 text-cream-light transition-colors hover:text-gold"
+              >
+                <Instagram className="size-5" />
+                <span className="text-[13px]">@silverlooms_2026</span>
+              </a>
             </div>
           </div>
         </div>

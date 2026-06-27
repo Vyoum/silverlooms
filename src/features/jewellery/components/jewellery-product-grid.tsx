@@ -1,13 +1,15 @@
-import { SlidersHorizontal } from "lucide-react";
 import type { Product } from "@/lib/types/product";
+import type { JewelleryCatalogFilters } from "@/features/jewellery/lib/jewellery-filters";
 import { Container } from "@/components/layout/page-shell";
+import { JewelleryFilterMenu } from "./jewellery-filter-menu";
 import { JewelleryProductCard } from "./jewellery-product-card";
 
 interface JewelleryProductGridProps {
   products: Product[];
+  filters: JewelleryCatalogFilters;
 }
 
-export function JewelleryProductGrid({ products }: JewelleryProductGridProps) {
+export function JewelleryProductGrid({ products, filters }: JewelleryProductGridProps) {
   return (
     <section className="bg-[#1a1816] py-20">
       <Container>
@@ -15,22 +17,15 @@ export function JewelleryProductGrid({ products }: JewelleryProductGridProps) {
           <h2 className="font-serif text-[42px] font-light leading-[50.4px] text-cream">
             Curated Selection
           </h2>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-[rgba(228,226,221,0.7)]">
-              Showing {products.length} items
-            </span>
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/20 px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.5px] text-cream sm:gap-2 sm:px-[17px] sm:py-[9px] sm:text-[13px] sm:tracking-[0.65px]"
-            >
-              Filter &amp; Sort
-              <SlidersHorizontal className="size-3 sm:size-3.5" />
-            </button>
-          </div>
+          <JewelleryFilterMenu filters={filters} productCount={products.length} />
         </div>
 
         {products.length === 0 ? (
-          <p className="py-16 text-center text-cream-dark/70">No jewellery products yet.</p>
+          <p className="py-16 text-center text-cream-dark/70">
+            {filters.category || filters.material
+              ? "No pieces match these filters. Try another category or material."
+              : "No jewellery products yet."}
+          </p>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
             {products.map((product) => (

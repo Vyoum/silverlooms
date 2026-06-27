@@ -8,10 +8,31 @@ export const JEWELLERY_CATEGORY_OPTIONS = [
   { slug: "pendants", label: "Pendants", pattern: /pendant/i },
 ] as const;
 
+export const JEWELLERY_MATERIAL_OPTIONS = [
+  { slug: "german-silver", label: "German Silver", pattern: /german silver/i },
+  { slug: "anti-tarnish", label: "Anti-Tarnish", pattern: /anti[- ]?tarnish/i },
+  { slug: "kin-fog", label: "Kin Fog", pattern: /kin fog/i },
+  { slug: "oxidised-silver", label: "Oxidised Silver", pattern: /oxidis/i },
+  { slug: "temple-jewellery", label: "Temple Jewellery", pattern: /temple/i },
+] as const;
+
 export type JewelleryCategorySlug = (typeof JEWELLERY_CATEGORY_OPTIONS)[number]["slug"];
+export type JewelleryMaterialSlug = (typeof JEWELLERY_MATERIAL_OPTIONS)[number]["slug"];
 
 export interface JewelleryCatalogFilters {
-  category: string | null;
+  category: JewelleryCategorySlug | null;
+  material: JewelleryMaterialSlug | null;
+}
+
+function productSearchText(product: Product) {
+  return [
+    product.category,
+    product.collection,
+    product.name,
+    product.description,
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
 export function parseJewelleryCategory(value: string | null | undefined) {
@@ -20,12 +41,35 @@ export function parseJewelleryCategory(value: string | null | undefined) {
   return match?.slug ?? null;
 }
 
+export function parseJewelleryMaterial(value: string | null | undefined) {
+  if (!value) return null;
+  const match = JEWELLERY_MATERIAL_OPTIONS.find((option) => option.slug === value);
+  return match?.slug ?? null;
+}
+
 export function parseJewelleryCatalogFilters(params: {
   category?: string;
+  material?: string;
 }): JewelleryCatalogFilters {
   return {
     category: parseJewelleryCategory(params.category),
+    material: parseJewelleryMaterial(params.material),
   };
+}
+
+export function buildJewelleryCatalogHref(filters: Partial<JewelleryCatalogFilters>) {
+  const params = new URLSearchParams();
+
+  if (filters.category) {
+    params.set("category", filters.category);
+  }
+
+  if (filters.material) {
+    params.set("material", filters.material);
+  }
+
+  const query = params.toString();
+  return query ? `/jewellery?${query}` : "/jewellery";
 }
 
 export function getJewelleryCategoryLabel(slug: string | null) {
@@ -33,17 +77,36 @@ export function getJewelleryCategoryLabel(slug: string | null) {
   return JEWELLERY_CATEGORY_OPTIONS.find((option) => option.slug === slug)?.label ?? null;
 }
 
+export function getJewelleryMaterialLabel(slug: string | null) {
+  if (!slug) return null;
+  return JEWELLERY_MATERIAL_OPTIONS.find((option) => option.slug === slug)?.label ?? null;
+}
+
 export function applyJewelleryCatalogFilters(
   products: Product[],
   filters: JewelleryCatalogFilters,
 ): Product[] {
-  if (!filters.category) return products;
+  let result = products;
 
-  const option = JEWELLERY_CATEGORY_OPTIONS.find(
-    (item) => item.slug === filters.category,
-  );
+  if (filters.category) {
+    const option = JEWELLERY_CATEGORY_OPTIONS.find(
+      (item) => item.slug === filters.category,
+    );
 
-  if (!option) return products;
+    if (option) {
+      result = result.filter((product) => option.pattern.test(productSearchText(product)));
+    }
+  }
 
-  return products.filter((product) => option.pattern.test(product.category));
+  if (filters.material) {
+    const option = JEWELLERY_MATERIAL_OPTIONS.find(
+      (item) => item.slug === filters.material,
+    );
+
+    if (option) {
+      result = result.filter((product) => option.pattern.test(productSearchText(product)));
+    }
+  }
+
+  return result;
 }

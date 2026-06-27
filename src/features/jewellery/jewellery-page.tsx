@@ -22,9 +22,9 @@ export async function JewelleryPage({ filters }: JewelleryPageProps) {
     <div className="min-h-screen bg-ink text-cream">
       <SiteHeader variant="jewellery" />
       <main>
-        <JewelleryHero />
-        <MaterialFilterStrip />
-        <JewelleryProductGrid products={products} />
+        <JewelleryHero filters={filters} />
+        <MaterialFilterStrip filters={filters} />
+        <JewelleryProductGrid products={products} filters={filters} />
         <TrustSection />
       </main>
       <JewelleryFooter />

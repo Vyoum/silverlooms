@@ -2,7 +2,11 @@ import Image from "next/image";
 import { assets } from "@/lib/constants/assets";
 import { CategoryTabs } from "./category-tabs";
 
-export function JewelleryHero() {
+interface JewelleryHeroProps {
+  filters: JewelleryCatalogFilters;
+}
+
+export function JewelleryHero({ filters }: JewelleryHeroProps) {
   return (
     <div className="bg-ink">
       <section className="grid lg:min-h-[480px] lg:grid-cols-[55%_45%]">
@@ -35,7 +39,7 @@ export function JewelleryHero() {
           />
         </div>
       </section>
-      <CategoryTabs />
+      <CategoryTabs filters={filters} />
     </div>
   );
 }

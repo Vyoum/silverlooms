@@ -6,3 +6,6 @@ export const BRAND_LOGO_PATH = "/images/brand/logo-emblem.png";
 
 export const BRAND_LOGO_WIDTH = 373;
 export const BRAND_LOGO_HEIGHT = 346;
+
+export const INSTAGRAM_URL =
+  "https://www.instagram.com/silverlooms_2026?utm_source=qr&igsh=MTNiNjBzOHducm9wZA==";

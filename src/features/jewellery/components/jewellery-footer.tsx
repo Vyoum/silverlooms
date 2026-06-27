@@ -1,6 +1,7 @@
-import { Mail, Share2 } from "lucide-react";
+import { Instagram, Mail } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Container } from "@/components/layout/page-shell";
+import { INSTAGRAM_URL } from "@/lib/constants/brand";
 
 const exploreLinks = [
   "Sustainability",
@@ -25,9 +26,17 @@ export function JewelleryFooter() {
               Elevating Jaipur&apos;s artisanal heritage through contemporary,
               minimalist design. Join our newsletter for private collections.
             </p>
-            <div className="mt-4 flex gap-4 text-cream-dark">
-              <Share2 className="size-5" />
-              <Mail className="size-5" />
+            <div className="mt-4 flex items-center gap-4 text-cream-dark">
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow Silver Looms on Instagram"
+                className="transition-colors hover:text-cream"
+              >
+                <Instagram className="size-5" />
+              </a>
+              <Mail className="size-5" aria-hidden />
             </div>
           </div>
           <div>

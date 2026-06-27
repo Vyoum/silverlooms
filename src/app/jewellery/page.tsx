@@ -9,6 +9,7 @@ export const metadata = {
 interface PageProps {
   searchParams: Promise<{
     category?: string;
+    material?: string;
   }>;
 }
 
