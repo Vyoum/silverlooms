@@ -2,11 +2,15 @@ import { unstable_cache } from "next/cache";
 import type { CategoryKind } from "@/features/catalog/lib/store-categories";
 import { prisma } from "@/lib/db";
 import { CACHE_TAGS } from "@/lib/cache/tags";
-import { slugify } from "@/features/catalog/services/product-service";
+import {
+  toMarqueeCategoryItem,
+  type MarqueeCategoryItem,
+} from "@/features/catalog/lib/category-href";
 import {
   DEFAULT_STORE_CATEGORIES,
   type StoreCategory,
 } from "@/features/catalog/lib/store-categories";
+import { slugify } from "@/features/catalog/services/product-service";
 
 function mapCategory(row: {
   id: string;
@@ -125,11 +129,17 @@ export async function listStoreCategoriesForAdmin(kind?: CategoryKind) {
   }
 }
 
-export async function listMarqueeCategoryLabels() {
+export async function listMarqueeCategories(): Promise<MarqueeCategoryItem[]> {
   const categories = await listStoreCategories();
   return categories
     .filter((category) => category.showInMarquee)
-    .map((category) => category.name.toUpperCase());
+    .map(toMarqueeCategoryItem);
+}
+
+/** @deprecated Use listMarqueeCategories */
+export async function listMarqueeCategoryLabels() {
+  const items = await listMarqueeCategories();
+  return items.map((item) => item.label);
 }
 
 export async function listCatalogFilterCategories(kind: CategoryKind) {

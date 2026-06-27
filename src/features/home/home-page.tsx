@@ -12,12 +12,12 @@ import { NewArrivalsSection } from "./components/new-arrivals-section";
 import { NewsletterSection } from "./components/newsletter-section";
 import { StyleSection } from "./components/style-section";
 import { getHomepageContent } from "@/lib/site-content/homepage";
-import { listMarqueeCategoryLabels } from "@/features/catalog/services/category-service";
+import { listMarqueeCategories } from "@/features/catalog/services/category-service";
 
 export async function HomePage() {
   const [content, marqueeItems] = await Promise.all([
     getHomepageContent(),
-    listMarqueeCategoryLabels(),
+    listMarqueeCategories(),
   ]);
 
   return (
