@@ -66,8 +66,10 @@ export function applyKurtisCatalogFilters(
   if (filters.category) {
     const option = options.find((item) => item.slug === filters.category);
     if (option) {
-      result = result.filter((product) =>
-        productMatchesCategory(product.category, option.keywords),
+      result = result.filter(
+        (product) =>
+          product.categorySlug === option.slug ||
+          productMatchesCategory(product.category, option.keywords),
       );
     }
   }
@@ -96,8 +98,10 @@ export function countByCategory(
 ) {
   return options.map((option) => ({
     ...option,
-    count: products.filter((product) =>
-      productMatchesCategory(product.category, option.keywords),
+    count: products.filter(
+      (product) =>
+        product.categorySlug === option.slug ||
+        productMatchesCategory(product.category, option.keywords),
     ).length,
   }));
 }

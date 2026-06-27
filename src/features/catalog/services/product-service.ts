@@ -9,7 +9,13 @@ import { getProductBySlug, jewelleryProducts, kurtisProducts } from "@/lib/const
 import { prisma } from "@/lib/db";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import { buildProductImages } from "@/features/catalog/lib/product-images";
-import { isJewelleryCategory, slugify } from "../lib/category-utils";
+import { CategoryKind } from "@/features/catalog/lib/store-categories";
+import {
+  inferCategoryIdFromLabel,
+  isApparelProduct,
+  isJewelleryProduct,
+  slugify,
+} from "../lib/category-utils";
 
 type DbProduct = {
   id: string;
@@ -30,7 +36,7 @@ type DbProduct = {
   colors: { hex: string; name: string | null }[];
   categoryId: string | null;
   materialSlug: string | null;
-  category: { slug: string } | null;
+  category: { slug: string; kind: string } | null;
 };
 
 function normalizeProduct(product: Product): Product {
@@ -65,17 +71,86 @@ function mapDbProduct(product: DbProduct): Product {
     })),
     categoryId: product.categoryId ?? undefined,
     categorySlug: product.category?.slug,
+    categoryKind: product.category?.kind as Product["categoryKind"],
     materialSlug: product.materialSlug ?? undefined,
   });
 }
 
 const productInclude = {
   colors: true,
-  category: { select: { slug: true } },
+  category: { select: { slug: true, kind: true } },
 } as const;
+
+async function backfillProductCategoryLinks() {
+  try {
+    const [categories, products] = await Promise.all([
+      prisma.category.findMany({
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      }),
+      prisma.product.findMany({
+        select: {
+          id: true,
+          categoryLabel: true,
+          categoryId: true,
+          materialSlug: true,
+          category: { select: { kind: true } },
+        },
+      }),
+    ]);
+
+    if (categories.length === 0 || products.length === 0) return;
+
+    const storeCategories = categories.map((row) => ({
+      id: row.id,
+      slug: row.slug,
+      name: row.name,
+      kind: row.kind,
+      keywords: row.keywords,
+      showInMarquee: row.showInMarquee,
+      showInCatalogFilter: row.showInCatalogFilter,
+      sortOrder: row.sortOrder,
+      heroImageUrl: row.heroImageUrl,
+      heroTitle: row.heroTitle,
+      heroSubtitle: row.heroSubtitle,
+    }));
+
+    for (const product of products) {
+      const inferredId = inferCategoryIdFromLabel(
+        product.categoryLabel,
+        storeCategories,
+        product.materialSlug,
+      );
+
+      if (!inferredId) continue;
+
+      const inferred = storeCategories.find((category) => category.id === inferredId);
+      if (!inferred) continue;
+
+      const linkedApparelMisfiled =
+        product.category?.kind === CategoryKind.JEWELLERY &&
+        inferred.kind === CategoryKind.APPAREL;
+
+      const needsLink =
+        !product.categoryId ||
+        product.categoryId !== inferredId ||
+        linkedApparelMisfiled;
+
+      if (!needsLink) continue;
+
+      await prisma.product.update({
+        where: { id: product.id },
+        data: { categoryId: inferredId },
+      });
+    }
+  } catch (error) {
+    console.error("[catalog] Category backfill skipped:", error);
+  }
+}
 
 async function loadProductsFromDatabase(): Promise<Product[] | null> {
   try {
+    await backfillProductCategoryLinks();
+
     const dbProducts = await prisma.product.findMany({
       include: productInclude,
       orderBy: { createdAt: "desc" },
@@ -119,22 +194,23 @@ export async function listProducts(): Promise<Product[]> {
 
 export async function listApparelProducts(): Promise<Product[]> {
   const products = await fetchAllProducts();
-  return products.filter((p) => !isJewelleryCategory(p.category));
+  return products.filter((product) => isApparelProduct(product));
 }
 
 export async function listCatalogProducts(sort: ProductSort): Promise<Product[]> {
   const products = await fetchAllProducts();
+  const apparel = products.filter((product) => isApparelProduct(product));
 
   if (sort === "bestseller" || sort === "new") {
-    return filterProductsBySort(products, sort);
+    return filterProductsBySort(apparel, sort);
   }
 
-  return products.filter((p) => !isJewelleryCategory(p.category));
+  return apparel;
 }
 
 export async function listJewelleryProducts(): Promise<Product[]> {
   const products = await fetchAllProducts();
-  return products.filter((p) => isJewelleryCategory(p.category));
+  return products.filter((product) => isJewelleryProduct(product));
 }
 
 export async function listNewArrivals(limit = 4): Promise<Product[]> {

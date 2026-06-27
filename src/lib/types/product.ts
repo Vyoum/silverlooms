@@ -25,5 +25,6 @@ export interface Product {
   description?: string;
   categoryId?: string;
   categorySlug?: string;
+  categoryKind?: "APPAREL" | "JEWELLERY";
   materialSlug?: string;
 }

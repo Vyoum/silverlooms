@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { Container, PageShell } from "@/components/layout/page-shell";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { resolveProductBySlug } from "@/features/catalog/services/product-service";
-import { isJewelleryCategory } from "@/features/catalog/lib/category-utils";
+import { isJewelleryProduct } from "@/features/catalog/lib/category-utils";
 import { ProductDetails } from "./components/product-details";
 import { ProductGallery } from "./components/product-gallery";
 import { RelatedProducts } from "./components/related-products";
@@ -21,7 +21,7 @@ export async function ProductPage({ slug }: ProductPageProps) {
     notFound();
   }
 
-  const isJewellery = isJewelleryCategory(product.category);
+  const isJewellery = isJewelleryProduct(product);
   const collectionLabel =
     product.category.split("·")[0]?.trim() ?? "Collection";
 
