@@ -6,11 +6,12 @@ import {
   getAccountWishlistCount,
 } from "@/features/account/services/account-service";
 import { requireAccountProfile, getSessionUser } from "@/features/auth/services/session";
-import { BRAND_NAME } from "@/lib/constants/brand";
+import { noIndexMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = {
-  title: `My Account | ${BRAND_NAME}`,
+  title: "My Account",
   description: "Manage your orders and personal collection.",
+  ...noIndexMetadata,
 };
 
 export default async function AccountPage() {

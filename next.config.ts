@@ -49,6 +49,12 @@ const nextConfig: NextConfig = {
         destination: "/jewellery",
         permanent: true,
       },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.silverlooms.in" }],
+        destination: "https://silverlooms.in/:path*",
+        permanent: true,
+      },
     ];
   },
 };

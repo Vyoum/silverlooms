@@ -1,9 +1,10 @@
 import { getSessionUser } from "@/features/auth/services/session";
 import { CheckoutPage } from "@/features/checkout/checkout-page";
-import { BRAND_NAME } from "@/lib/constants/brand";
+import { noIndexMetadata } from "@/lib/seo/metadata";
 
 export const metadata = {
-  title: `Checkout | ${BRAND_NAME}`,
+  title: "Checkout",
+  ...noIndexMetadata,
 };
 
 export default async function Page() {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SearchPage } from "@/features/search/search-page";
-import { BRAND_NAME } from "@/lib/constants/brand";
+import { noIndexMetadata } from "@/lib/seo/metadata";
 
 interface PageProps {
   searchParams: Promise<{ q?: string }>;
@@ -13,9 +13,11 @@ export async function generateMetadata({
   const query = params.q?.trim();
 
   return {
-    title: query
-      ? `Search: ${query} | ${BRAND_NAME}`
-      : `Search | ${BRAND_NAME}`,
+    title: query ? `Search: ${query}` : "Search",
+    description: query
+      ? `Search results for "${query}" at Silver Looms.`
+      : "Search kurtis, co-ord sets, and silver jewellery at Silver Looms.",
+    ...noIndexMetadata,
   };
 }
 

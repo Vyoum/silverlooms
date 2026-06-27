@@ -8,6 +8,7 @@ import { isJewelleryCategory } from "@/features/catalog/lib/category-utils";
 import { ProductDetails } from "./components/product-details";
 import { ProductGallery } from "./components/product-gallery";
 import { RelatedProducts } from "./components/related-products";
+import { breadcrumbJsonLd, JsonLd, productJsonLd } from "@/lib/seo/json-ld";
 
 interface ProductPageProps {
   slug: string;
@@ -21,9 +22,26 @@ export async function ProductPage({ slug }: ProductPageProps) {
   }
 
   const isJewellery = isJewelleryCategory(product.category);
+  const collectionLabel =
+    product.category.split("·")[0]?.trim() ?? "Collection";
 
   return (
     <PageShell>
+      <JsonLd data={productJsonLd(product)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", href: "/" },
+          {
+            name: isJewellery ? "Jewellery" : "Kurtis & Sets",
+            href: isJewellery ? "/jewellery" : "/kurtis",
+          },
+          {
+            name: collectionLabel,
+            href: isJewellery ? "/jewellery" : "/kurtis",
+          },
+          { name: product.name },
+        ])}
+      />
       <SiteHeader variant={isJewellery ? "jewellery" : "default"} />
       <main>
         <Container className="py-4 md:py-8">

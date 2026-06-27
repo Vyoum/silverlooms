@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { LoginPage } from "@/features/auth/components/login-page";
 import { HOME_ROUTE, getPostLoginRedirect } from "@/lib/auth/routes";
-import { BRAND_NAME } from "@/lib/constants/brand";
+import { noIndexMetadata } from "@/lib/seo/metadata";
 import { createClient } from "@/lib/supabase/server";
 import { isAuthConfigured } from "@/lib/supabase/env";
 
 export const metadata: Metadata = {
-  title: `Sign In | ${BRAND_NAME}`,
+  title: "Sign In",
+  ...noIndexMetadata,
 };
 
 interface PageProps {

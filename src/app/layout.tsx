@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import { DM_Sans, EB_Garamond } from "next/font/google";
 import { AppProviders } from "@/components/providers/app-providers";
+import { rootMetadata } from "@/lib/seo/metadata";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -16,10 +16,8 @@ const ebGaramond = EB_Garamond({
   style: ["normal", "italic"],
 });
 
-export const metadata: Metadata = {
-  title: "Silver Looms | The Art of Wearing India",
-  description:
-    "Discover artisanal apparel and exquisite silver jewellery. Woven in tradition, dressed in silver.",
+export const metadata = {
+  ...rootMetadata,
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",

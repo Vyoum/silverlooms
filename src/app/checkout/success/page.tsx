@@ -5,12 +5,13 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { Container, PageShell } from "@/components/layout/page-shell";
 import { buttonVariants } from "@/components/ui/button";
 import { getPaidOrderConfirmation } from "@/features/checkout/services/order-service";
-import { BRAND_NAME } from "@/lib/constants/brand";
 import { getDelhiveryTrackingUrl } from "@/lib/delhivery/tracking";
+import { noIndexMetadata } from "@/lib/seo/metadata";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
-  title: `Order Confirmed | ${BRAND_NAME}`,
+  title: "Order Confirmed",
+  ...noIndexMetadata,
 };
 
 interface PageProps {
