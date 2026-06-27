@@ -23,4 +23,7 @@ export interface Product {
   badge?: ProductBadge;
   sizes?: string[];
   description?: string;
+  categoryId?: string;
+  categorySlug?: string;
+  materialSlug?: string;
 }

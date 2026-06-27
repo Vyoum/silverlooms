@@ -28,6 +28,9 @@ type DbProduct = {
   badge: ProductBadge | null;
   sizes: string[];
   colors: { hex: string; name: string | null }[];
+  categoryId: string | null;
+  materialSlug: string | null;
+  category: { slug: string } | null;
 };
 
 function normalizeProduct(product: Product): Product {
@@ -60,10 +63,16 @@ function mapDbProduct(product: DbProduct): Product {
       hex: c.hex,
       name: c.name ?? undefined,
     })),
+    categoryId: product.categoryId ?? undefined,
+    categorySlug: product.category?.slug,
+    materialSlug: product.materialSlug ?? undefined,
   });
 }
 
-const productInclude = { colors: true } as const;
+const productInclude = {
+  colors: true,
+  category: { select: { slug: true } },
+} as const;
 
 async function loadProductsFromDatabase(): Promise<Product[] | null> {
   try {
@@ -233,6 +242,8 @@ export interface CreateProductData {
   name: string;
   slug: string;
   categoryLabel: string;
+  categoryId?: string;
+  materialSlug?: string;
   collection?: string;
   description?: string;
   price: number;
@@ -256,6 +267,8 @@ export async function createProduct(data: CreateProductData) {
       slug: data.slug,
       name: data.name,
       categoryLabel: data.categoryLabel,
+      categoryId: data.categoryId,
+      materialSlug: data.materialSlug,
       collection: data.collection,
       description: data.description,
       price: data.price,
@@ -293,6 +306,8 @@ export interface UpdateProductData {
   name: string;
   slug: string;
   categoryLabel: string;
+  categoryId?: string;
+  materialSlug?: string;
   collection?: string;
   description?: string;
   price: number;
@@ -316,6 +331,8 @@ export async function updateProduct(productId: string, data: UpdateProductData) 
       slug: data.slug,
       name: data.name,
       categoryLabel: data.categoryLabel,
+      categoryId: data.categoryId,
+      materialSlug: data.materialSlug,
       collection: data.collection,
       description: data.description,
       price: data.price,

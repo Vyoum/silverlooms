@@ -11,6 +11,7 @@ import {
 } from "@/features/admin/lib/product-presets";
 import { requireAdminUser } from "@/features/auth/services/session";
 import { createProduct, slugify, updateProduct } from "@/features/catalog/services/product-service";
+import { resolveProductCategoryFields } from "@/features/admin/lib/resolve-product-category";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 
 export interface CreateProductResult {
@@ -48,7 +49,8 @@ export async function createProductAction(
     const productType = (String(formData.get("productType") ?? "apparel") ||
       "apparel") as ProductType;
     const name = String(formData.get("name") ?? "").trim();
-    const categoryLabel = String(formData.get("categoryLabel") ?? "").trim();
+    const categoryId = String(formData.get("categoryId") ?? "").trim();
+    const materialSlug = String(formData.get("materialSlug") ?? "").trim();
     const price = Number(formData.get("price"));
     const originalPriceRaw = Number(formData.get("originalPrice"));
     const description = String(formData.get("description") ?? "").trim();
@@ -61,9 +63,15 @@ export async function createProductAction(
     const rating = Number(formData.get("rating"));
     const reviewCount = Number(formData.get("reviewCount"));
 
-    if (!name || !categoryLabel || Number.isNaN(price) || price <= 0) {
+    if (!name || !categoryId || Number.isNaN(price) || price <= 0) {
       return { success: false, error: "Name, category, and price are required." };
     }
+
+    const categoryFields = await resolveProductCategoryFields(
+      categoryId,
+      productType,
+      materialSlug,
+    );
 
     const slug = slugInput || slugify(name);
 
@@ -87,7 +95,9 @@ export async function createProductAction(
     const product = await createProduct({
       name,
       slug,
-      categoryLabel,
+      categoryLabel: categoryFields.categoryLabel,
+      categoryId: categoryFields.categoryId,
+      materialSlug: categoryFields.materialSlug,
       collection: collection || undefined,
       description: description || undefined,
       price: Math.round(price),
@@ -110,7 +120,9 @@ export async function createProductAction(
     const message =
       error instanceof Error && error.message.includes("Unique constraint")
         ? "A product with this slug already exists."
-        : "Failed to create product. Please try again.";
+        : error instanceof Error
+          ? error.message
+          : "Failed to create product. Please try again.";
     return { success: false, error: message };
   }
 }
@@ -145,7 +157,8 @@ export async function updateProductAction(
     const productType = (String(formData.get("productType") ?? "apparel") ||
       "apparel") as ProductType;
     const name = String(formData.get("name") ?? "").trim();
-    const categoryLabel = String(formData.get("categoryLabel") ?? "").trim();
+    const categoryId = String(formData.get("categoryId") ?? "").trim();
+    const materialSlug = String(formData.get("materialSlug") ?? "").trim();
     const price = Number(formData.get("price"));
     const originalPriceRaw = Number(formData.get("originalPrice"));
     const description = String(formData.get("description") ?? "").trim();
@@ -157,9 +170,15 @@ export async function updateProductAction(
     const rating = Number(formData.get("rating"));
     const reviewCount = Number(formData.get("reviewCount"));
 
-    if (!productId || !name || !categoryLabel || Number.isNaN(price) || price <= 0) {
+    if (!productId || !name || !categoryId || Number.isNaN(price) || price <= 0) {
       return { success: false, error: "Name, category, and price are required." };
     }
+
+    const categoryFields = await resolveProductCategoryFields(
+      categoryId,
+      productType,
+      materialSlug,
+    );
 
     const slug = slugInput || slugify(name);
 
@@ -183,7 +202,9 @@ export async function updateProductAction(
     const product = await updateProduct(productId, {
       name,
       slug,
-      categoryLabel,
+      categoryLabel: categoryFields.categoryLabel,
+      categoryId: categoryFields.categoryId,
+      materialSlug: categoryFields.materialSlug,
       collection: collection || undefined,
       description: description || undefined,
       price: Math.round(price),
@@ -205,7 +226,9 @@ export async function updateProductAction(
     const message =
       error instanceof Error && error.message.includes("Unique constraint")
         ? "A product with this slug already exists."
-        : "Failed to update product. Please try again.";
+        : error instanceof Error
+          ? error.message
+          : "Failed to update product. Please try again.";
     return { success: false, error: message };
   }
 }

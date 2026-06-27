@@ -18,19 +18,23 @@ const sizeWidths = {
 interface BrandLogoProps {
   className?: string;
   nameClassName?: string;
+  taglineClassName?: string;
   href?: string | null;
   size?: keyof typeof sizeWidths;
   priority?: boolean;
   showName?: boolean;
+  showTagline?: boolean;
 }
 
 export function BrandLogo({
   className,
   nameClassName,
+  taglineClassName,
   href = "/",
   size = "md",
   priority = false,
   showName = false,
+  showTagline = false,
 }: BrandLogoProps) {
   const width = sizeWidths[size];
   const height = Math.round((BRAND_LOGO_HEIGHT / BRAND_LOGO_WIDTH) * width);
@@ -57,12 +61,24 @@ export function BrandLogo({
           {BRAND_NAME}
         </span>
       ) : null}
+      {showTagline ? (
+        <span
+          className={cn(
+            "font-serif text-xs italic tracking-wide text-sage",
+            taglineClassName,
+          )}
+        >
+          {BRAND_TAGLINE}
+        </span>
+      ) : null}
     </>
   );
 
   const wrapperClassName = cn(
-    showName ? "inline-flex flex-col items-center gap-px" : "inline-flex shrink-0",
-    showName && className,
+    showName || showTagline
+      ? "inline-flex flex-col items-center gap-1"
+      : "inline-flex shrink-0",
+    (showName || showTagline) && className,
   );
 
   if (href) {

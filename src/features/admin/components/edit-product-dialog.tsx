@@ -12,7 +12,9 @@ import {
   toProductImageItems,
   type ProductImageItem,
 } from "@/features/admin/components/product-images-field";
-import { CategoryLabelSelect } from "@/features/admin/components/category-label-select";
+import { ProductCategorySelect } from "@/features/admin/components/product-category-select";
+import { JewelleryMaterialSelect } from "@/features/admin/components/jewellery-material-select";
+import { defaultCatalogCategoryId } from "@/features/admin/lib/product-category";
 import type { ProductType } from "@/features/admin/lib/product-presets";
 import type { AdminProductEditData } from "@/features/admin/types";
 import type { StoreCategory } from "@/features/catalog/lib/store-categories";
@@ -58,7 +60,8 @@ export function EditProductDialog({
 
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
-  const [categoryLabel, setCategoryLabel] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [materialSlug, setMaterialSlug] = useState("");
   const [collection, setCollection] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
@@ -81,7 +84,10 @@ export function EditProductDialog({
         setProduct(data);
         setName(data.name);
         setSlug(data.slug);
-        setCategoryLabel(data.categoryLabel);
+        setCategoryId(
+          data.categoryId || defaultCatalogCategoryId(categories, data.productType),
+        );
+        setMaterialSlug(data.materialSlug);
         setCollection(data.collection);
         setDescription(data.description);
         setPrice(data.price);
@@ -177,14 +183,24 @@ export function EditProductDialog({
 
                 <div>
                   <FieldLabel>Category *</FieldLabel>
-                  <CategoryLabelSelect
+                  <ProductCategorySelect
                     categories={categories}
                     productType={productType}
-                    value={categoryLabel}
-                    onChange={setCategoryLabel}
+                    value={categoryId}
+                    onChange={setCategoryId}
                     required
                   />
                 </div>
+
+                {productType === "jewellery" ? (
+                  <div>
+                    <FieldLabel>Material</FieldLabel>
+                    <JewelleryMaterialSelect
+                      value={materialSlug}
+                      onChange={setMaterialSlug}
+                    />
+                  </div>
+                ) : null}
 
                 <div>
                   <FieldLabel>Sale Price (₹) *</FieldLabel>

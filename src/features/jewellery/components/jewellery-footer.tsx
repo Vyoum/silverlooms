@@ -20,8 +20,11 @@ export function JewelleryFooter() {
             <BrandLogo
               size="lg"
               showName
+              showTagline
               href="/"
+              className="items-start"
               nameClassName="text-gold text-sm tracking-[0.28em]"
+              taglineClassName="text-cream-dark/70"
             />
             <p className="mt-4 text-sm leading-relaxed text-cream-dark/70">
               Elevating Jaipur&apos;s artisanal heritage through contemporary,

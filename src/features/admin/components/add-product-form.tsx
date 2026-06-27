@@ -9,9 +9,15 @@ import {
   type ProductImageItem,
 } from "@/features/admin/components/product-images-field";
 import {
-  CategoryLabelSelect,
-  defaultCategoryLabel,
-} from "@/features/admin/components/category-label-select";
+  ProductCategorySelect,
+} from "@/features/admin/components/product-category-select";
+import {
+  JewelleryMaterialSelect,
+} from "@/features/admin/components/jewellery-material-select";
+import {
+  defaultCatalogCategoryId,
+  resolveProductCategoryLabel,
+} from "@/features/admin/lib/product-category";
 import {
   mockStyleDefaults,
   type ProductType,
@@ -50,9 +56,10 @@ export function AddProductForm({
   const defaults = mockStyleDefaults[productType];
 
   const [name, setName] = useState("");
-  const [categoryLabel, setCategoryLabel] = useState<string>(() =>
-    defaultCategoryLabel(categories, defaultProductType) || defaults.category,
+  const [categoryId, setCategoryId] = useState<string>(() =>
+    defaultCatalogCategoryId(categories, defaultProductType),
   );
+  const [materialSlug, setMaterialSlug] = useState("");
   const [collection, setCollection] = useState<string>(defaults.collection);
   const [price, setPrice] = useState(2490);
   const [originalPrice, setOriginalPrice] = useState(3200);
@@ -66,7 +73,8 @@ export function AddProductForm({
   function switchType(type: ProductType) {
     const next = mockStyleDefaults[type];
     setProductType(type);
-    setCategoryLabel(defaultCategoryLabel(categories, type) || next.category);
+    setCategoryId(defaultCatalogCategoryId(categories, type));
+    setMaterialSlug("");
     setCollection(next.collection);
     setGalleryItems([]);
     setSizes(next.sizes);
@@ -84,6 +92,10 @@ export function AddProductForm({
 
   const previewImageUrl = galleryItems[0]?.url ?? "";
   const hasImage = galleryItems.length > 0;
+  const selectedCategory = categories.find((category) => category.id === categoryId);
+  const categoryLabel = selectedCategory
+    ? resolveProductCategoryLabel(selectedCategory, productType, materialSlug)
+    : defaults.category;
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
@@ -155,14 +167,24 @@ export function AddProductForm({
 
           <div>
             <FieldLabel>Category *</FieldLabel>
-            <CategoryLabelSelect
+            <ProductCategorySelect
               categories={categories}
               productType={productType}
-              value={categoryLabel}
-              onChange={setCategoryLabel}
+              value={categoryId}
+              onChange={setCategoryId}
               required
             />
           </div>
+
+          {productType === "jewellery" ? (
+            <div>
+              <FieldLabel>Material</FieldLabel>
+              <JewelleryMaterialSelect
+                value={materialSlug}
+                onChange={setMaterialSlug}
+              />
+            </div>
+          ) : null}
 
           <div>
             <FieldLabel>Sale Price (₹) *</FieldLabel>

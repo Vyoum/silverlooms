@@ -35,6 +35,30 @@ function productSearchText(product: Product) {
     .join(" ");
 }
 
+function productMatchesJewelleryCategory(
+  product: Product,
+  slug: JewelleryCategorySlug,
+) {
+  if (product.categorySlug === slug) {
+    return true;
+  }
+
+  const option = JEWELLERY_CATEGORY_OPTIONS.find((item) => item.slug === slug);
+  return option ? option.pattern.test(productSearchText(product)) : false;
+}
+
+function productMatchesJewelleryMaterial(
+  product: Product,
+  slug: JewelleryMaterialSlug,
+) {
+  if (product.materialSlug === slug) {
+    return true;
+  }
+
+  const option = JEWELLERY_MATERIAL_OPTIONS.find((item) => item.slug === slug);
+  return option ? option.pattern.test(productSearchText(product)) : false;
+}
+
 export function parseJewelleryCategory(value: string | null | undefined) {
   if (!value) return null;
   const match = JEWELLERY_CATEGORY_OPTIONS.find((option) => option.slug === value);
@@ -89,23 +113,15 @@ export function applyJewelleryCatalogFilters(
   let result = products;
 
   if (filters.category) {
-    const option = JEWELLERY_CATEGORY_OPTIONS.find(
-      (item) => item.slug === filters.category,
+    result = result.filter((product) =>
+      productMatchesJewelleryCategory(product, filters.category!),
     );
-
-    if (option) {
-      result = result.filter((product) => option.pattern.test(productSearchText(product)));
-    }
   }
 
   if (filters.material) {
-    const option = JEWELLERY_MATERIAL_OPTIONS.find(
-      (item) => item.slug === filters.material,
+    result = result.filter((product) =>
+      productMatchesJewelleryMaterial(product, filters.material!),
     );
-
-    if (option) {
-      result = result.filter((product) => option.pattern.test(productSearchText(product)));
-    }
   }
 
   return result;

@@ -83,6 +83,8 @@ export interface AdminProductEditData {
   slug: string;
   name: string;
   categoryLabel: string;
+  categoryId: string;
+  materialSlug: string;
   productType: "apparel" | "jewellery";
   collection: string;
   description: string;

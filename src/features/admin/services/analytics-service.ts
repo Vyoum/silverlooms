@@ -1,5 +1,10 @@
 import { prisma } from "@/lib/db";
 import { isJewelleryCategory } from "@/features/catalog/lib/category-utils";
+import {
+  inferCatalogCategoryId,
+  inferMaterialSlugFromLabel,
+} from "@/features/admin/lib/product-category";
+import { listStoreCategories } from "@/features/catalog/services/category-service";
 import type { AdminProductEditData, DashboardData, KpiMetric } from "../types";
 
 function formatCurrency(amount: number): string {
@@ -370,17 +375,30 @@ export async function getProductForEdit(
   try {
     const product = await prisma.product.findUnique({
       where: { id: productId },
-      include: { colors: true },
+      include: { colors: true, category: { select: { id: true } } },
     });
 
     if (!product) return null;
+
+    const productType = isJewelleryCategory(product.categoryLabel)
+      ? "jewellery"
+      : "apparel";
+    const categories = await listStoreCategories();
 
     return {
       id: product.id,
       slug: product.slug,
       name: product.name,
       categoryLabel: product.categoryLabel,
-      productType: isJewelleryCategory(product.categoryLabel) ? "jewellery" : "apparel",
+      categoryId:
+        product.categoryId ??
+        inferCatalogCategoryId(categories, productType, product.categoryLabel),
+      materialSlug:
+        product.materialSlug ??
+        (productType === "jewellery"
+          ? inferMaterialSlugFromLabel(product.categoryLabel)
+          : ""),
+      productType,
       collection: product.collection ?? "",
       description: product.description ?? "",
       price: product.price,

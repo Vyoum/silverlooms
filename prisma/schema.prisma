@@ -58,6 +58,7 @@ model Product {
   sizes           String[]      @default([])
   categoryId      String?       @map("category_id")
   category        Category?     @relation(fields: [categoryId], references: [id])
+  materialSlug    String?       @map("material_slug")
   colors          ProductColor[]
   cartItems       CartItem[]
   inventory       Inventory[]

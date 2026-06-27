@@ -11,8 +11,11 @@ export function KurtisFooter() {
             <BrandLogo
               size="lg"
               showName
+              showTagline
               href="/"
+              className="items-start"
               nameClassName="text-gold text-sm tracking-[0.28em]"
+              taglineClassName="text-muted-light"
             />
             <p className="mt-4 font-serif text-xl italic text-muted-light">
               Woven in tradition, dressed in silver.

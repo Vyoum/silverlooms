@@ -17,8 +17,11 @@ export function SiteFooter() {
             <BrandLogo
               size="lg"
               showName
+              showTagline
               href="/"
+              className="items-start"
               nameClassName="text-gold text-sm tracking-[0.28em]"
+              taglineClassName="text-muted-light"
             />
             <p className="mt-3 font-serif text-xl italic tracking-wide text-muted-light">
               Woven in tradition, dressed in silver.
