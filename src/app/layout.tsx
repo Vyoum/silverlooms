@@ -19,9 +19,8 @@ const ebGaramond = EB_Garamond({
 export const metadata = {
   ...rootMetadata,
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/apple-icon.png",
+    icon: [{ url: "/favicon.png", sizes: "32x32", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
