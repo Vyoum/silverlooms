@@ -27,6 +27,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.9,
     },
+    {
+      url: absoluteUrl("/privacy"),
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.4,
+    },
+    {
+      url: absoluteUrl("/shipping-returns"),
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.4,
+    },
   ];
 
   const kurtisCategoryRoutes: MetadataRoute.Sitemap =

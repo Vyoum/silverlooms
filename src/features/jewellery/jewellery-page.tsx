@@ -4,7 +4,7 @@ import {
   applyJewelleryCatalogFilters,
   type JewelleryCatalogFilters,
 } from "@/features/jewellery/lib/jewellery-filters";
-import { JewelleryFooter } from "./components/jewellery-footer";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { JewelleryHero } from "./components/jewellery-hero";
 import { JewelleryProductGrid } from "./components/jewellery-product-grid";
 import { MaterialFilterStrip } from "./components/material-filter-strip";
@@ -27,7 +27,7 @@ export async function JewelleryPage({ filters }: JewelleryPageProps) {
         <JewelleryProductGrid products={products} filters={filters} />
         <TrustSection />
       </main>
-      <JewelleryFooter />
+      <SiteFooter />
     </div>
   );
 }

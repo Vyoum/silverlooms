@@ -19,7 +19,7 @@ import {
 import { ActiveFilters } from "./components/active-filters";
 import { CategoryHero } from "./components/category-hero";
 import { KurtisCatalogSection } from "./components/kurtis-catalog-section";
-import { KurtisFooter } from "./components/kurtis-footer";
+import { SiteFooter } from "@/components/layout/site-footer";
 
 interface KurtisPageProps {
   searchParams: {
@@ -87,7 +87,7 @@ export async function KurtisPage({ searchParams }: KurtisPageProps) {
           </Suspense>
         </Container>
       </main>
-      <KurtisFooter />
+      <SiteFooter />
     </PageShell>
   );
 }

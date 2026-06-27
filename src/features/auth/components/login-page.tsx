@@ -122,13 +122,13 @@ export function LoginPage({
               </Link>
               <div className="flex gap-4">
                 <Link
-                  href="#"
+                  href="/privacy"
                   className="text-[10px] uppercase tracking-widest text-sage transition-colors hover:text-forest"
                 >
                   Privacy
                 </Link>
                 <Link
-                  href="#"
+                  href="/privacy#terms"
                   className="text-[10px] uppercase tracking-widest text-sage transition-colors hover:text-forest"
                 >
                   Terms

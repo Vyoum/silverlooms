@@ -63,16 +63,16 @@ export const footerLinks = {
     { label: "Best Sellers", href: "/kurtis?sort=bestseller" },
   ],
   help: [
-    { label: "Track Order", href: "#" },
-    { label: "Returns & Exchanges", href: "#" },
-    { label: "Shipping Info", href: "#" },
-    { label: "FAQ", href: "#" },
+    { label: "Track Order", href: "/account" },
+    { label: "Returns & Exchanges", href: "/shipping-returns#returns" },
+    { label: "Shipping Info", href: "/shipping-returns" },
+    { label: "FAQ", href: "/#good-reads" },
   ],
   company: [
-    { label: "Our Story", href: "#" },
-    { label: "Sustainability", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Privacy Policy", href: "#" },
+    { label: "Our Story", href: "/#editorial" },
+    { label: "Shop By Style", href: "/#shop-by-style" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Use", href: "/privacy#terms" },
   ],
 } as const;
 

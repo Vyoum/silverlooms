@@ -95,7 +95,14 @@ export function SiteFooter() {
           <p className="text-[11px] uppercase tracking-[1.1px] text-muted-light">
             © 2026 Silver Looms. All Rights Reserved.
           </p>
-          <div className="flex gap-4 text-[11px] uppercase tracking-wider text-muted-light">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-[11px] uppercase tracking-wider text-muted-light">
+            <Link href="/privacy" className="transition-colors hover:text-gold">
+              Privacy
+            </Link>
+            <Link href="/shipping-returns" className="transition-colors hover:text-gold">
+              Shipping
+            </Link>
+            <span aria-hidden>·</span>
             <span>Visa</span>
             <span>Mastercard</span>
             <span>UPI</span>
