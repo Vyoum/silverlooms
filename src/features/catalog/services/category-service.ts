@@ -77,18 +77,31 @@ const getCachedCategories = unstable_cache(
 );
 
 export async function syncDefaultCategories() {
-  for (const category of DEFAULT_STORE_CATEGORIES) {
-    await prisma.category.upsert({
-      where: { slug: category.slug },
-      create: {
-        ...category,
-        heroImageUrl: null,
-        heroTitle: null,
-        heroSubtitle: null,
-      },
-      update: {},
-    });
+  const existing = await prisma.category.findMany({ select: { slug: true } });
+  const existingSlugs = new Set(existing.map((row) => row.slug));
+
+  const missing = DEFAULT_STORE_CATEGORIES.filter(
+    (category) => !existingSlugs.has(category.slug),
+  );
+
+  if (missing.length === 0) {
+    return;
   }
+
+  await Promise.all(
+    missing.map((category) =>
+      prisma.category.upsert({
+        where: { slug: category.slug },
+        create: {
+          ...category,
+          heroImageUrl: null,
+          heroTitle: null,
+          heroSubtitle: null,
+        },
+        update: {},
+      }),
+    ),
+  );
 }
 
 /** @deprecated Use syncDefaultCategories */
@@ -112,10 +125,13 @@ export async function listStoreCategories(kind?: CategoryKind) {
 
 /** Ensures code defaults exist, then returns fresh rows for admin screens. */
 export async function listStoreCategoriesForAdmin(kind?: CategoryKind) {
-  await syncDefaultCategories();
-
   try {
-    const all = await queryCategoriesFromDb();
+    await syncDefaultCategories();
+
+    const rows = await prisma.category.findMany({
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    });
+    const all = rows.map(mapCategory);
     const categories = kind ? all.filter((category) => category.kind === kind) : all;
 
     if (categories.length === 0) {

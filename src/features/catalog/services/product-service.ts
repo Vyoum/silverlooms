@@ -9,7 +9,6 @@ import { getProductBySlug, jewelleryProducts, kurtisProducts } from "@/lib/const
 import { prisma } from "@/lib/db";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import { buildProductImages } from "@/features/catalog/lib/product-images";
-import { CategoryKind } from "@/features/catalog/lib/store-categories";
 import {
   inferCategoryIdFromLabel,
   isApparelProduct,
@@ -83,11 +82,20 @@ const productInclude = {
 
 async function backfillProductCategoryLinks() {
   try {
+    const unlinkedCount = await prisma.product.count({
+      where: { categoryId: null },
+    });
+
+    if (unlinkedCount === 0) {
+      return;
+    }
+
     const [categories, products] = await Promise.all([
       prisma.category.findMany({
         orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       }),
       prisma.product.findMany({
+        where: { categoryId: null },
         select: {
           id: true,
           categoryLabel: true,
@@ -114,34 +122,22 @@ async function backfillProductCategoryLinks() {
       heroSubtitle: row.heroSubtitle,
     }));
 
-    for (const product of products) {
-      const inferredId = inferCategoryIdFromLabel(
-        product.categoryLabel,
-        storeCategories,
-        product.materialSlug,
-      );
+    await Promise.all(
+      products.map(async (product) => {
+        const inferredId = inferCategoryIdFromLabel(
+          product.categoryLabel,
+          storeCategories,
+          product.materialSlug,
+        );
 
-      if (!inferredId) continue;
+        if (!inferredId) return;
 
-      const inferred = storeCategories.find((category) => category.id === inferredId);
-      if (!inferred) continue;
-
-      const linkedApparelMisfiled =
-        product.category?.kind === CategoryKind.JEWELLERY &&
-        inferred.kind === CategoryKind.APPAREL;
-
-      const needsLink =
-        !product.categoryId ||
-        product.categoryId !== inferredId ||
-        linkedApparelMisfiled;
-
-      if (!needsLink) continue;
-
-      await prisma.product.update({
-        where: { id: product.id },
-        data: { categoryId: inferredId },
-      });
-    }
+        await prisma.product.update({
+          where: { id: product.id },
+          data: { categoryId: inferredId },
+        });
+      }),
+    );
   } catch (error) {
     console.error("[catalog] Category backfill skipped:", error);
   }
