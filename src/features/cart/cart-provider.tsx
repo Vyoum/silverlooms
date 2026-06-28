@@ -66,15 +66,14 @@ export function CartProvider({
       size?: string;
       colorHex?: string;
     }) => {
-      startTransition(async () => {
-        try {
-          const result = await addToCartAction(input);
-          setCart(result.cart);
-          toast.success(result.message);
-        } catch {
-          toast.error("Could not add item to bag. Please try again.");
-        }
-      });
+      try {
+        const result = await addToCartAction(input);
+        setCart(result.cart);
+        toast.success(result.message);
+      } catch {
+        toast.error("Could not add item to bag. Please try again.");
+        throw new Error("add-to-cart-failed");
+      }
     },
     [],
   );

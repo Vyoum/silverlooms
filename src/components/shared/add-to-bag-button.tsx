@@ -23,31 +23,31 @@ export function AddToBagButton({
   className,
   children = "Add to Bag",
 }: AddToBagButtonProps) {
-  const { addToCart, isPending } = useCart();
+  const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
 
   async function handleClick() {
     setIsAdding(true);
     try {
       await addToCart({ slug, size, colorHex, quantity });
+    } catch {
+      // Toast is shown in the cart provider.
     } finally {
       setIsAdding(false);
     }
   }
 
-  const loading = isPending || isAdding;
-
   return (
     <Button
       type="button"
       onClick={handleClick}
-      disabled={loading}
+      disabled={isAdding}
       className={cn(
         "h-12 flex-1 rounded-full bg-forest text-[13px] uppercase tracking-[1.3px] text-cream hover:bg-forest/90",
         className,
       )}
     >
-      {loading ? (
+      {isAdding ? (
         <>
           <Loader2 className="mr-2 size-4 animate-spin" />
           Adding...

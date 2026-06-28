@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { Loader2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/features/cart/cart-provider";
 import { WishlistHeartButton } from "@/features/wishlist/components/wishlist-heart-button";
 import type { Product } from "@/lib/types/product";
@@ -26,7 +27,22 @@ const badgeStyles: Record<string, string> = {
 
 export function JewelleryProductCard({ product }: JewelleryProductCardProps) {
   const { addToCart } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
   const href = `/product/${product.slug}`;
+
+  async function handleAddToBag() {
+    setIsAdding(true);
+    try {
+      await addToCart({
+        slug: product.slug,
+        colorHex: product.colors[0]?.hex,
+      });
+    } catch {
+      // Toast is shown in the cart provider.
+    } finally {
+      setIsAdding(false);
+    }
+  }
 
   return (
     <article className="group flex flex-col border border-white/5 bg-[#1c1a16]">
@@ -59,16 +75,21 @@ export function JewelleryProductCard({ product }: JewelleryProductCardProps) {
         />
         <button
           type="button"
-          className="absolute inset-x-4 bottom-3 flex items-center justify-center gap-2 rounded-full bg-gold py-3 text-[13px] font-medium uppercase tracking-[0.65px] text-ink opacity-0 transition-opacity group-hover:opacity-100"
-          onClick={() =>
-            addToCart({
-              slug: product.slug,
-              colorHex: product.colors[0]?.hex,
-            })
-          }
+          disabled={isAdding}
+          className="absolute inset-x-4 bottom-3 flex items-center justify-center gap-2 rounded-full bg-gold py-3 text-[13px] font-medium uppercase tracking-[0.65px] text-ink opacity-0 transition-opacity group-hover:opacity-100 disabled:opacity-100"
+          onClick={handleAddToBag}
         >
-          <ShoppingBag className="size-4" />
-          Add to Bag
+          {isAdding ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              Adding...
+            </>
+          ) : (
+            <>
+              <ShoppingBag className="size-4" />
+              Add to Bag
+            </>
+          )}
         </button>
       </div>
       <div className="p-4">
