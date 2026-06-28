@@ -9,6 +9,15 @@ export interface ShippingDetails {
   shippingPincode: string;
 }
 
+export interface CheckoutShippingQuote {
+  loading: boolean;
+  serviceable: boolean;
+  pincode: string;
+  shippingCost: number;
+  message?: string;
+  estimatedDelivery?: string;
+}
+
 export interface CheckoutSession {
   orderId: string;
   orderNumber: string;

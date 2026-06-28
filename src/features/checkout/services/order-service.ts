@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { getRazorpayClient } from "@/lib/razorpay/server";
 import { getCart } from "@/features/cart/services/cart-service";
 import { markOrderPaid } from "@/features/checkout/services/order-fulfillment";
+import { estimateShippingRateForCheckout } from "@/lib/delhivery/shipping-rate";
 import type { ShippingDetails, CheckoutSession } from "../types";
 
 function generateOrderNumber() {
@@ -19,8 +20,21 @@ export async function createCheckoutSession(
     throw new Error("Your bag is empty.");
   }
 
+  const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  const shippingQuote = await estimateShippingRateForCheckout({
+    destinationPincode: shipping.shippingPincode,
+    itemCount,
+  });
+
+  if (!shippingQuote.serviceable) {
+    throw new Error(shippingQuote.message);
+  }
+
+  const shippingCost = shippingQuote.shippingCost;
+  const discountedSubtotal = Math.max(cart.summary.subtotal - cart.summary.discount, 0);
+  const total = discountedSubtotal + shippingCost;
   const orderNumber = generateOrderNumber();
-  const amountPaise = cart.summary.total * 100;
+  const amountPaise = total * 100;
 
   const order = await prisma.order.create({
     data: {
@@ -32,9 +46,9 @@ export async function createCheckoutSession(
       status: "PENDING",
       paymentStatus: "PENDING",
       subtotal: cart.summary.subtotal,
-      shippingCost: cart.summary.shipping,
+      shippingCost,
       discount: cart.summary.discount,
-      total: cart.summary.total,
+      total,
       promoCode: cart.promoCode,
       shippingLine1: shipping.shippingLine1,
       shippingLine2: shipping.shippingLine2,
@@ -80,7 +94,7 @@ export async function createCheckoutSession(
     orderId: order.id,
     orderNumber: order.orderNumber,
     razorpayOrderId: razorpayOrder.id,
-    amount: cart.summary.total,
+    amount: total,
     currency: "INR",
     keyId,
     prefill: {

@@ -1,5 +1,6 @@
 import { createDelhiveryShipment } from "@/lib/delhivery/client";
 import { isDelhiveryConfigured } from "@/lib/delhivery/env";
+import { estimateWeightKg } from "@/lib/delhivery/weight";
 import { prisma } from "@/lib/db";
 
 function buildShippingAddress(order: {
@@ -7,10 +8,6 @@ function buildShippingAddress(order: {
   shippingLine2: string | null;
 }) {
   return [order.shippingLine1, order.shippingLine2].filter(Boolean).join(", ");
-}
-
-function estimateWeightKg(itemCount: number) {
-  return Math.max(0.5, Number((itemCount * 0.35).toFixed(2)));
 }
 
 export async function createShipmentForPaidOrder(orderId: string) {

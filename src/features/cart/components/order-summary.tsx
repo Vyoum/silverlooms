@@ -61,7 +61,7 @@ export function OrderSummary() {
         </Link>
       )}
       <p className="mt-4 text-center text-[11px] text-sage">
-        Free shipping on all orders
+        Shipping is calculated at checkout based on your pincode
       </p>
     </aside>
   );

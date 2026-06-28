@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Script from "next/script";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,11 @@ import {
   createCheckoutAction,
   verifyPaymentAction,
 } from "@/features/checkout/actions";
-import type { CheckoutSession, ShippingDetails } from "@/features/checkout/types";
+import type {
+  CheckoutSession,
+  CheckoutShippingQuote,
+  ShippingDetails,
+} from "@/features/checkout/types";
 import { BRAND_NAME } from "@/lib/constants/brand";
 
 function isRazorpayConfigured() {
@@ -29,16 +33,111 @@ declare global {
 interface CheckoutFormProps {
   defaultEmail?: string;
   defaultName?: string;
+  onShippingQuoteChange?: (quote: CheckoutShippingQuote) => void;
 }
 
-export function CheckoutForm({ defaultEmail = "", defaultName = "" }: CheckoutFormProps) {
+const EMPTY_SHIPPING_QUOTE: CheckoutShippingQuote = {
+  loading: false,
+  serviceable: false,
+  pincode: "",
+  shippingCost: 0,
+};
+
+export function CheckoutForm({
+  defaultEmail = "",
+  defaultName = "",
+  onShippingQuoteChange,
+}: CheckoutFormProps) {
   const router = useRouter();
   const { cart } = useCart();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scriptReady, setScriptReady] = useState(false);
+  const [pincode, setPincode] = useState("");
+  const [shippingQuote, setShippingQuote] =
+    useState<CheckoutShippingQuote>(EMPTY_SHIPPING_QUOTE);
 
   const paymentsConfigured = isRazorpayConfigured();
+  const discountedSubtotal = Math.max(cart.summary.subtotal - cart.summary.discount, 0);
+  const checkoutTotal = discountedSubtotal + (shippingQuote.serviceable ? shippingQuote.shippingCost : 0);
+
+  useEffect(() => {
+    onShippingQuoteChange?.(shippingQuote);
+  }, [onShippingQuoteChange, shippingQuote]);
+
+  useEffect(() => {
+    const normalized = pincode.trim();
+
+    if (!/^\d{6}$/.test(normalized)) {
+      setShippingQuote(EMPTY_SHIPPING_QUOTE);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(async () => {
+      setShippingQuote({
+        loading: true,
+        serviceable: false,
+        pincode: normalized,
+        shippingCost: 0,
+      });
+
+      try {
+        const response = await fetch("/api/delhivery/shipping-rate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pincode: normalized,
+            itemCount: cart.itemCount,
+          }),
+          signal: controller.signal,
+        });
+
+        const data = (await response.json()) as CheckoutShippingQuote & {
+          approximate?: boolean;
+          message?: string;
+          estimatedDelivery?: string;
+        };
+
+        if (!response.ok) {
+          setShippingQuote({
+            loading: false,
+            serviceable: false,
+            pincode: normalized,
+            shippingCost: 0,
+            message: data.message ?? "Could not estimate shipping.",
+          });
+          return;
+        }
+
+        setShippingQuote({
+          loading: false,
+          serviceable: data.serviceable,
+          pincode: normalized,
+          shippingCost: data.shippingCost ?? 0,
+          message: data.message,
+          estimatedDelivery: data.estimatedDelivery,
+        });
+      } catch (fetchError) {
+        if (fetchError instanceof DOMException && fetchError.name === "AbortError") {
+          return;
+        }
+
+        setShippingQuote({
+          loading: false,
+          serviceable: false,
+          pincode: normalized,
+          shippingCost: 0,
+          message: "Could not estimate shipping right now.",
+        });
+      }
+    }, 450);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeout);
+    };
+  }, [cart.itemCount, pincode]);
 
   async function openRazorpay(session: CheckoutSession) {
     if (!window.Razorpay) {
@@ -95,6 +194,15 @@ export function CheckoutForm({ defaultEmail = "", defaultName = "" }: CheckoutFo
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+
+    if (!shippingQuote.serviceable || shippingQuote.loading) {
+      setError(
+        shippingQuote.message ??
+          "Enter a serviceable pincode to see shipping before paying.",
+      );
+      return;
+    }
+
     setPending(true);
 
     const formData = new FormData(event.currentTarget);
@@ -212,10 +320,36 @@ export function CheckoutForm({ defaultEmail = "", defaultName = "" }: CheckoutFo
                 name="shippingPincode"
                 required
                 pattern="[0-9]{6}"
+                value={pincode}
+                onChange={(event) => setPincode(event.target.value.replace(/\D/g, "").slice(0, 6))}
                 className="rounded-lg border-border bg-cream"
               />
             </div>
           </div>
+
+          {pincode.length === 6 && (
+            <div className="mt-4 rounded-lg border border-border bg-cream px-4 py-3 text-sm">
+              {shippingQuote.loading ? (
+                <p className="text-sage">Calculating shipping via Delhivery...</p>
+              ) : shippingQuote.serviceable ? (
+                <div className="space-y-1 text-ink">
+                  <p>
+                    {shippingQuote.shippingCost === 0
+                      ? "Estimated shipping: Free"
+                      : `Estimated shipping: ₹${shippingQuote.shippingCost.toLocaleString("en-IN")}`}
+                    <span className="text-sage"> (approx.)</span>
+                  </p>
+                  {shippingQuote.estimatedDelivery ? (
+                    <p className="text-sage">{shippingQuote.estimatedDelivery}</p>
+                  ) : null}
+                </div>
+              ) : (
+                <p className="text-red-700">
+                  {shippingQuote.message ?? "We could not deliver to this pincode."}
+                </p>
+              )}
+            </div>
+          )}
         </section>
 
         {error && (
@@ -234,12 +368,18 @@ export function CheckoutForm({ defaultEmail = "", defaultName = "" }: CheckoutFo
 
         <Button
           type="submit"
-          disabled={pending || !scriptReady || !paymentsConfigured}
+          disabled={
+            pending ||
+            !scriptReady ||
+            !paymentsConfigured ||
+            shippingQuote.loading ||
+            !shippingQuote.serviceable
+          }
           className="h-12 w-full rounded-full bg-forest text-[13px] uppercase tracking-[1.3px] hover:bg-forest/90"
         >
           {pending
             ? "Processing..."
-            : `Pay ₹${cart.summary.total.toLocaleString("en-IN")} with Razorpay`}
+            : `Pay ₹${checkoutTotal.toLocaleString("en-IN")} with Razorpay`}
         </Button>
       </form>
     </>
