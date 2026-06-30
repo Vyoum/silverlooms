@@ -22,7 +22,6 @@ export const categoryMarquee = [
   "BANDHEJ",
   "SHIRTS",
   "BAGS",
-  "SILVER JEWELLERY",
   "GERMAN SILVER",
 ] as const;
 
@@ -58,7 +57,7 @@ export const jewellerySubcategories = jewelleryCategoryTabs;
 export const footerLinks = {
   shop: [
     { label: "Apparel", href: "/kurtis" },
-    { label: "Silver Jewellery", href: "/jewellery" },
+    { label: "German Silver", href: "/jewellery" },
     { label: "New Arrivals", href: "/kurtis?sort=new" },
     { label: "Best Sellers", href: "/kurtis?sort=bestseller" },
   ],

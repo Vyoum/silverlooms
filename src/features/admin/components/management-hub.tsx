@@ -19,7 +19,7 @@ const panels = [
   },
   {
     title: "Jewellery Products",
-    description: "Manage silver jewellery listings, images, and inventory.",
+    description: "Manage German silver jewellery listings, images, and inventory.",
     href: "/admin/jewellery",
     icon: Gem,
     accent: "border-[#1c1a16]/40 hover:border-gold",

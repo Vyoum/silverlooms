@@ -13,7 +13,7 @@ export const defaultHomepageContent: HomepageContent = {
     titleAccent: "Wearing",
     titleLine2: "India",
     subtitle:
-      "Discover artisanal apparel and silver jewellery for the modern aesthete.",
+      "Discover artisanal apparel and German silver for the modern aesthete.",
     primaryCtaLabel: "Shop Apparel",
     primaryCtaHref: "/kurtis",
     secondaryCtaLabel: "Shop Jewellery",

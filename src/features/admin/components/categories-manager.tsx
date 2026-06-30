@@ -198,7 +198,7 @@ export function CategoriesManager({
 
       <CategoryTable
         title="Jewellery Categories"
-        description="Silver Jewellery, German Silver, Necklace Sets, Earrings, and other jewellery groupings."
+        description="German Silver, Necklace Sets, Earrings, and other jewellery groupings."
         categories={jewelleryCategories}
       />
     </div>

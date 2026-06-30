@@ -11,6 +11,7 @@ interface PageProps {
   searchParams: Promise<{
     category?: string;
     material?: string;
+    price?: string;
   }>;
 }
 
@@ -22,7 +23,7 @@ export async function generateMetadata({
   const categoryLabel = getJewelleryCategoryLabel(filters.category);
   const materialLabel = getJewelleryMaterialLabel(filters.material);
 
-  const titleParts = ["Silver Jewellery"];
+  const titleParts = ["German Silver"];
   if (categoryLabel) titleParts.unshift(categoryLabel);
   if (materialLabel) titleParts.push(materialLabel);
 
@@ -34,6 +35,7 @@ export async function generateMetadata({
   const query = new URLSearchParams();
   if (filters.category) query.set("category", filters.category);
   if (filters.material) query.set("material", filters.material);
+  if (filters.price) query.set("price", filters.price);
   const path = query.toString() ? `/jewellery?${query}` : "/jewellery";
 
   return pageMetadata({

@@ -42,9 +42,6 @@ export function HeroSection({
           <br />
           {content.titleLine2}
         </h1>
-        <p className="mt-2 max-w-[18rem] text-sm font-light leading-relaxed text-white/90 sm:mt-6 sm:max-w-xl sm:text-lg md:text-[21px]">
-          {content.subtitle}
-        </p>
         <div className="relative z-20 mt-4 flex w-full max-w-xs flex-col gap-2 sm:mt-8 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
           <PillButton href={content.primaryCtaHref} variant="primary" className="w-full sm:w-auto">
             {content.primaryCtaLabel}
@@ -57,6 +54,9 @@ export function HeroSection({
             {content.secondaryCtaLabel}
           </PillButton>
         </div>
+        <p className="mt-4 max-w-[18rem] text-sm font-light leading-relaxed text-white/90 sm:mt-6 sm:max-w-xl sm:text-lg md:text-[21px]">
+          {content.subtitle}
+        </p>
       </Container>
     </section>
   );

@@ -1,4 +1,9 @@
 import type { Product } from "@/lib/types/product";
+import {
+  parsePriceSort,
+  sortProductsByPrice,
+  type PriceSort,
+} from "@/features/catalog/lib/price-sort";
 
 export const JEWELLERY_CATEGORY_OPTIONS = [
   { slug: "necklace-sets", label: "Necklace Sets", pattern: /necklace|choker/i },
@@ -22,6 +27,7 @@ export type JewelleryMaterialSlug = (typeof JEWELLERY_MATERIAL_OPTIONS)[number][
 export interface JewelleryCatalogFilters {
   category: JewelleryCategorySlug | null;
   material: JewelleryMaterialSlug | null;
+  price: PriceSort;
 }
 
 function productSearchText(product: Product) {
@@ -74,10 +80,12 @@ export function parseJewelleryMaterial(value: string | null | undefined) {
 export function parseJewelleryCatalogFilters(params: {
   category?: string;
   material?: string;
+  price?: string;
 }): JewelleryCatalogFilters {
   return {
     category: parseJewelleryCategory(params.category),
     material: parseJewelleryMaterial(params.material),
+    price: parsePriceSort(params.price),
   };
 }
 
@@ -90,6 +98,10 @@ export function buildJewelleryCatalogHref(filters: Partial<JewelleryCatalogFilte
 
   if (filters.material) {
     params.set("material", filters.material);
+  }
+
+  if (filters.price) {
+    params.set("price", filters.price);
   }
 
   const query = params.toString();
@@ -124,5 +136,5 @@ export function applyJewelleryCatalogFilters(
     );
   }
 
-  return result;
+  return sortProductsByPrice(result, filters.price);
 }

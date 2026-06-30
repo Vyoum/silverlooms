@@ -8,6 +8,10 @@ import {
   PRODUCT_SORT_OPTIONS,
   type ProductSort,
 } from "@/features/catalog/lib/product-sort";
+import {
+  PRICE_SORT_LABELS,
+  PRICE_SORT_OPTIONS,
+} from "@/features/catalog/lib/price-sort";
 import type { Product } from "@/lib/types/product";
 import type { CatalogCategoryOption } from "@/features/kurtis/lib/kurtis-filters";
 import {
@@ -43,6 +47,7 @@ function buildKurtisUrl(
   };
 
   if ("sort" in updates) apply("sort", updates.sort ?? null);
+  if ("price" in updates) apply("price", updates.price ?? null);
   if ("category" in updates) apply("category", updates.category ?? null);
   if ("size" in updates) apply("size", updates.size ?? null);
   if ("color" in updates) apply("color", updates.color ?? null);
@@ -110,6 +115,7 @@ export function KurtisCatalogSection({
   const activeCategoryLabel = getCategoryLabel(filters.category, categoryOptions);
   const hasActiveFilters =
     filters.sort !== "all" ||
+    Boolean(filters.price) ||
     Boolean(filters.category) ||
     Boolean(filters.size) ||
     Boolean(filters.color);
@@ -136,7 +142,7 @@ export function KurtisCatalogSection({
             onClick={() => setOpenPanel("filter")}
             className={cn(
               "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[9px] font-medium uppercase tracking-[0.9px] transition-colors md:gap-2 md:px-4 md:py-2.5 md:text-[11px] md:tracking-[1.1px]",
-              filters.sort !== "all" || filters.size || filters.color
+              filters.sort !== "all" || filters.price || filters.size || filters.color
                 ? "border-ink bg-ink text-cream"
                 : "border-border bg-cream text-ink hover:border-ink",
             )}
@@ -156,6 +162,12 @@ export function KurtisCatalogSection({
             <FilterChip
               label={`Collection: ${PRODUCT_SORT_LABELS[filters.sort]}`}
               onRemove={() => pushFilters({ sort: "all" })}
+            />
+          )}
+          {filters.price && (
+            <FilterChip
+              label={PRICE_SORT_LABELS[filters.price]}
+              onRemove={() => pushFilters({ price: null })}
             />
           )}
           {activeCategoryLabel && (
@@ -285,6 +297,42 @@ export function KurtisCatalogSection({
                           )}
                         />
                         {PRODUCT_SORT_LABELS[option]}
+                      </button>
+                    ))}
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="mb-3 text-[11px] font-medium uppercase tracking-[1.65px] text-sage">
+                    Price
+                  </h3>
+                  <div className="space-y-2">
+                    {PRICE_SORT_OPTIONS.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => {
+                          pushFilters({
+                            price: filters.price === option ? null : option,
+                          });
+                          setOpenPanel(null);
+                        }}
+                        className={cn(
+                          "flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm",
+                          filters.price === option
+                            ? "font-medium text-ink"
+                            : "text-sage hover:text-ink",
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "size-4 rounded-full border",
+                            filters.price === option
+                              ? "border-ink bg-ink"
+                              : "border-sage-light",
+                          )}
+                        />
+                        {PRICE_SORT_LABELS[option]}
                       </button>
                     ))}
                   </div>

@@ -10,7 +10,7 @@ export default function Page() {
     <AdminStorePage
       defaultProductType="jewellery"
       title="Jewellery Store"
-      description="Add silver jewellery — they appear instantly on /jewellery."
+      description="Add German silver jewellery — they appear instantly on /jewellery."
       storefrontHref="/jewellery"
       storefrontLabel="View /jewellery"
     />

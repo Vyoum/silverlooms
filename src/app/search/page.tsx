@@ -16,7 +16,7 @@ export async function generateMetadata({
     title: query ? `Search: ${query}` : "Search",
     description: query
       ? `Search results for "${query}" at Silver Looms.`
-      : "Search kurtis, co-ord sets, and silver jewellery at Silver Looms.",
+      : "Search kurtis, co-ord sets, and German silver at Silver Looms.",
     ...noIndexMetadata,
   };
 }

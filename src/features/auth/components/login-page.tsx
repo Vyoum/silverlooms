@@ -53,7 +53,7 @@ export function LoginPage({
               {BRAND_TAGLINE}
             </p>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-cream/75">
-              Handcrafted apparel and silver jewellery from the looms and
+              Handcrafted apparel and German silver from the looms and
               ateliers of Jaipur.
             </p>
           </div>

@@ -24,6 +24,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 interface KurtisPageProps {
   searchParams: {
     sort?: string;
+    price?: string;
     category?: string;
     size?: string;
     color?: string;

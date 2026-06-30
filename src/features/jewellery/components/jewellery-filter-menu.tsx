@@ -11,6 +11,10 @@ import {
   getJewelleryMaterialLabel,
   type JewelleryCatalogFilters,
 } from "@/features/jewellery/lib/jewellery-filters";
+import {
+  PRICE_SORT_LABELS,
+  PRICE_SORT_OPTIONS,
+} from "@/features/catalog/lib/price-sort";
 import { cn } from "@/lib/utils";
 
 interface JewelleryFilterMenuProps {
@@ -20,7 +24,7 @@ interface JewelleryFilterMenuProps {
 
 export function JewelleryFilterMenu({ filters, productCount }: JewelleryFilterMenuProps) {
   const [open, setOpen] = useState(false);
-  const hasActiveFilters = Boolean(filters.category || filters.material);
+  const hasActiveFilters = Boolean(filters.category || filters.material || filters.price);
 
   return (
     <div className="relative">
@@ -66,7 +70,7 @@ export function JewelleryFilterMenu({ filters, productCount }: JewelleryFilterMe
               </p>
               <div className="flex flex-wrap gap-2">
                 <FilterChip
-                  href={buildJewelleryCatalogHref({ material: filters.material })}
+                  href={buildJewelleryCatalogHref({ material: filters.material, price: filters.price })}
                   active={!filters.category}
                   label="All"
                   onNavigate={() => setOpen(false)}
@@ -77,6 +81,7 @@ export function JewelleryFilterMenu({ filters, productCount }: JewelleryFilterMe
                     href={buildJewelleryCatalogHref({
                       category: option.slug,
                       material: filters.material,
+                      price: filters.price,
                     })}
                     active={filters.category === option.slug}
                     label={option.label}
@@ -92,7 +97,7 @@ export function JewelleryFilterMenu({ filters, productCount }: JewelleryFilterMe
               </p>
               <div className="flex flex-wrap gap-2">
                 <FilterChip
-                  href={buildJewelleryCatalogHref({ category: filters.category })}
+                  href={buildJewelleryCatalogHref({ category: filters.category, price: filters.price })}
                   active={!filters.material}
                   label="All"
                   onNavigate={() => setOpen(false)}
@@ -103,9 +108,31 @@ export function JewelleryFilterMenu({ filters, productCount }: JewelleryFilterMe
                     href={buildJewelleryCatalogHref({
                       category: filters.category,
                       material: option.slug,
+                      price: filters.price,
                     })}
                     active={filters.material === option.slug}
                     label={option.label}
+                    onNavigate={() => setOpen(false)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-2 text-[10px] uppercase tracking-[1.65px] text-cream-dark">
+                Price
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {PRICE_SORT_OPTIONS.map((option) => (
+                  <FilterChip
+                    key={option}
+                    href={buildJewelleryCatalogHref({
+                      category: filters.category,
+                      material: filters.material,
+                      price: filters.price === option ? null : option,
+                    })}
+                    active={filters.price === option}
+                    label={PRICE_SORT_LABELS[option]}
                     onNavigate={() => setOpen(false)}
                   />
                 ))}
@@ -121,7 +148,7 @@ export function JewelleryFilterMenu({ filters, productCount }: JewelleryFilterMe
               <div className="flex flex-wrap gap-2">
                 {filters.category ? (
                   <FilterChip
-                    href={buildJewelleryCatalogHref({ material: filters.material })}
+                    href={buildJewelleryCatalogHref({ material: filters.material, price: filters.price })}
                     active
                     label={getJewelleryCategoryLabel(filters.category) ?? "Category"}
                     onNavigate={() => setOpen(false)}
@@ -129,9 +156,20 @@ export function JewelleryFilterMenu({ filters, productCount }: JewelleryFilterMe
                 ) : null}
                 {filters.material ? (
                   <FilterChip
-                    href={buildJewelleryCatalogHref({ category: filters.category })}
+                    href={buildJewelleryCatalogHref({ category: filters.category, price: filters.price })}
                     active
                     label={getJewelleryMaterialLabel(filters.material) ?? "Material"}
+                    onNavigate={() => setOpen(false)}
+                  />
+                ) : null}
+                {filters.price ? (
+                  <FilterChip
+                    href={buildJewelleryCatalogHref({
+                      category: filters.category,
+                      material: filters.material,
+                    })}
+                    active
+                    label={PRICE_SORT_LABELS[filters.price]}
                     onNavigate={() => setOpen(false)}
                   />
                 ) : null}

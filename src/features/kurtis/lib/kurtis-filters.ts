@@ -2,6 +2,11 @@ import type { Product } from "@/lib/types/product";
 import type { ProductSort } from "@/features/catalog/lib/product-sort";
 import { parseProductSort } from "@/features/catalog/lib/product-sort";
 import {
+  parsePriceSort,
+  sortProductsByPrice,
+  type PriceSort,
+} from "@/features/catalog/lib/price-sort";
+import {
   productMatchesCategory,
   toCatalogCategoryOption,
   type CatalogCategoryOption,
@@ -18,6 +23,7 @@ export const FALLBACK_CATALOG_CATEGORY_OPTIONS: CatalogCategoryOption[] = [
 
 export interface KurtisCatalogFilters {
   sort: ProductSort;
+  price: PriceSort;
   category: string | null;
   size: string | null;
   color: string | null;
@@ -34,6 +40,7 @@ export function parseKurtisCategory(
 export function parseKurtisCatalogFilters(
   params: {
     sort?: string;
+    price?: string;
     category?: string;
     size?: string;
     color?: string;
@@ -42,6 +49,7 @@ export function parseKurtisCatalogFilters(
 ): KurtisCatalogFilters {
   return {
     sort: parseProductSort(params.sort),
+    price: parsePriceSort(params.price),
     category: parseKurtisCategory(params.category, options),
     size: params.size?.trim() || null,
     color: params.color?.trim().toLowerCase() || null,
@@ -89,7 +97,7 @@ export function applyKurtisCatalogFilters(
     );
   }
 
-  return result;
+  return sortProductsByPrice(result, filters.price);
 }
 
 export function countByCategory(

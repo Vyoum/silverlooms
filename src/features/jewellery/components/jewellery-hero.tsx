@@ -21,7 +21,7 @@ export function JewelleryHero({ filters }: JewelleryHeroProps) {
             <em className="text-gold">&amp; Beyond</em>
           </h1>
           <p className="mt-4 max-w-md text-sm font-light leading-[1.6] text-[rgba(228,226,221,0.8)] sm:mt-6 sm:text-base">
-            Discover artisanal silver jewellery, meticulously handcrafted by master
+            Discover artisanal German silver, meticulously handcrafted by master
             artisans in Jaipur.
           </p>
           <div className="mt-5 flex flex-wrap gap-4 text-[10px] uppercase tracking-[0.5px] text-[#e4e2dd] sm:mt-8 sm:gap-6">
@@ -32,7 +32,7 @@ export function JewelleryHero({ filters }: JewelleryHeroProps) {
         <div className="relative h-[min(32dvh,220px)] min-h-[180px] bg-[#1a1816] sm:h-[240px] lg:min-h-[480px] lg:h-auto">
           <Image
             src={assets.hero.jewellery}
-            alt="Layered silver necklaces editorial"
+            alt="Layered German silver necklaces editorial"
             fill
             className="object-cover opacity-80"
             sizes="(max-width: 1024px) 100vw, 45vw"

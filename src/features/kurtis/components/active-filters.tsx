@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import {
   PRODUCT_SORT_LABELS,
 } from "@/features/catalog/lib/product-sort";
+import { PRICE_SORT_LABELS } from "@/features/catalog/lib/price-sort";
 import type { CatalogCategoryOption } from "@/features/kurtis/lib/kurtis-filters";
 import {
   getCategoryLabel,
@@ -46,6 +47,7 @@ export function ActiveFilters({
   const categoryLabel = getCategoryLabel(filters.category, categoryOptions);
   const hasChips =
     filters.sort !== "all" ||
+    Boolean(filters.price) ||
     Boolean(filters.category) ||
     Boolean(filters.size) ||
     Boolean(filters.color);
@@ -65,6 +67,12 @@ export function ActiveFilters({
               <Chip
                 label={`Collection: ${PRODUCT_SORT_LABELS[filters.sort]}`}
                 onRemove={() => removeParam("sort")}
+              />
+            )}
+            {filters.price && (
+              <Chip
+                label={PRICE_SORT_LABELS[filters.price]}
+                onRemove={() => removeParam("price")}
               />
             )}
             {categoryLabel && (

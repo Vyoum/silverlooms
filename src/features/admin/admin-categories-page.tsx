@@ -16,7 +16,7 @@ export async function AdminCategoriesPage() {
         <h1 className="font-serif text-3xl font-medium text-admin-ink">Categories</h1>
         <p className="mt-2 max-w-2xl text-sm text-admin-muted">
           Edit all storefront categories — apparel (Leheriya, Bandhej, Shirts, Bags, etc.)
-          and jewellery (Necklace Sets, Earrings, Silver Jewellery, and more). Update names,
+          and jewellery (Necklace Sets, Earrings, German Silver, and more). Update names,
           keywords, marquee/filter visibility, sort order, and hero banners.
         </p>
       </div>
