@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import {
   updateCatalogHeroAction,
@@ -42,6 +42,12 @@ function CatalogHeroCard({
   );
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
   return (
     <form
       action={formAction}
@@ -53,13 +59,14 @@ function CatalogHeroCard({
       <p className="mb-3 text-sm font-medium text-admin-ink">{label}</p>
 
       <div className="relative mb-4 aspect-[16/9] overflow-hidden rounded-lg bg-admin-canvas">
-        <Image
-          src={previewUrl ?? hero.imageUrl}
-          alt={hero.title}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 33vw"
-        />
+          <Image
+            src={previewUrl ?? hero.imageUrl}
+            alt={hero.title}
+            fill
+            unoptimized={Boolean(previewUrl)}
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
       </div>
 
       <div className="space-y-3">
@@ -84,10 +91,16 @@ function CatalogHeroCard({
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (!file) {
-                setPreviewUrl(null);
+                setPreviewUrl((current) => {
+                  if (current) URL.revokeObjectURL(current);
+                  return null;
+                });
                 return;
               }
-              setPreviewUrl(URL.createObjectURL(file));
+              setPreviewUrl((current) => {
+                if (current) URL.revokeObjectURL(current);
+                return URL.createObjectURL(file);
+              });
             }}
           />
         </div>

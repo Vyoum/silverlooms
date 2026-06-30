@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import { Pencil } from "lucide-react";
 import {
@@ -28,6 +28,12 @@ export function CategoryEditor({ category }: { category: StoreCategory }) {
     initialState,
   );
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   if (!open) {
     return (
@@ -111,6 +117,7 @@ export function CategoryEditor({ category }: { category: StoreCategory }) {
                 src={previewUrl ?? category.heroImageUrl!}
                 alt={category.name}
                 fill
+                unoptimized={Boolean(previewUrl)}
                 className="object-cover"
                 sizes="320px"
               />
@@ -143,10 +150,16 @@ export function CategoryEditor({ category }: { category: StoreCategory }) {
                 onChange={(event) => {
                   const file = event.target.files?.[0];
                   if (!file) {
-                    setPreviewUrl(null);
+                    setPreviewUrl((current) => {
+                      if (current) URL.revokeObjectURL(current);
+                      return null;
+                    });
                     return;
                   }
-                  setPreviewUrl(URL.createObjectURL(file));
+                  setPreviewUrl((current) => {
+                    if (current) URL.revokeObjectURL(current);
+                    return URL.createObjectURL(file);
+                  });
                 }}
               />
             </div>

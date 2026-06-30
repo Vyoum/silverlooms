@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ImagePlus } from "lucide-react";
 import {
@@ -56,17 +56,62 @@ function ImageField({
   alt: string;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  const displayUrl = previewUrl ?? currentUrl;
+  const isLocalPreview = displayUrl.startsWith("blob:");
+
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setPreviewUrl((current) => {
+        if (current) URL.revokeObjectURL(current);
+        return null;
+      });
+      setSelectedFileName(null);
+      return;
+    }
+
+    setPreviewUrl((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return URL.createObjectURL(file);
+    });
+    setSelectedFileName(file.name);
+  }
 
   return (
     <div className="rounded-xl border border-admin-border bg-admin-canvas p-4">
       <FieldLabel>{label}</FieldLabel>
       <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-start">
-        <div className="relative size-28 shrink-0 overflow-hidden rounded-lg border border-admin-border bg-white">
-          <Image src={currentUrl} alt={alt} fill className="object-cover" sizes="112px" />
+        <div className="relative aspect-[4/5] w-full max-w-[200px] shrink-0 overflow-hidden rounded-lg border border-admin-border bg-white">
+          <Image
+            src={displayUrl}
+            alt={alt}
+            fill
+            unoptimized={isLocalPreview}
+            className="object-cover"
+            sizes="200px"
+          />
         </div>
         <div className="min-w-0 flex-1 space-y-3">
           <Input name={urlName} defaultValue={currentUrl} placeholder="Image URL" />
-          <input ref={fileRef} type="file" name={name} accept="image/jpeg,image/png,image/webp" className="hidden" />
+          <input
+            ref={fileRef}
+            type="file"
+            name={name}
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={handleFileChange}
+          />
           <Button
             type="button"
             variant="outline"
@@ -76,6 +121,13 @@ function ImageField({
             <ImagePlus className="size-4" />
             Upload new image
           </Button>
+          {selectedFileName ? (
+            <p className="text-xs text-admin-muted">
+              Selected: <span className="text-admin-ink">{selectedFileName}</span>
+              {" · "}
+              Save to apply
+            </p>
+          ) : null}
         </div>
       </div>
     </div>

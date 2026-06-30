@@ -33,7 +33,7 @@ const panels = [
   },
   {
     title: "Homepage Content",
-    description: "Edit hero, editorial copy, quote & portrait image, and banners.",
+    description: "Edit hero, jewellery catalog banner, editorial copy, quote & portrait image, and banners.",
     href: "/admin/content",
     icon: FileText,
     accent: "border-admin-primary/30 hover:border-admin-primary",

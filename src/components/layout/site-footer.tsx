@@ -4,7 +4,7 @@ import { BrandLogo } from "@/components/shared/brand-logo";
 import { InstagramIcon } from "@/components/icons/instagram-icon";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { INSTAGRAM_URL } from "@/lib/constants/brand";
+import { INSTAGRAM_URL, MARKETPLACE_LINKS } from "@/lib/constants/brand";
 import { footerLinks } from "@/lib/constants/navigation";
 import { Container } from "./page-shell";
 
@@ -44,7 +44,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="grid gap-8 py-16 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-8 py-16 sm:grid-cols-2 lg:grid-cols-5">
           {(
             [
               ["Shop", footerLinks.shop],
@@ -70,6 +70,25 @@ export function SiteFooter() {
               </ul>
             </div>
           ))}
+          <div>
+            <h4 className="mb-8 text-[11px] uppercase tracking-[2.2px] text-gold">
+              Marketplaces
+            </h4>
+            <ul className="space-y-4">
+              {MARKETPLACE_LINKS.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[13px] text-cream-light transition-colors hover:text-gold"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
           <div>
             <h4 className="mb-8 text-[11px] uppercase tracking-[2.2px] text-gold">
               Social

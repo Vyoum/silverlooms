@@ -4,6 +4,7 @@ import {
   applyJewelleryCatalogFilters,
   type JewelleryCatalogFilters,
 } from "@/features/jewellery/lib/jewellery-filters";
+import { getJewelleryHeroContent } from "@/lib/site-content/jewellery-hero";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { JewelleryHero } from "./components/jewellery-hero";
 import { JewelleryProductGrid } from "./components/jewellery-product-grid";
@@ -15,14 +16,17 @@ interface JewelleryPageProps {
 }
 
 export async function JewelleryPage({ filters }: JewelleryPageProps) {
-  const allProducts = await listJewelleryProducts();
+  const [allProducts, heroContent] = await Promise.all([
+    listJewelleryProducts(),
+    getJewelleryHeroContent(),
+  ]);
   const products = applyJewelleryCatalogFilters(allProducts, filters);
 
   return (
     <div className="min-h-screen bg-ink text-cream">
       <SiteHeader variant="jewellery" />
       <main>
-        <JewelleryHero filters={filters} />
+        <JewelleryHero filters={filters} content={heroContent} />
         <MaterialFilterStrip filters={filters} />
         <JewelleryProductGrid products={products} filters={filters} />
         <TrustSection />

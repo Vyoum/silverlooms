@@ -8,6 +8,11 @@ import {
   getHomepageContent,
   saveHomepageContent,
 } from "@/lib/site-content/homepage";
+import {
+  getJewelleryHeroContent,
+  saveJewelleryHeroContent,
+  type JewelleryHeroContent,
+} from "@/lib/site-content/jewellery-hero";
 import type { HomepageContent } from "@/lib/site-content/types";
 
 export type ContentActionResult = { success: boolean; error?: string };
@@ -155,5 +160,48 @@ export async function updateHomepageContentAction(
   } catch (error) {
     console.error("[admin] updateHomepageContentAction failed:", error);
     return { success: false, error: "Failed to save homepage content." };
+  }
+}
+
+export async function updateJewelleryHeroAction(
+  _prev: ContentActionResult,
+  formData: FormData,
+): Promise<ContentActionResult> {
+  try {
+    await requireAdminUser();
+
+    const current = await getJewelleryHeroContent();
+    const read = (key: keyof JewelleryHeroContent) =>
+      String(formData.get(key) ?? "").trim();
+
+    let imageUrl = read("imageUrl") || current.imageUrl;
+    const imageFile = formData.get("heroImage");
+    if (imageFile instanceof File && imageFile.size > 0) {
+      imageUrl = await saveProductImage(imageFile, "jewellery-catalog-hero");
+    }
+
+    const next: JewelleryHeroContent = {
+      eyebrow: read("eyebrow") || current.eyebrow,
+      titleLine1: read("titleLine1") || current.titleLine1,
+      titleAccent: read("titleAccent") || current.titleAccent,
+      description: read("description") || current.description,
+      highlightOne: read("highlightOne") || current.highlightOne,
+      highlightTwo: read("highlightTwo") || current.highlightTwo,
+      imageAlt: read("imageAlt") || current.imageAlt,
+      imageUrl,
+    };
+
+    await saveJewelleryHeroContent(next);
+
+    revalidateTag(CACHE_TAGS.jewelleryHero, "max");
+    revalidatePath("/jewellery");
+    revalidatePath("/admin/content");
+
+    return { success: true };
+  } catch (error) {
+    console.error("[admin] updateJewelleryHeroAction failed:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to save jewellery hero.";
+    return { success: false, error: message };
   }
 }

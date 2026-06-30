@@ -9,3 +9,10 @@ export const BRAND_LOGO_HEIGHT = 346;
 
 export const INSTAGRAM_URL =
   "https://www.instagram.com/silverlooms_2026?utm_source=qr&igsh=MTNiNjBzOHducm9wZA==";
+
+/** Update hrefs when store profile URLs are ready. */
+export const MARKETPLACE_LINKS = [
+  { label: "Amazon", href: "#" },
+  { label: "Flipkart", href: "#" },
+  { label: "Etsy", href: "#" },
+] as const;
