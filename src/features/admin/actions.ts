@@ -247,8 +247,16 @@ export async function deleteProductAction(productId: string) {
     revalidatePath("/admin/store");
     revalidatePath("/admin/jewellery");
     return { success: true };
-  } catch {
-    return { success: false, error: "Could not delete product." };
+  } catch (error) {
+    const message =
+      error instanceof Error &&
+      (error.message.includes("Foreign key constraint") ||
+        error.message.includes("required relation"))
+        ? "Cannot delete this product because it is linked to orders or cart data."
+        : error instanceof Error
+          ? error.message
+          : "Could not delete product.";
+    return { success: false, error: message };
   }
 }
 

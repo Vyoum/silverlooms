@@ -11,6 +11,7 @@ export function getDelhiveryEnv() {
     pickupPhone: process.env.DELHIVERY_PICKUP_PHONE,
     pickupCity: process.env.DELHIVERY_PICKUP_CITY,
     pickupState: process.env.DELHIVERY_PICKUP_STATE,
+    pickupTime: process.env.DELHIVERY_PICKUP_TIME ?? "14:00:00",
     sellerGstTin: process.env.DELHIVERY_SELLER_GST_TIN,
     hsnCode: process.env.DELHIVERY_HSN_CODE ?? "6204",
   };

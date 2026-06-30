@@ -288,6 +288,10 @@ export function OrderDetailPanel({ orderId, onClose, onUpdated }: OrderDetailPan
                       Waybill:{" "}
                       <span className="font-medium">{order.delhiveryWaybill}</span>
                     </p>
+                    <p className="mt-1 text-xs text-admin-muted">
+                      Shipment is in Delhivery. Pickup appears under Pickup Requests in
+                      the Delhivery panel (separate from payment).
+                    </p>
                     <a
                       href={`https://www.delhivery.com/track/package/${order.delhiveryWaybill}`}
                       target="_blank"
@@ -300,7 +304,12 @@ export function OrderDetailPanel({ orderId, onClose, onUpdated }: OrderDetailPan
                   </div>
                 ) : order.paymentStatus === "PAID" ? (
                   <div className="mt-4">
-                    <p className="text-sm text-admin-muted">No shipment created yet.</p>
+                    <p className="text-sm text-admin-muted">No Delhivery waybill yet.</p>
+                    <p className="mt-1 text-xs text-admin-muted">
+                      Payment succeeded, but shipment creation did not. Check the error
+                      below and your Delhivery env vars on Vercel (warehouse name must
+                      match Delhivery exactly).
+                    </p>
                     <Button
                       type="button"
                       variant="outline"
@@ -316,7 +325,7 @@ export function OrderDetailPanel({ orderId, onClose, onUpdated }: OrderDetailPan
                 ) : null}
 
                 {order.delhiveryShipmentError ? (
-                  <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                  <p className="mt-4 whitespace-pre-line rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
                     {order.delhiveryShipmentError}
                   </p>
                 ) : null}

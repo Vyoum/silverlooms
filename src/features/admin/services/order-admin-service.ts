@@ -34,6 +34,7 @@ export interface AdminOrderRow {
   createdAt: string;
   delhiveryWaybill: string | null;
   hasShipmentError: boolean;
+  shipmentError: string | null;
 }
 
 export interface AdminOrderItemRow {
@@ -109,6 +110,7 @@ function mapOrderRow(order: {
     createdAt: formatOrderDate(order.createdAt),
     delhiveryWaybill: order.delhiveryWaybill,
     hasShipmentError: Boolean(order.delhiveryShipmentError),
+    shipmentError: order.delhiveryShipmentError,
   };
 }
 

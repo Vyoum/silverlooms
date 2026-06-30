@@ -32,6 +32,8 @@ export function ProductsTable({
 }: ProductsTableProps) {
   const [filter, setFilter] = useState<ProductType | "all">(defaultFilter);
   const [pending, startTransition] = useTransition();
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [stockProduct, setStockProduct] = useState<AdminProductRow | null>(null);
   const [editProduct, setEditProduct] = useState<AdminProductRow | null>(null);
   const router = useRouter();
@@ -69,6 +71,16 @@ export function ProductsTable({
           <span className="text-sm text-admin-muted">{filtered.length} live</span>
         </div>
       </div>
+      {actionError ? (
+        <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {actionError}
+        </p>
+      ) : null}
+      {actionSuccess ? (
+        <p className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+          {actionSuccess}
+        </p>
+      ) : null}
 
       {filtered.length === 0 ? (
         <p className="py-8 text-center text-sm text-admin-muted">
@@ -142,7 +154,19 @@ export function ProductsTable({
                         disabled={pending}
                         onClick={() =>
                           startTransition(async () => {
-                            await deleteProductAction(product.id);
+                            setActionError(null);
+                            const confirmed = window.confirm(
+                              `Delete "${product.name}"? This cannot be undone.`,
+                            );
+                            if (!confirmed) return;
+
+                            setActionSuccess(null);
+                            const result = await deleteProductAction(product.id);
+                            if (!result.success) {
+                              setActionError(result.error ?? "Could not delete product.");
+                              return;
+                            }
+                            setActionSuccess(`Deleted "${product.name}".`);
                             router.refresh();
                           })
                         }

@@ -1,4 +1,5 @@
 import { getDelhiveryEnv, isDelhiveryConfigured } from "./env";
+import { explainDelhiveryError } from "./errors";
 
 export interface DelhiveryShipmentInput {
   orderNumber: string;
@@ -26,6 +27,26 @@ function sanitizeDelhiveryText(value: string) {
     .replace(/[&%#;\\]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function normalizePhone(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 10) return digits;
+  if (digits.length > 10) return digits.slice(-10);
+  return phone.trim();
+}
+
+function buildShipmentError(
+  message: string | undefined,
+  fallback: string,
+  raw?: unknown,
+) {
+  const base = message?.trim() || fallback;
+  return {
+    success: false as const,
+    error: explainDelhiveryError(base),
+    raw,
+  };
 }
 
 function formatOrderDate(date: Date) {
@@ -58,7 +79,7 @@ export async function createDelhiveryShipment(
         name: sanitizeDelhiveryText(input.customerName),
         add: sanitizeDelhiveryText(input.shippingAddress),
         pin: input.shippingPincode,
-        phone: input.customerPhone,
+        phone: normalizePhone(input.customerPhone),
         city: sanitizeDelhiveryText(input.shippingCity),
         state: sanitizeDelhiveryText(input.shippingState),
         country: "India",
@@ -99,27 +120,26 @@ export async function createDelhiveryShipment(
     | null;
 
   if (!response.ok) {
-    return {
-      success: false,
-      error: raw?.rmk ?? `Delhivery request failed (${response.status}).`,
+    return buildShipmentError(
+      raw?.rmk ?? (typeof raw?.error === "string" ? raw.error : undefined),
+      `Delhivery request failed (${response.status}).`,
       raw,
-    };
+    );
   }
 
   const waybill = raw?.packages?.[0]?.waybill;
   const packageError = raw?.packages?.[0]?.remarks?.[0];
+  const packageStatus = raw?.packages?.[0]?.status;
   const requestFailed = raw?.success === false || raw?.error === true;
 
-  if (!waybill || requestFailed) {
-    return {
-      success: false,
-      error:
-        packageError ??
+  if (!waybill || requestFailed || packageStatus === "Fail") {
+    return buildShipmentError(
+      packageError ??
         (typeof raw?.error === "string" ? raw.error : undefined) ??
-        raw?.rmk ??
-        "Delhivery did not return a waybill.",
+        raw?.rmk,
+      "Delhivery did not return a waybill.",
       raw,
-    };
+    );
   }
 
   return {

@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import {
   createCategoryAction,
-  deleteCategoryFormAction,
+  deleteCategoryAction,
   type CategoryActionResult,
 } from "@/features/admin/actions/category-actions";
 import { CatalogHeroManager } from "@/features/admin/components/catalog-hero-manager";
@@ -31,10 +32,14 @@ function CategoryTable({
   title,
   description,
   categories,
+  onDelete,
+  deletingId,
 }: {
   title: string;
   description: string;
   categories: StoreCategory[];
+  onDelete: (id: string) => void;
+  deletingId: string | null;
 }) {
   return (
     <section className="rounded-2xl border border-admin-border bg-admin-surface overflow-hidden">
@@ -80,16 +85,15 @@ function CategoryTable({
                     <CategoryEditor category={category} />
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <form action={deleteCategoryFormAction}>
-                      <input type="hidden" name="id" value={category.id} />
-                      <button
-                        type="submit"
-                        className="inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="size-3.5" />
-                        Delete
-                      </button>
-                    </form>
+                    <button
+                      type="button"
+                      disabled={deletingId === category.id}
+                      onClick={() => onDelete(category.id)}
+                      className="inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Trash2 className="size-3.5" />
+                      {deletingId === category.id ? "Deleting…" : "Delete"}
+                    </button>
                   </td>
                 </tr>
               ))
@@ -112,6 +116,11 @@ export function CategoriesManager({
     createCategoryAction,
     initialState,
   );
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
+  const router = useRouter();
 
   const apparelCategories = categories.filter(
     (category) => category.kind === CategoryKind.APPAREL,
@@ -120,9 +129,45 @@ export function CategoriesManager({
     (category) => category.kind === CategoryKind.JEWELLERY,
   );
 
+  function handleDelete(id: string) {
+    const confirmed = window.confirm(
+      "Delete this category? This cannot be undone.",
+    );
+    if (!confirmed) return;
+
+    startTransition(async () => {
+      setDeleteError(null);
+      setDeleteSuccess(null);
+      setDeletingId(id);
+      const result = await deleteCategoryAction(id);
+      setDeletingId(null);
+
+      if (!result.success) {
+        setDeleteError(result.error ?? "Could not delete category.");
+        return;
+      }
+
+      const deleted = categories.find((category) => category.id === id);
+      setDeleteSuccess(
+        deleted ? `Deleted "${deleted.name}" category.` : "Category deleted.",
+      );
+      router.refresh();
+    });
+  }
+
   return (
     <div className="space-y-8">
       <CatalogHeroManager heroes={catalogHeroes} />
+      {deleteError ? (
+        <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {deleteError}
+        </p>
+      ) : null}
+      {deleteSuccess ? (
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          {deleteSuccess}
+        </p>
+      ) : null}
 
       <section className="rounded-2xl border border-admin-border bg-admin-surface p-6">
         <div className="mb-6">
@@ -194,12 +239,16 @@ export function CategoriesManager({
         title="Apparel Categories"
         description="Kurti Sets, Leheriya, Bandhej, Shirts, Bags, and all other apparel filters on /kurtis."
         categories={apparelCategories}
+        onDelete={handleDelete}
+        deletingId={deletingId}
       />
 
       <CategoryTable
         title="Jewellery Categories"
         description="German Silver, Necklace Sets, Earrings, and other jewellery groupings."
         categories={jewelleryCategories}
+        onDelete={handleDelete}
+        deletingId={deletingId}
       />
     </div>
   );

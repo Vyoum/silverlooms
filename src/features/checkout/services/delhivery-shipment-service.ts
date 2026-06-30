@@ -1,5 +1,6 @@
 import { createDelhiveryShipment } from "@/lib/delhivery/client";
 import { isDelhiveryConfigured } from "@/lib/delhivery/env";
+import { createDelhiveryPickupRequest } from "@/lib/delhivery/pickup-request";
 import { estimateWeightKg } from "@/lib/delhivery/weight";
 import { prisma } from "@/lib/db";
 
@@ -12,7 +13,13 @@ function buildShippingAddress(order: {
 
 export async function createShipmentForPaidOrder(orderId: string) {
   if (!isDelhiveryConfigured()) {
+    const error =
+      "Delhivery is not fully configured on the server. Add all DELHIVERY_* variables in Vercel (not only .env.local).";
     console.warn("[delhivery] Skipping shipment creation — configuration incomplete.");
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { delhiveryShipmentError: error },
+    }).catch(() => undefined);
     return null;
   }
 
@@ -88,6 +95,22 @@ export async function createShipmentForPaidOrder(orderId: string) {
       raw: result.raw,
     });
     return null;
+  }
+
+  const pickupResult = await createDelhiveryPickupRequest({ expectedPackageCount: 1 });
+
+  if (!pickupResult.success) {
+    console.error("[delhivery] Pickup request failed:", pickupResult.error, {
+      orderId: order.id,
+      waybill: result.waybill,
+      raw: pickupResult.raw,
+    });
+  } else if (pickupResult.pickupId) {
+    console.info("[delhivery] Pickup scheduled:", {
+      orderId: order.id,
+      waybill: result.waybill,
+      pickupId: pickupResult.pickupId,
+    });
   }
 
   return prisma.order.update({

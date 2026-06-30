@@ -217,7 +217,12 @@ export function CommerceConsole({ orders, initialOrderId = null }: CommerceConso
                           {order.delhiveryWaybill}
                         </span>
                       ) : order.hasShipmentError ? (
-                        <span className="text-xs font-medium text-red-600">Error</span>
+                        <span
+                          className="line-clamp-2 max-w-[220px] text-xs font-medium text-red-600"
+                          title={order.shipmentError ?? "Shipment error"}
+                        >
+                          {order.shipmentError ?? "Error"}
+                        </span>
                       ) : order.paymentStatus === "PAID" ? (
                         <span className="text-xs text-admin-muted">Pending</span>
                       ) : (

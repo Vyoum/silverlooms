@@ -9,6 +9,7 @@ import {
   listOrdersForAdmin,
   updateOrderStatus,
 } from "@/features/admin/services/order-admin-service";
+import { prisma } from "@/lib/db";
 
 export type CommerceActionResult = { success: boolean; error?: string };
 
@@ -69,9 +70,16 @@ export async function retryDelhiveryShipmentAction(
     const result = await createShipmentForPaidOrder(orderId);
 
     if (!result) {
+      const order = await prisma.order.findUnique({
+        where: { id: orderId },
+        select: { delhiveryShipmentError: true },
+      });
+
       return {
         success: false,
-        error: "Shipment was not created. Check Delhivery configuration and shipping details.",
+        error:
+          order?.delhiveryShipmentError ??
+          "Shipment was not created. Check Delhivery configuration and shipping details.",
       };
     }
 
