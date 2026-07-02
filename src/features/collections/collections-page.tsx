@@ -11,7 +11,7 @@ import { JewelleryProductCard } from "@/features/jewellery/components/jewellery-
 import { getApparelCatalogHeroes } from "@/lib/site-content/catalog-hero";
 
 export async function CollectionsPage() {
-  const [{ apparel, jewellery }, catalogHeroes] = await Promise.all([
+  const [{ apparel, jewellery, showingBestsellers }, catalogHeroes] = await Promise.all([
     listBestsellerProducts(),
     getApparelCatalogHeroes(),
   ]);
@@ -19,8 +19,15 @@ export async function CollectionsPage() {
   const hero = {
     ...catalogHeroes.bestseller,
     eyebrow: "Collections",
-    subtitle: "Our most loved apparel and German silver jewellery",
+    subtitle: showingBestsellers
+      ? "Our most loved apparel and German silver jewellery"
+      : "Curated apparel and German silver jewellery from our Jaipur atelier",
   };
+
+  const apparelTitle = showingBestsellers ? "Apparel Best Sellers" : "Apparel";
+  const jewelleryTitle = showingBestsellers
+    ? "Jewellery Best Sellers"
+    : "German Silver Jewellery";
 
   return (
     <PageShell>
@@ -41,20 +48,18 @@ export async function CollectionsPage() {
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
               <SectionHeading
                 align="left"
-                title="Apparel Best Sellers"
+                title={apparelTitle}
                 subtitle="Kurtis, co-ord sets, and everyday ethnic wear loved by our customers."
               />
               <Link
-                href="/kurtis?sort=bestseller"
+                href={showingBestsellers ? "/kurtis?sort=bestseller" : "/kurtis"}
                 className="text-[11px] font-medium uppercase tracking-[1.1px] text-sage transition-colors hover:text-ink"
               >
                 View all apparel →
               </Link>
             </div>
             {apparel.length === 0 ? (
-              <p className="py-12 text-center text-sage">
-                No apparel best sellers yet. Check back soon.
-              </p>
+              <p className="py-12 text-center text-sage">No apparel products yet.</p>
             ) : (
               <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-3">
                 {apparel.map((product) => (
@@ -73,7 +78,7 @@ export async function CollectionsPage() {
                   Collections
                 </p>
                 <h2 className="font-serif text-[32px] font-light leading-tight text-cream md:text-[42px]">
-                  Jewellery Best Sellers
+                  {jewelleryTitle}
                 </h2>
                 <p className="mt-2 max-w-xl text-sm text-cream-dark/80">
                   Handcrafted German silver pieces from our Jaipur atelier.
@@ -88,7 +93,7 @@ export async function CollectionsPage() {
             </div>
             {jewellery.length === 0 ? (
               <p className="py-12 text-center text-cream-dark/70">
-                No jewellery best sellers yet. Check back soon.
+                No jewellery products yet.
               </p>
             ) : (
               <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">

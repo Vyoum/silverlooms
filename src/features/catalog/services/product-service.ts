@@ -217,12 +217,31 @@ export async function listNewArrivals(limit = 4): Promise<Product[]> {
 export async function listBestsellerProducts(): Promise<{
   apparel: Product[];
   jewellery: Product[];
+  showingBestsellers: boolean;
 }> {
-  const products = filterProductsBySort(await fetchAllProducts(), "bestseller");
+  const allProducts = await fetchAllProducts();
+  const bestsellers = filterProductsBySort(allProducts, "bestseller");
+  const apparelBestsellers = bestsellers.filter((product) => isApparelProduct(product));
+  const jewelleryBestsellers = bestsellers.filter((product) => isJewelleryProduct(product));
+
+  if (bestsellers.length === 0) {
+    return {
+      apparel: allProducts.filter((product) => isApparelProduct(product)),
+      jewellery: allProducts.filter((product) => isJewelleryProduct(product)),
+      showingBestsellers: false,
+    };
+  }
 
   return {
-    apparel: products.filter((product) => isApparelProduct(product)),
-    jewellery: products.filter((product) => isJewelleryProduct(product)),
+    apparel:
+      apparelBestsellers.length > 0
+        ? apparelBestsellers
+        : allProducts.filter((product) => isApparelProduct(product)),
+    jewellery:
+      jewelleryBestsellers.length > 0
+        ? jewelleryBestsellers
+        : allProducts.filter((product) => isJewelleryProduct(product)),
+    showingBestsellers: true,
   };
 }
 
