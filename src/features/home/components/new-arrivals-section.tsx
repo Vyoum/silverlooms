@@ -33,7 +33,7 @@ export async function NewArrivalsSection() {
             New Arrivals
           </a>
           <a
-            href="/kurtis?sort=bestseller"
+            href="/collections"
             className="rounded-full border border-border px-6 py-2 text-[11px] uppercase tracking-[1.1px] transition-colors hover:bg-cream-dark"
           >
             Best Sellers

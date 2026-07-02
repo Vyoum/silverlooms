@@ -1,7 +1,9 @@
 "use client";
 
+import { useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
+import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import {
   PRODUCT_SORT_LABELS,
 } from "@/features/catalog/lib/product-sort";
@@ -37,14 +39,39 @@ export function ActiveFilters({
     router.push(query ? `/kurtis?${query}` : "/kurtis");
   };
 
-  const breadcrumb =
-    filters.sort === "bestseller"
-      ? "Home / Collections / Best Sellers"
-      : filters.sort === "new"
-        ? "Home / Collections / New Arrivals"
-        : "Home / Apparel / Kurtis & Sets";
-
   const categoryLabel = getCategoryLabel(filters.category, categoryOptions);
+
+  const breadcrumbItems = useMemo(() => {
+    if (filters.sort === "bestseller") {
+      return [
+        { label: "Home", href: "/" },
+        { label: "Collections", href: "/collections" },
+        { label: "Apparel Best Sellers" },
+      ];
+    }
+
+    if (filters.sort === "new") {
+      return [
+        { label: "Home", href: "/" },
+        { label: "Collections", href: "/kurtis?sort=new" },
+        { label: "New Arrivals" },
+      ];
+    }
+
+    if (categoryLabel && filters.category) {
+      return [
+        { label: "Home", href: "/" },
+        { label: "Apparel", href: "/kurtis" },
+        { label: categoryLabel },
+      ];
+    }
+
+    return [
+      { label: "Home", href: "/" },
+      { label: "Apparel", href: "/kurtis" },
+      { label: "Kurtis & Sets" },
+    ];
+  }, [categoryLabel, filters.category, filters.sort]);
   const hasChips =
     filters.sort !== "all" ||
     Boolean(filters.price) ||
@@ -55,9 +82,7 @@ export function ActiveFilters({
   return (
     <div className="border-b border-border bg-cream-dark px-4 py-3 md:px-16">
       <div className="flex flex-wrap items-center gap-3">
-        <nav className="text-[11px] uppercase tracking-wider text-sage">
-          {breadcrumb}
-        </nav>
+        <Breadcrumbs items={breadcrumbItems} />
         <p className="hidden text-[11px] text-sage-light sm:block">
           {productCount} products
         </p>

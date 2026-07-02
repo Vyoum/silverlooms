@@ -214,6 +214,18 @@ export async function listNewArrivals(limit = 4): Promise<Product[]> {
   return filterProductsBySort(products, "new").slice(0, limit);
 }
 
+export async function listBestsellerProducts(): Promise<{
+  apparel: Product[];
+  jewellery: Product[];
+}> {
+  const products = filterProductsBySort(await fetchAllProducts(), "bestseller");
+
+  return {
+    apparel: products.filter((product) => isApparelProduct(product)),
+    jewellery: products.filter((product) => isJewelleryProduct(product)),
+  };
+}
+
 export async function resolveProductBySlug(slug: string): Promise<Product | null> {
   const cachedProduct = await unstable_cache(
     async () => {

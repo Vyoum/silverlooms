@@ -3,7 +3,7 @@ export const siteNavLinks = [
   { label: "Apparel", href: "/kurtis" },
   { label: "Jewellery", href: "/jewellery" },
   { label: "New In", href: "/kurtis?sort=new" },
-  { label: "Collections", href: "/kurtis?sort=bestseller" },
+  { label: "Collections", href: "/collections" },
   { label: "About Us", href: "/#editorial" },
 ] as const;
 
@@ -59,7 +59,7 @@ export const footerLinks = {
     { label: "Apparel", href: "/kurtis" },
     { label: "German Silver", href: "/jewellery" },
     { label: "New Arrivals", href: "/kurtis?sort=new" },
-    { label: "Best Sellers", href: "/kurtis?sort=bestseller" },
+    { label: "Best Sellers", href: "/collections" },
   ],
   help: [
     { label: "Track Order", href: "/account" },
@@ -118,7 +118,7 @@ export function buildMobileNavSections(
         { label: "All Apparel", href: "/kurtis" },
         { label: "All Jewellery", href: "/jewellery" },
         { label: "New In", href: "/kurtis?sort=new" },
-        { label: "Best Sellers", href: "/kurtis?sort=bestseller" },
+        { label: "Best Sellers", href: "/collections" },
       ],
     },
     {
