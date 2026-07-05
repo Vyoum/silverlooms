@@ -67,6 +67,16 @@ async function parseHomepageForm(formData: FormData): Promise<HomepageContent> {
       imageAlt: read(`style${index}ImageAlt`) || style.imageAlt,
       href: read(`style${index}Href`) || style.href,
     })),
+    shopByFabric: {
+      title: read("fabricSectionTitle") || current.shopByFabric.title,
+      subtitle: read("fabricSectionSubtitle") || current.shopByFabric.subtitle,
+      fabrics: current.shopByFabric.fabrics.map((fabric, index) => ({
+        name: read(`fabric${index}Name`) || fabric.name,
+        imageUrl: read(`fabric${index}ImageUrl`) || fabric.imageUrl,
+        imageAlt: read(`fabric${index}ImageAlt`) || fabric.imageAlt,
+        href: read(`fabric${index}Href`) || fabric.href,
+      })),
+    },
   };
 }
 
@@ -116,6 +126,20 @@ async function applyImageUploads(
     next.shopByStyles = next.shopByStyles.map((style, styleIndex) =>
       styleIndex === index ? { ...style, imageUrl } : style,
     );
+  }
+
+  const fabricCount = next.shopByFabric.fabrics.length;
+  for (let index = 0; index < fabricCount; index += 1) {
+    const file = formData.get(`fabric${index}Image`);
+    if (!(file instanceof File) || file.size === 0) continue;
+
+    const imageUrl = await saveProductImage(file, `homepage-fabric-${index}`);
+    next.shopByFabric = {
+      ...next.shopByFabric,
+      fabrics: next.shopByFabric.fabrics.map((fabric, fabricIndex) =>
+        fabricIndex === index ? { ...fabric, imageUrl } : fabric,
+      ),
+    };
   }
 
   return next;

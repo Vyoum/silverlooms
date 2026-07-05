@@ -269,6 +269,54 @@ export function HomepageContentForm({ content }: { content: HomepageContent }) {
       </SectionCard>
 
       <SectionCard
+        title="Shop By Fabric"
+        description="The four fabric tiles on the homepage (Cotton, Lawn Cotton, Chiffon, Jaipur Fabric). Edit the section heading, each tile name, link, and photo."
+      >
+        <div>
+          <FieldLabel>Section Title</FieldLabel>
+          <Input name="fabricSectionTitle" defaultValue={content.shopByFabric.title} />
+        </div>
+        <div>
+          <FieldLabel>Section Subtitle</FieldLabel>
+          <textarea
+            name="fabricSectionSubtitle"
+            defaultValue={content.shopByFabric.subtitle}
+            rows={2}
+            className="w-full rounded-lg border border-admin-border bg-white px-3 py-2 text-sm text-admin-ink outline-none focus:border-admin-primary"
+          />
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {content.shopByFabric.fabrics.map((fabric, index) => (
+            <div
+              key={`fabric-${index}`}
+              className="space-y-4 rounded-xl border border-admin-border bg-admin-canvas p-4"
+            >
+              <p className="text-sm font-medium text-admin-ink">Fabric {index + 1}</p>
+              <div>
+                <FieldLabel>Name</FieldLabel>
+                <Input name={`fabric${index}Name`} defaultValue={fabric.name} />
+              </div>
+              <div>
+                <FieldLabel>Link URL</FieldLabel>
+                <Input name={`fabric${index}Href`} defaultValue={fabric.href} />
+              </div>
+              <div>
+                <FieldLabel>Image Alt Text</FieldLabel>
+                <Input name={`fabric${index}ImageAlt`} defaultValue={fabric.imageAlt} />
+              </div>
+              <ImageField
+                label="Fabric Photo"
+                name={`fabric${index}Image`}
+                urlName={`fabric${index}ImageUrl`}
+                currentUrl={fabric.imageUrl}
+                alt={fabric.imageAlt}
+              />
+            </div>
+          ))}
+        </div>
+      </SectionCard>
+
+      <SectionCard
         title="Shop By Styles"
         description="The three style tiles on the homepage (Threads of Paradise, Midnight Kari Grace, Whispers of Charm). Upload or replace each photo."
       >

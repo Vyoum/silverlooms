@@ -2,7 +2,7 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import { defaultHomepageContent } from "./defaults";
-import type { HomepageContent, HomepageStyleTile } from "./types";
+import type { HomepageContent, HomepageShopByFabricContent, HomepageStyleTile } from "./types";
 import { HOMEPAGE_CONTENT_KEY } from "./types";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -23,6 +23,28 @@ function mergeShopByStyles(patch: unknown): HomepageStyleTile[] {
   );
 }
 
+function mergeShopByFabric(patch: unknown): HomepageShopByFabricContent {
+  const defaults = defaultHomepageContent.shopByFabric;
+  if (!isRecord(patch)) return defaults;
+
+  const fabricsPatch = patch.fabrics;
+  const fabrics = Array.isArray(fabricsPatch)
+    ? defaults.fabrics.map((item, index) => mergeSection(item, fabricsPatch[index]))
+    : defaults.fabrics;
+
+  return {
+    title:
+      typeof patch.title === "string" && patch.title.trim()
+        ? patch.title.trim()
+        : defaults.title,
+    subtitle:
+      typeof patch.subtitle === "string" && patch.subtitle.trim()
+        ? patch.subtitle.trim()
+        : defaults.subtitle,
+    fabrics,
+  };
+}
+
 export function mergeHomepageContent(patch: unknown): HomepageContent {
   if (!isRecord(patch)) return defaultHomepageContent;
 
@@ -32,6 +54,7 @@ export function mergeHomepageContent(patch: unknown): HomepageContent {
     editorial: mergeSection(defaultHomepageContent.editorial, patch.editorial),
     brandStory: mergeSection(defaultHomepageContent.brandStory, patch.brandStory),
     shopByStyles: mergeShopByStyles(patch.shopByStyles),
+    shopByFabric: mergeShopByFabric(patch.shopByFabric),
   };
 }
 

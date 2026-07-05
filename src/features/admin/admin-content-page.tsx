@@ -15,8 +15,8 @@ export async function AdminContentPage() {
         <h1 className="font-serif text-3xl font-medium text-admin-ink">Site Content</h1>
         <p className="mt-2 max-w-2xl text-sm text-admin-muted">
           Edit homepage sections, the jewellery catalog hero on /jewellery, Shop By
-          Styles photos, and the quote & portrait section. Changes go live after you
-          save.
+          Fabric and Shop By Styles photos, and the quote & portrait section. Changes
+          go live after you save.
         </p>
       </div>
       <HomepageContentForm content={content} />

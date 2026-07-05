@@ -43,12 +43,19 @@ export type HomepageStyleTile = {
   href: string;
 };
 
+export type HomepageShopByFabricContent = {
+  title: string;
+  subtitle: string;
+  fabrics: HomepageStyleTile[];
+};
+
 export type HomepageContent = {
   announcement: HomepageAnnouncementContent;
   hero: HomepageHeroContent;
   editorial: HomepageEditorialContent;
   brandStory: HomepageBrandStoryContent;
   shopByStyles: HomepageStyleTile[];
+  shopByFabric: HomepageShopByFabricContent;
 };
 
 export const HOMEPAGE_CONTENT_KEY = "homepage";

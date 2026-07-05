@@ -27,7 +27,7 @@ export async function HomePage() {
       <main>
         <HeroSection content={content.hero} />
         <MarqueeSection items={marqueeItems} />
-        <FabricSection />
+        <FabricSection content={content.shopByFabric} />
         <StyleSection styles={content.shopByStyles} />
         <NewArrivalsSection />
         <GoodReadsSection />

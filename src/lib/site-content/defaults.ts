@@ -59,4 +59,35 @@ export const defaultHomepageContent: HomepageContent = {
       href: "/kurtis",
     },
   ],
+  shopByFabric: {
+    title: "Shop By Fabric",
+    subtitle:
+      "Explore our curated collections woven from the finest natural fabrics, each telling its own story of texture and tradition.",
+    fabrics: [
+      {
+        name: "Cotton",
+        imageUrl: assets.fabrics.cotton,
+        imageAlt: "Cotton",
+        href: "/kurtis",
+      },
+      {
+        name: "Lawn Cotton",
+        imageUrl: assets.fabrics.lawnCotton,
+        imageAlt: "Lawn Cotton",
+        href: "/kurtis",
+      },
+      {
+        name: "Chiffon",
+        imageUrl: assets.fabrics.mulmulCotton,
+        imageAlt: "Chiffon",
+        href: "/kurtis",
+      },
+      {
+        name: "Jaipur Fabric",
+        imageUrl: assets.fabrics.jaipurFabric,
+        imageAlt: "Jaipur Fabric",
+        href: "/kurtis",
+      },
+    ],
+  },
 };

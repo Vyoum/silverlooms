@@ -1,35 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
-import { assets } from "@/lib/constants/assets";
 import { Container } from "@/components/layout/page-shell";
 import { SectionHeading } from "@/components/shared/section-heading";
+import type { HomepageShopByFabricContent } from "@/lib/site-content/types";
 
-const fabrics = [
-  { name: "Cotton", image: assets.fabrics.cotton },
-  { name: "Lawn Cotton", image: assets.fabrics.lawnCotton },
-  { name: "Chiffon", image: assets.fabrics.mulmulCotton },
-  { name: "Jaipur Fabric", image: assets.fabrics.jaipurFabric },
-];
-
-export function FabricSection() {
+export function FabricSection({ content }: { content: HomepageShopByFabricContent }) {
   return (
     <section className="border-b border-border py-20">
       <Container>
         <SectionHeading
-          title="Shop By Fabric"
-          subtitle="Explore our curated collections woven from the finest natural fabrics, each telling its own story of texture and tradition."
+          title={content.title}
+          subtitle={content.subtitle}
           className="mb-12"
         />
         <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-          {fabrics.map((fabric) => (
+          {content.fabrics.map((fabric) => (
             <Link
               key={fabric.name}
-              href="/kurtis"
+              href={fabric.href}
               className="group relative aspect-[270/360] overflow-hidden"
             >
               <Image
-                src={fabric.image}
-                alt={fabric.name}
+                src={fabric.imageUrl}
+                alt={fabric.imageAlt}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 768px) 50vw, 25vw"
