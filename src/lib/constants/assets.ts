@@ -24,10 +24,8 @@ export const assets = {
       "https://www.figma.com/api/mcp/asset/a21f987b-5e4b-4a8b-b89f-21ec728abb72",
   },
   editorial: {
-    jaipurCraft:
-      "https://www.figma.com/api/mcp/asset/c26b2520-089a-47d6-b11f-bdb6dd6aba31",
-    stylingSilver:
-      "https://www.figma.com/api/mcp/asset/cc67d328-4995-46c4-98a9-7105cb6629e2",
+    jaipurCraft: "/images/editorial/jaipur-craft.jpg",
+    stylingSilver: "/images/editorial/styling-silver.jpg",
     lookbook:
       "https://www.figma.com/api/mcp/asset/b70c19a3-2a8f-414f-8d3b-b495be76d5dd",
     brandStory:
