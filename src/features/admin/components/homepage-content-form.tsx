@@ -70,7 +70,6 @@ function ImageField({
   }, [previewUrl]);
 
   const displayUrl = previewUrl ?? currentUrl;
-  const isLocalPreview = displayUrl.startsWith("blob:");
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -113,7 +112,7 @@ function ImageField({
             src={displayUrl}
             alt={alt}
             fill
-            unoptimized={isLocalPreview}
+            unoptimized
             className="object-cover"
             sizes={isStacked ? "280px" : "200px"}
           />
@@ -188,7 +187,7 @@ export function HomepageContentForm({ content }: { content: HomepageContent }) {
   );
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} encType="multipart/form-data" className="space-y-6">
       <SectionCard
         title="Announcement Bar"
         description="Top banner message on every storefront page."

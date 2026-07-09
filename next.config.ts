@@ -11,7 +11,8 @@ function getSupabaseStorageHostname() {
   }
 }
 
-const supabaseHostname = getSupabaseStorageHostname();
+const supabaseHostname =
+  getSupabaseStorageHostname() ?? "wdrslpoowatuxcgdowsw.supabase.co";
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -31,15 +32,11 @@ const nextConfig: NextConfig = {
         hostname: "lh3.googleusercontent.com",
         pathname: "/**",
       },
-      ...(supabaseHostname
-        ? [
-            {
-              protocol: "https" as const,
-              hostname: supabaseHostname,
-              pathname: "/storage/v1/object/public/**",
-            },
-          ]
-        : []),
+      {
+        protocol: "https" as const,
+        hostname: supabaseHostname,
+        pathname: "/storage/v1/object/public/**",
+      },
     ],
   },
   async redirects() {

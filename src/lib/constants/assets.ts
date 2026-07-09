@@ -7,12 +7,9 @@ export const assets = {
       "https://www.figma.com/api/mcp/asset/51ed1229-165b-4278-a655-7e26fe9eca6b",
   },
   fabrics: {
-    cotton:
-      "https://www.figma.com/api/mcp/asset/ef23714c-2dda-4ec0-a89c-23e4576d37e7",
-    lawnCotton:
-      "https://www.figma.com/api/mcp/asset/71e687ab-7cb5-417a-9aa7-7f4a60712e5a",
-    mulmulCotton:
-      "https://www.figma.com/api/mcp/asset/cdc74afa-48fc-49e7-8b99-0da51beca4be",
+    cotton: "/images/fabrics/cotton.jpg",
+    lawnCotton: "/images/fabrics/lawn-cotton.jpg",
+    mulmulCotton: "/images/fabrics/chiffon.jpg",
     jaipurFabric: "/images/fabrics/jaipur-fabric.jpg",
   },
   auth: {
