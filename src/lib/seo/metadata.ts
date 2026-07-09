@@ -5,7 +5,7 @@ import {
 } from "@/lib/constants/brand";
 import { absoluteUrl, SITE_URL } from "@/lib/seo/site";
 
-export const DEFAULT_OG_IMAGE_PATH = "/images/kurtis-hero.jpg";
+export const DEFAULT_OG_IMAGE_PATH = "/images/og/preview.jpg";
 
 const defaultDescription =
   "Shop artisanal kurtis, co-ord sets, and handcrafted German silver jewellery from Jaipur. Free shipping across India at Silver Looms.";
@@ -112,11 +112,13 @@ export function pageMetadata({
       description,
       url: canonical,
       images: [
-        {
-          url: ogImage,
-          alt: imageAlt ?? title,
-        },
-      ],
+      {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: imageAlt ?? title,
+      },
+    ],
     },
     twitter: {
       card: "summary_large_image",
