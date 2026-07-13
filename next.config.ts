@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    // Hobby plan: Vercel Image Optimization returns 402 after quota.
+    // Serve originals directly (Supabase/local) instead of /_next/image.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
